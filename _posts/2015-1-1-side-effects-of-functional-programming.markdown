@@ -1,5 +1,6 @@
 ---
 layout: post
+disqus: true
 title:  "The Side-effects of Functional Programming"
 date:   2015-1-2 12:00:00
 tags: 
