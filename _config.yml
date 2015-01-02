@@ -1,0 +1,18 @@
+name: Antoine Kalmbach
+description: and his thoughts on programming
+meta_description: "Antoine speaks about software."
+
+encoding: utf-8
+markdown: redcarpet
+excerpt_separator: <!--break-->
+highlighter: pygments
+logo: false
+paginate: 15
+baseurl: /
+domain_name: 'http://ane.iki.fi/'
+
+# Details for the RSS feed generator
+url:            'http://ane.iki.fi/'
+author:         'Antoine Kalmbach'
+redcarpet:
+  extensions: ["footnotes"]

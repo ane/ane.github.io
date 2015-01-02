@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+  xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+  <channel>
+    <title>Antoine Kalmbach</title>
+    <link>http://ane.iki.fi/</link>
+    <description>and his thoughts on programming</description>
+    <pubDate>Fri, 02 Jan 2015 14:00:00 +0200</pubDate>
+    <item>
+      <title>The Side-effects of Functional Programming</title>
+      <link>http://ane.iki.fi//2015/01/02/side-effects-of-functional-programming.html</link>
+      <description>&lt;p&gt;The lack of side-effects and immutability are definitive
+characteristics of functional programming: its declarative modus
+expresses clearly that variables cannot be altered after being
+declared. How does understanding this style affect the writing of
+ordinary imperative code, after the programmer, having learned and
+understood immutable code, returns to imperative programming?&lt;/p&gt;
+</description>
+      <pubDate>Fri, 02 Jan 2015 14:00:00 +0200</pubDate>
+      <dc:date>2015-01-02T14:00:00+02:00</dc:date>
+    </item>
+    <dc:date>2015-01-02T14:00:00+02:00</dc:date>
+  </channel>
+</rss>

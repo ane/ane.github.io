@@ -1,0 +1,5 @@
+functional engine - whatever chassis
+architecture is everything
+code entropy
+the emergence of protocol apis
+what REST really is
