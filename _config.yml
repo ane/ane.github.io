@@ -14,5 +14,6 @@ domain_name: 'http://ane.iki.fi/'
 # Details for the RSS feed generator
 url:            'http://ane.iki.fi/'
 author:         'Antoine Kalmbach'
+google_analytics: UA-58162697-1
 redcarpet:
   extensions: ["footnotes"]
