@@ -92,13 +92,13 @@ commonly, one step ahead: `i++`. Or maybe we just need to do something
 
 Loops in functional programming work in a different way: they are
 mappings, from one collection to another, when lists of integers are
-morphed into a list of squares, or they are summed into a total. 
-The principle of declaration is fundamental. Functional programmers
-*say* that this result squared list is the application of a function
+morphed into a list of squares, or they are summed into a total.  The
+principle of declaration is fundamental. Functional programmers *say*
+that this result squared list is the application of a function
 `square` on each of the members of another list, imperative
-programming has us produce a square successively `n` times. In
-functional programming, the upper limit `n` is trivial, in imperative
-programming it is necessary.
+programming has us create `n` squares and insert them into a list at
+the `i`th position. In functional programming, the upper limit `n` is
+trivial, in imperative programming it is necessary.
 
 Doing something `n` times in functional programming is tricky, because
 the pattern is sometimes invalid. Any loop is fundamentally a
@@ -110,7 +110,7 @@ discard the results, again, no `i++` is necessary.
 Because everything is *declared to be something*, a value, or a
 function, or a mapping, these declarations remain steady and unchanged
 throughout execution.  We fix the result of `squaredIntegers[]` to be
-the result of a mapping, we cannot touch it afterward.
+a result of a mapping, not the iterated consequence of an explicit action.
 
 In rough terms, our code cannot alter anything, it can only use those
 variables known at its *moment of declaration*, i.e., what knowledge is
@@ -191,10 +191,10 @@ bar = map (\z -> z ** 2) [1 .. y]  -- bar's moment of declaration
 ~~~
 
 all of the values above see only anything that precedes them, nothing
-that comes afterward. This paradigm embedded itself deeply in my
-mind,, to the extent that it'll transformed my imperative code to be
-written in this style, in the "let" fashion. It also led me to
-discover a concept I call *context piling*.
+that comes after. This paradigm embedded itself deeply in my mind, to
+the extent that it transformed my imperative code to be written in
+this style, in the "let" fashion. It also led me to discover a concept
+I call *context piling*.
 
 ### Context piling
 
