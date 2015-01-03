@@ -182,12 +182,12 @@ languages (Python, C#, C++) to name a few at work; functional
 programming and having fun with it was entirely a hobby.
 
 Over the years, I noticed a strange change in the way I code. Before,
-I mentioned the concept of "moments of declaration", e.g.,
+I mentioned the concept of "moments of declaration", e.g.[^2],
 
 ~~~ haskell
 x = 1                              -- x's moment of declaration
 y = x + 3                          -- y's moment of declaration
-bar = map (\z -> z ** 2) [1 .. y]  -- bar's moment of declaration[^2]
+bar = map (\z -> z ** 2) [1 .. y]  -- bar's moment of declaration
 ~~~
 
 all of the values above see only anything that precedes them, nothing
