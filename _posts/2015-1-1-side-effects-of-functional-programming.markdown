@@ -36,7 +36,7 @@ programmer writes and understands imperative code.
 ## Introduction: immutability and side-effects
 
 This article explains side-effects and immutability for someone
-who isn't that familar with functional programming, and then goes
+who isn't that familiar with functional programming, and then goes
 on to the main point, how knowledge of such features impacts writing
 ordinary imperative code. Readers familiar with the topic can proceed
 directly to the section titled "Effects On The Programmer".
@@ -110,7 +110,7 @@ discard the results, again, no `i++` is necessary.
 Because everything is *declared to be something*, a value, or a
 function, or a mapping, these declarations remain steady and unchanged
 throughout execution.  We fix the result of `squaredIntegers[]` to be
-the result of a mapping, we cannot touch it afterwards.
+the result of a mapping, we cannot touch it afterward.
 
 In rough terms, our code cannot alter anything, it can only use those
 variables known at its *moment of declaration*, i.e., what knowledge is
@@ -174,7 +174,7 @@ then goes back to writing imperative code.
 I can predict what happens based on my experiences and
 observations. For a background, I had my first steps with OCaml some
 five years ago and then found Haskell in university, where it baffled
-me and went over my head until I groked its beauty.  I learnt it on
+me and went over my head until I groked its beauty.  I learned it on
 the side, and I later studied type theory and some principles of
 programming languages, to understand how languages work at a higher
 level. During that time, I did imperative programming in a variety of
@@ -191,7 +191,7 @@ bar = map (\z -> z ** 2) [1 .. y]  -- bar's moment of declaration
 ~~~
 
 all of the values above see only anything that precedes them, nothing
-that comes afterwards. This paradigm embedded itself deeply in my
+that comes afterward. This paradigm embedded itself deeply in my
 mind,, to the extent that it'll transformed my imperative code to be
 written in this style, in the "let" fashion. It also led me to
 discover a concept I call *context piling*.
@@ -219,17 +219,17 @@ one will always be looking in *two* directions. This leads to increased code ent
 Functional programming affected my imperative object-oriented code in
 this many striking fashions:
 
-+ Avoid side effects, prefer functions that take parameters and return values,
+1. Avoid side effects, prefer functions that take parameters and return values,
   **especially** in OOP, no byrefs[^1]!
-+ Minimize stateful objects, use objects as containers and
+2. Minimize stateful objects, use objects as containers and
   for encapsulation
-+ If you need stateful objects, make it explicit and easy to understand
-+ Use interfaces a bit like type classes, multiple inheritance *of
+3. If you need stateful objects, make it explicit and easy to understand
+4. Use interfaces a bit like type classes, multiple inheritance *of
 interfaces* is OK
-+ Avoid context piling by let defining new variables with visible and clear moments of
+5. Avoid context piling by let defining new variables with visible and clear moments of
   declaration
-+ Avoid `object.DoSomething()` 
-+ Rely on lazy evaluation and generators (`yield` in C# or Python)
+6. Avoid `object.DoSomething()` 
+7. Rely on lazy evaluation and generators (`yield` in C# or Python)
 
 I attribute all of these changes to learning and understanding
 functional programming. Point **1** is obvious: when functions take
@@ -272,7 +272,7 @@ correct&mdash;and debug&mdash;than undefined behaviour.
 
 In a dynamic language, where variables can arbitrarily change their
 type, e.g. JavaScript, Python, or even C, this isn't as easy, as the
-compiler won't be there to do type checking. If anything, I've learnt
+compiler won't be there to do type checking. If anything, I've learned
 that dynamic typing is idiotic, and languages that are designed with
 dynamic weak typing are terrible. Thankfully, new languages seem to be
 following the static typing school of thought (Go, Rust, Swing, Nim).
