@@ -142,15 +142,15 @@ at compile time, or due to lazy evaluation at runtime, are known as
 
 Because functions are declared to return the same result every time,
 IO events are deemed "unsafe", and hence the encapsulation lets us
-perform unsafe computations inside a safe environment&mdash;in Haskell, the
-IO monad.
+perform unsafe computations inside a safe environment&mdash;in
+Haskell, the IO monad.
 
 In Haskell, to interact with the outside world, you must encapsulate
 functions into a stateful computation, which the compiler understands
 have runtime-only considerations. Other languages such as OCaml aren't
-as strict and let you escape into the outside world whenever, and conveniently
-has a type `unit` which essentially is a value that conveys no meaning,
-much like the `void` of the C world.
+as strict and let you escape into the outside world whenever, and
+conveniently has a type `unit` which essentially is a value that
+conveys no meaning, much like the `void` of the C world.
 
 To summarize, immutability and the lack of real side-effects are key
 features in functional languages, while some languages allow it
@@ -187,7 +187,7 @@ I mentioned the concept of "moments of declaration", e.g.,
 ~~~ haskell
 x = 1                              -- x's moment of declaration
 y = x + 3                          -- y's moment of declaration
-bar = map (\z -> z ** 2) [1 .. y]  -- bar's moment of declaration
+bar = map (\z -> z ** 2) [1 .. y]  -- bar's moment of declaration[^2]
 ~~~
 
 all of the values above see only anything that precedes them, nothing
@@ -206,28 +206,30 @@ they are read-only definitions. This avoid what I call the *context
 piling*, where code relies too much on its preceding blocks with
 actual variables and mutated state.
 
-Of course, functional languages also have contexts, where the values you are
-looking at have some meaning defined above, but in functional programming,
-the key difference is that **the context is always defined before**. The lack of side
-effects is also subtly illustrated in the snippet above: `x` and `y` cannot
-touch `bar`, and `bar`s semantics can be easily deduced by looking *up*.
+Of course, functional languages also have contexts, where the values
+you are looking at have some meaning defined above, but in functional
+programming, the key difference is that **the context is always
+defined before**. The lack of side effects is also subtly illustrated
+in the snippet above: `x` and `y` cannot touch `bar`, and `bar`s
+semantics can be easily deduced by looking *up*.
 
 In an imperative language, we may define a variable and assign values
 to it, and over the course of the computation it may take new values,
-one will always be looking in *two* directions. This leads to increased code entropy.
+one will always be looking in *two* directions. This leads to
+increased code entropy.
 
 Functional programming affected my imperative object-oriented code in
 this many striking fashions:
 
-1. Avoid side effects, prefer functions that take parameters and return values,
-  **especially** in OOP, no byrefs[^1]!
+1. Avoid side effects, prefer functions that take parameters and
+return values, **especially** in OOP, no byrefs[^1]!
 2. Minimize stateful objects, use objects as containers and
   for encapsulation
 3. If you need stateful objects, make it explicit and easy to understand
 4. Use interfaces a bit like type classes, multiple inheritance *of
 interfaces* is OK
-5. Avoid context piling by let defining new variables with visible and clear moments of
-  declaration
+5. Avoid context piling by let defining new variables with visible and
+  clear moments of declaration
 6. Avoid `object.DoSomething()` 
 7. Rely on lazy evaluation and generators (`yield` in C# or Python)
 
@@ -238,16 +240,17 @@ magic and altering the outside world will happen. Points **2-3** are
 due to structures and record types present in functional
 programming. Objects are less about them doing things, more about them
 being used as container and encapsulating similar concepts. I believe
-this was the original intent of objects in Simula. Point **4** brings
-us to interfaces, they can be used to implement a type class system
-that is *kind* of like type classes, except you inherit and implement
-instead of relying on structural typing. Point **5** is the effect of
-immutability and the lack of side effects, and point **6** reinforces
-the first notion of having objects be simple containers for
+this was the original intent of objects in Simula.
+
+Point **4** brings us to interfaces, they can be used to implement a
+system that is *kind* of like type classes, except you inherit and
+implement instead of relying on structural typing. Point **5** is the
+effect of immutability and the lack of side effects, and point **6**
+reinforces the first notion of having objects be simple containers for
 information.  Lastly, **7** is about lazy evaluation and generators,
 these are very fun concepts that can be used to make code that would
-otherwise be inefficient to use the trick of laziness to become very
-efficient.
+otherwise be inefficient and cumbersome to use the trick of laziness
+to become very lean and efficient.
 
 
 ## Effects on quality
@@ -289,10 +292,13 @@ imperative code borrowing the good parts of functional programming and
 throwing away the bad parts of imperative programming.
 
 It is much harder to judge if these changes led to improvements, since
-code quality is difficult to judge. I will follow up on this in an
-upcoming post where I will discuss code entropy and code scalability,
-and how the composability of functional programming may be used to fix
-this. For now, to make a valid assertion on code quality I need
-more data.
+code quality is difficult to evaluate. While functional code and its
+expressiveness tends to be counterintuitive in small programs, in
+which short imperative programs often make more sense, the functional
+style most likely scales better in larger programs.
+
+For now though, I need more data to make an assertion if such a style
+used in imperative programming affects code quality in any way.
 
 [^1]: No mutable parameters, e.g., `out parameter` in C#
+[^2]: I avoided `map (**) [...]` for clarity.
