@@ -187,7 +187,7 @@ I mentioned the concept of "moments of declaration", e.g.[^2],
 ~~~ haskell
 x = 1                              -- x's moment of declaration
 y = x + 3                          -- y's moment of declaration
-bar = map (\z -> z ** 2) [1 .. y]  -- bar's moment of declaration
+bar = map (\z -> z * z) [1 .. y]  -- bar's moment of declaration
 ~~~
 
 all of the values above see only anything that precedes them, nothing
