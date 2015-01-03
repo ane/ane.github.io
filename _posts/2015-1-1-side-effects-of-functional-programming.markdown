@@ -18,16 +18,22 @@ understood immutable code, returns to imperative programming?
 
 <!--break-->
 
-Assuming a layperson, in this context a programmer with foundations in
-imperative programming language but unfamiliar to functional
-programming, starts to learn functional programming, there are a
-multitude of interesting and completely foreign concepts on the way
-ahead. Monads, type classes, higher-order functions, to name a few;
-and of course side-effects and immutability. What exactly are
-side-effects, and why is immutability important in functional
-programming?
+Let's assume a layperson, familiar to one or many imperative languages
+but to no functional languages whatsoever, starts learning functional
+programming, using a friendly language such as OCaml. Two things will
+stand out immediately. How does one modify a variable after it has
+been declared? Why can't one modify variables outside a declaration?
 
-## Introduction: FP basics
+Understanding these concepts, immutability and the lack of
+side-effects (or purity for the latter, if you will), is vital.  There
+are many other foreign concepts later on that will boggle the mind,
+type classes, algebraic data types, higher order functions&mdash;all
+important but in this article, I will argue that just immutable values
+and the lack of side-effects alone have a profound effect on how the
+programmer *programs*, and those concepts will alter the way the
+programmer writes and understands imperative code.
+
+## Introduction: immutability and side-effects
 
 This article explains side-effects and immutability for someone
 who isn't that familar with functional programming, and then goes
@@ -38,7 +44,7 @@ directly to the section titled "Effects On The Programmer".
 ### There Are No Variables
 
 In functional languages, e.g., Haskell and OCaml (and the ML family),
-no declared variable really is a variable, in the sense that their
+no declared variable really is a variable, in the sense that its
 value can *vary*.  They are all functions, a variable defined `let foo = 3`
 is just a function that takes no parameters and returns the value
 `3`. Because these languages rely on type inference, the compilers can
@@ -64,9 +70,18 @@ whereby `a` is fixed, and returns `a + b`.
 
 Since there really aren't any variables, just function calls, it
 follows that variables cannot really be altered, *because they
-aren't variables*. What does this mean?
+aren't variables*&mdash;they are values. What implications does this have?
 
 ### So It Shall Be Declared
+
+> In computer science, a function or expression is said to have a side
+> effect if, in addition to returning a value, it also modifies some
+> state or has an observable interaction with calling functions or the
+> outside world. For example, a function might modify a global
+> variable or static variable, modify one of its arguments, raise an
+> exception, write data to a display or file, read data, or call other
+> side-effecting
+> functions. [Wikipedia](http://en.wikipedia.org/wiki/Side_effect_(computer_science))
 
 In imperative programming, mutable variables are everywhere. We
 declare counters such as `i++` and rely on their steady updating all
@@ -89,8 +104,8 @@ Doing something `n` times in functional programming is tricky, because
 the pattern is sometimes invalid. Any loop is fundamentally a
 *mapping* from one source to another; a mapping without a target is
 nonsensical. A common trick around this is to wrap the action in
-something that conveys no value or simply discard the results, again,
-no `i++` is necessary.
+something that conveys no value (e.g. `unit` in OCaml) or simply
+discard the results, again, no `i++` is necessary.
 
 Because everything is *declared to be something*, a value, or a
 function, or a mapping, these declarations remain steady and unchanged
@@ -103,19 +118,20 @@ visible to it: the declared code that precedes it. Our code has no
 side-effects, it only produces more values to be evaluated further.
 
 So if we cannot have side-effects, then how do we interact with the
-outside world?  How do we read files or write output to the screen?
+outside world? How do we read files or write output to the screen?
 
 
 ### Schrödinger's Monad and Feline Thunks
 
-
-If functions are read-only values, interacting with the outside world
-will be difficult. Some languages, such as OCaml and F# let you readily
-exit to the outside world and permit these kinds of side-effects (both
-languages also allow explicit mutable variables), but Haskell encapsulates
-any I/O into the IO monad, whereby any I/O actions are evaluated
-at runtime, hence not having any effect at compile time, functions
-are read-only values after all!
+If functions cannot have side effects, interacting with the outside
+world&mdash;e.g. input and output in the von Neumann model of
+computing&mdash; will be difficult. Some languages, such as OCaml and
+F#, both derived from the Standard ML family of languages, which
+permit side effects to a degree and it must be explicit, let you
+readily exit to the outside world, Haskell encapsulates any I/O into
+the IO monad, whereby any I/O actions are evaluated at runtime, hence
+not having any effect at compile time, functions are read-only values
+after all!
 
 The IO encapsulation lets Haskell implement randomization, since
 functions are *declared* to always return or act the same way, we must
@@ -137,29 +153,36 @@ has a type `unit` which essentially is a value that conveys no meaning,
 much like the `void` of the C world.
 
 To summarize, immutability and the lack of real side-effects are key
-features in functional languages, while some languages allow it *explicitly*
-(OCaml and F#, to name a few), in general, treat variables as read-only values
-and build your expressions using that paradigm.
+features in functional languages, while some languages allow it
+*explicitly* (OCaml and F#, to name a few), in general, languages such
+as Haskell encourage you to think in a manner completely different to
+traditional imperative programming. This paradigm is a menace: it has
+profound effects on how the programmer writes code.
 
 ## Effects On The Programmer
 
 Functional code has to be written in a manner drastically different
 from imperative programming, so much so that one of the biggest
 burdens for a new programmer learning functional programming often
-stumbles on the new paradigm. Let's imagine for a moment that our
-novice goes into seclusion, becomes an intermediate functional
-programmer, and after the monastic life, returns to
-imperative programming. Will his coding style be affected?
+stumbles on the basic blocks of that paradigm.
 
-What happens is truly anyone's guess, but I can tell you mine. I had
-my first steps with OCaml some five years ago and then found Haskell
-in university, where it baffled me and went over my head until I groked its beauty.
-I learnt it on the side, and I later studied type theory and some
-principles of programming languages, to understand how languages work
-at a higher level.
+For our though experiment, let's again assume an experienced
+programmer but a novice in functional programming, learns functional
+programming and progresses to an intermediate level. Our programmer
+then goes back to writing imperative code.
 
-I noticed a strange change in the way I code. Before I mentioned the
-concept of "moments of declaration", e.g.,
+I can predict what happens based on my experiences and
+observations. For a background, I had my first steps with OCaml some
+five years ago and then found Haskell in university, where it baffled
+me and went over my head until I groked its beauty.  I learnt it on
+the side, and I later studied type theory and some principles of
+programming languages, to understand how languages work at a higher
+level. During that time, I did imperative programming in a variety of
+languages (Python, C#, C++) to name a few at work; functional
+programming and having fun with it was entirely a hobby.
+
+Over the years, I noticed a strange change in the way I code. Before,
+I mentioned the concept of "moments of declaration", e.g.,
 
 ~~~ haskell
 x = 1                              -- x's moment of declaration
@@ -168,9 +191,10 @@ bar = map (\z -> z ** 2) [1 .. y]  -- bar's moment of declaration
 ~~~
 
 all of the values above see only anything that precedes them, nothing
-that comes afterwards. This paradigm embeds itself deeply in the
-programmer's mind, to the extent that it'll transform imperative code
-to written in this style, in the "let" fashion.
+that comes afterwards. This paradigm embedded itself deeply in my
+mind,, to the extent that it'll transformed my imperative code to be
+written in this style, in the "let" fashion. It also led me to
+discover a concept I call *context piling*.
 
 ### Context piling
 
@@ -195,20 +219,36 @@ one will always be looking in *two* directions. This leads to increased code ent
 Functional programming affected my imperative object-oriented code in
 this many striking fashions:
 
-1. Avoid side effects, prefer functions that return values,
++ Avoid side effects, prefer functions that take parameters and return values,
   **especially** in OOP, no byrefs[^1]!
-2. Minimize stateful objects, use objects as containers and
++ Minimize stateful objects, use objects as containers and
   for encapsulation
-3. If you need stateful objects, make it explicit and easy to understand
-4. Use interfaces a bit like type classes, multiple inheritance *of
++ If you need stateful objects, make it explicit and easy to understand
++ Use interfaces a bit like type classes, multiple inheritance *of
 interfaces* is OK
-5. Use structural typing if you can (stay away from duck typing)
-6. Hijack method or function overloading to create a bastardized
-  pattern matching mechanism
-7. Avoid context piling by let defining new variables with visible and clear moments of
++ Avoid context piling by let defining new variables with visible and clear moments of
   declaration
-8. Avoid `object.DoSomething()` 
-9. Rely on lazy evaluation and generators (`yield` in C# or Python)
++ Avoid `object.DoSomething()` 
++ Rely on lazy evaluation and generators (`yield` in C# or Python)
+
+I attribute all of these changes to learning and understanding
+functional programming. Point **1** is obvious: when functions take
+parameters and return values, we fix a context for them, no black
+magic and altering the outside world will happen. Points **2-3** are
+due to structures and record types present in functional
+programming. Objects are less about them doing things, more about them
+being used as container and encapsulating similar concepts. I believe
+this was the original intent of objects in Simula. Point **4** brings
+us to interfaces, they can be used to implement a type class system
+that is *kind* of like type classes, except you inherit and implement
+instead of relying on structural typing. Point **5** is the effect of
+immutability and the lack of side effects, and point **6** reinforces
+the first notion of having objects be simple containers for
+information.  Lastly, **7** is about lazy evaluation and generators,
+these are very fun concepts that can be used to make code that would
+otherwise be inefficient to use the trick of laziness to become very
+efficient.
+
 
 ## Effects on quality
 
