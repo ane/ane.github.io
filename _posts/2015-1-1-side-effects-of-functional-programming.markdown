@@ -77,11 +77,11 @@ aren't variables*&mdash;they are values. What implications does this have?
 > functions. [Wikipedia](http://en.wikipedia.org/wiki/Side_effect_(computer_science))
 
 In imperative programming, mutable variables are everywhere. We
-declare counters such as `i++` and rely on their steady updating all
-the time. We fixing an index `i` that points somewhere in memory and
-with each iteration the index is adjusted to an arbitrary direction,
-commonly, one step ahead: `i++`. Or maybe we just need to do something
-`n` times, print a string, update the counter.
+declare counters such as `i++` and rely on their steady updating, we
+fix an index `i` that points somewhere in memory and with each
+iteration the index is adjusted to an arbitrary direction, commonly,
+one step ahead, or maybe we just need to do something `n` times, print
+a string, or count sums.
 
 Loops in functional programming work in a different way: they are
 mappings, from one collection to another, when lists of integers are
@@ -191,59 +191,110 @@ I call *context piling*.
 
 ### Context piling
 
-A key characteristic of this method is that *the current line you are
-looking at counts*. Code readability improves tremendously, because
-you can read it line-by-line and not ponder over the ever growing
-context accumulated from the lines above&mdash;you see the variables, but
-they are read-only definitions. This avoid what I call the *context
-piling*, where code relies too much on its preceding blocks with
-actual variables and mutated state.
+Lines in computer programs tend to have a *context*, which means that
+to properly understand the content of a line, one must look at the
+lines surrounding it.  This is the case with the little Haskell
+snippet above: the declaration of `x` has no context, `y`'s context
+contains `x`, and `bar` has `y` and by extension also `x` in its
+context.
 
-Of course, functional languages also have contexts, where the values
-you are looking at have some meaning defined above, but in functional
-programming, the key difference is that **the context is always
-defined before**. The lack of side effects is also subtly illustrated
-in the snippet above: `x` and `y` cannot touch `bar`, and `bar`s
-semantics can be easily deduced by looking *up*.
+The readability of code is *all about parsing the context*. There are
+two types of context: *forward* context, where the state of a variable
+is altered past its declaration, and *backward* context, where state
+at any given line is constructed from code preceding it. Imperative
+languages often contain both forward and backward context, but in
+functional programming everything is built on backward context. An
+
+This significant difference is why the correctness of functional code
+is easy to verify. It's not just the type system, it's also the way
+programs are built: by building pieces on top of each other.
 
 In an imperative language, we may define a variable and assign values
 to it, and over the course of the computation it may take new values,
-one will always be looking in *two* directions. This leads to
-increased code entropy.
+one will always be looking in *two* directions. This leads to what I
+call *context piling*, the buildup of context that ultimately leads to
+code entropy.
 
-Functional programming affected my imperative object-oriented code in
-this many striking fashions:
+This isn't just about code readability, it extends to
+architecture. Functional code composes well. One can use the type
+system present in many functional languages to define abstractly what
+code modules do. Functions can be seen as opaque implementors of this
+defined *program algebra*, as long as code conforms to this algebra,
+it is easy to layer functions over each other to create a composable
+architecture. For more about this, someone wrote a great blog post
+about how functional programming affects software architecture:
+[How does functional programming affect the structure of your code?](https://lorgonblog.wordpress.com/2008/09/22/how-does-functional-programming-affect-the-structure-of-your-code/). See
+also
+[this Stack Overflow question about functional programming architecture](http://stackoverflow.com/questions/89212/functional-programming-architecture).
 
-1. Avoid side effects, prefer functions that take parameters and
-return values, **especially** in OOP, no byrefs[^1]!
-2. Minimize stateful objects, use objects as containers and
-  for encapsulation
-3. If you need stateful objects, make it explicit and easy to understand
-4. Use interfaces a bit like type classes, multiple inheritance *of
-interfaces* is OK
-5. Avoid context piling by let defining new variables with visible and
-  clear moments of declaration
-6. Avoid `object.DoSomething()` 
-7. Rely on lazy evaluation and generators (`yield` in C# or Python)
+## New Paradigms
 
-I attribute all of these changes to learning and understanding
-functional programming. Point **1** is obvious: when functions take
-parameters and return values, we fix a context for them, no black
-magic and altering the outside world will happen. Points **2-3** are
-due to structures and record types present in functional
-programming. Objects are less about them doing things, more about them
-being used as container and encapsulating similar concepts. I believe
-this was the original intent of objects in Simula.
+During the course of learning functional programming, I noticed a lot
+of changes in how I wrote imperative code. This list is not
+exhaustive:
 
-Point **4** brings us to interfaces, they can be used to implement a
-system that is *kind* of like type classes, except you inherit and
-implement instead of relying on structural typing. Point **5** is the
-effect of immutability and the lack of side effects, and point **6**
-reinforces the first notion of having objects be simple containers for
-information.  Lastly, **7** is about lazy evaluation and generators,
-these are very fun concepts that can be used to make code that would
-otherwise be inefficient and cumbersome to use the trick of laziness
-to become very lean and efficient.
+### 1. Minimize or avoid code with opaque side effects
+
+Instead of writing functions or methods that mutate their parameters,
+I prefer functions return values. Any sort of byrefs[^1] or passing
+references is absolutely forbidden. *This may have performance implications*.
+
+### 2. Minimize stateful and complex objects, use objects as containers
+
+Objects are less about them doing things, more about them being used
+as container and encapsulating similar concepts. I believe this was
+the original intent of objects in Simula.
+
+### 3. If you need stateful objects, make it explicit and easy to understand
+
+`database.Erase()` is probably a lot easier to understand than
+`tomato.Explode()` though slightly less fun. This idea has a lot to do
+with naming things, a significant challenge in programming.
+
+### 4. Type classing, sort of: inherit interfaces, not classes
+
+[Type classes](http://en.wikipedia.org/wiki/Type_class) are a powerful
+way to implement ad hoc polymorphism, and though interfaces operate on
+values and not on types, interface allow a similar fine-grained
+control on program logic.
+
+Class inheritance and multiple class inheritance bring only pain and
+regret, and code using them is prone to overengineering and
+unnecessary code entropy. Although interfaces are
+[vastly inferior](http://cstheory.stackexchange.com/questions/9731/type-classes-vs-object-interfaces)
+to type classes, having classes implement interfaces (or abstract
+classes, the difference is minor) will make code safer, easier to
+understand, and easier to deconstruct.
+
+### 5. Define new variables, rely on backward context, avoid forward context
+
+Declaring new variables in the functional style creates code that is
+easy to understand. When you declare a new variable based on backward
+context, you invalidate the backward context and thus your code is
+more about the *line context* than any other context.
+
+### 6. Static typing if you can
+
+Because nobody likes dynamic typing. It only leads to awful code. A
+bonus if the typing is strong, i.e., you cannot assign `"cat"` to an
+`int`, which you can in C (though modern compilers will produce a
+warning).
+
+### 7. Lazy evaluation is your friend
+
+Generators like `yield` in C# or Python are a fantastic way of making
+code that would otherwise be ineffiecnt become lean and
+efficient. Lazy evaluation may not be as pervasive in those languages
+as it is in Haskell, where everything is lazily evaluated, but where
+it can be used, it can be used to a great effect.
+
+---
+
+I attribute most of these changes to learning functional
+programming. These paradigms aren't unlearnable without learning
+functional programming, on the contrary, I think some of these are a
+result of careful scrutiny and focus on producing good code, avoiding
+bad patterns and anti-patterns.
 
 
 ## Effects on quality
