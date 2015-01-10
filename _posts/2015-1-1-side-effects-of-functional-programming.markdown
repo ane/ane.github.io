@@ -266,11 +266,10 @@ Class inheritance and multiple *class* inheritance have disastrous consequences.
 
 Although interfaces are
 [vastly inferior](http://cstheory.stackexchange.com/questions/9731/type-classes-vs-object-interfaces)
-to type classes, having classes implement interfaces (or abstract
-classes, the difference is minor) will make code safer, easier to
-understand, and easier to deconstruct.
-
-Interfaces are fundamentally typings, they provide efficient means to produce elegant polymorphic systems in OOP, though less powerful than type classes, they are still one of the best implementations thereof in OOP.
+to type classes, they both share the idea what can be most accurately
+described as the lowest form of contract progamming. Having classes
+implement interfaces&mdash;OOPs type classes&mdash;will make code safer, easier to understand, and
+easier to deconstruct.
 
 ### 5. Define new variables, rely on backward context, avoid forward context
 
