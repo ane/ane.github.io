@@ -50,6 +50,28 @@
     {% endfor %}
     {% endif %}
 
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@ironballs">
+    <meta name="twitter:creator" content="@ironballs">
+    {% if page.title %}
+      <meta name="twitter:title" content="{{ page.title }}">
+    {% else %}
+      <meta name="twitter:title" content="{{ site.title }}">
+    {% endif %}
+    {% if page.url %}
+      <meta name="twitter:url" content="{{ site.url }}{{ page.url }}">
+    {% endif %}
+    {% if page.description %}
+      <meta name="twitter:description" content="{{ page.description }}">
+    {% else %}
+      <meta name="twitter:description" content="{{ site.description }}">
+    {% endif %}
+    {% if page.image %}
+      <meta name="twitter:image:src" content="{{ site.url }}/images/assets/profile.png">
+    {% else %}
+      <meta name="twitter:image:src" content="{{ site.url }}/images/assets/profile.png">
+    {% endif %}
+
     <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:700,400|Merriweather:400,400italic,700,700italic,900,900italic" />
     <!-- Customisation  -->
