@@ -8,7 +8,7 @@ tags:
 - introductory
 - haskell
 - ocaml
---
+---
 
 The lack of side-effects and immutability are definitive
 characteristics of functional programming: its declarative paradigm
