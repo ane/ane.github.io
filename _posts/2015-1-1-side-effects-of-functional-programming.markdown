@@ -13,8 +13,7 @@ tags:
 
 The lack of side-effects and immutability are definitive
 characteristics of functional programming: its declarative paradigm
-expresses clearly that variables cannot be altered after being
-declared. How does understanding this style affect the writing of
+expresses clearly that variables cannot be altered after their declaration. How does understanding this style affect the writing of
 ordinary imperative code, after the programmer, having learned and
 understood immutable code, returns to imperative programming?
 
@@ -26,7 +25,7 @@ What are the biggest barriers of entry?
 
 If we disregard matters of syntax, the first thing that will stand out
 will be *immutability*. How does one modify a variable after it has
-been declared? Why can't one modify variables outside a declaration?
+been declared? Why can't one modify variables after they've been declared?
 
 Understanding the concept of immutabilityis vital.  There are many
 other foreign concepts later on that will boggle the mind, type
