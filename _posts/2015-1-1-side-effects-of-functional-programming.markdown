@@ -13,7 +13,8 @@ tags:
 
 The lack of side-effects and immutability are definitive
 characteristics of functional programming: its declarative paradigm
-expresses clearly that variables cannot be altered after their declaration. How does understanding this style affect the writing of
+expresses clearly that variables cannot be altered after their
+declaration. How does understanding this rule affect the writing of
 ordinary imperative code, after the programmer, having learned and
 understood immutable code, returns to imperative programming?
 
