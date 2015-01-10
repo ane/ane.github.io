@@ -2,7 +2,7 @@
 layout: post
 disqus: true
 title:  "The Side-effects of Functional Programming"
-date:   2015-1-2 12:00:00
+date:   2015-1-10 12:00:00
 tags: 
 - functional-programming
 - introductory
@@ -18,39 +18,32 @@ understood immutable code, returns to imperative programming?
 
 <!--break-->
 
-Let's assume a layperson, familiar to one or many imperative languages
-but to no functional languages whatsoever, starts learning functional
-programming, using a friendly language such as OCaml. Two things will
-stand out immediately. How does one modify a variable after it has
+What happens when a layperson familiar with one or many imperative
+languages but not with functional programming, starts learning it?
+What are the biggest barriers of entry?
+
+If we disregard matters of syntax, the first thing that will stand out
+will be *immutability*. How does one modify a variable after it has
 been declared? Why can't one modify variables outside a declaration?
 
-Understanding these concepts, immutability and the lack of
-side-effects (or purity for the latter, if you will), is vital.  There
-are many other foreign concepts later on that will boggle the mind,
-type classes, algebraic data types, higher order functions&mdash;all
-important but in this article, I will argue that just immutable values
-and the lack of side-effects alone have a profound effect on how the
-programmer *programs*, and those concepts will alter the way the
-programmer writes and understands imperative code.
-
-## Introduction: immutability and side-effects
-
-This article explains side-effects and immutability for someone
-who isn't that familiar with functional programming, and then goes
-on to the main point, how knowledge of such features impacts writing
-ordinary imperative code. Readers familiar with the topic can proceed
-directly to the section titled "Effects On The Programmer".
+Understanding the concept of immutabilityis vital.  There are many
+other foreign concepts later on that will boggle the mind, type
+classes, algebraic data types, higher order functions&mdash;all
+important, and vital as well&mdash;in this article, I will argue that
+just the concept of immutability has a profound effect on how the
+programmer *programs*, and it will alter the way the programmer writes
+and understands imperative code.
 
 ### There Are No Variables
 
 In functional languages, e.g., Haskell and OCaml (and the ML family),
-no declared variable really is a variable, in the sense that its
-value can *vary*.  They are all functions, a variable defined `let foo = 3`
-is just a function that takes no parameters and returns the value
-`3`. Because these languages rely on type inference, the compilers can
-automatically deduce from looking at the returned type that foo is an
-integer variable&mdash;that is to say, a function that *takes no
-parameters* and returns an integer.
+no declared variable really is a variable, in the sense that its value
+can *vary*. They are all functions, a variable defined `let foo =
+3`&mdash;an ordinary declaration&mdash; is just a function that takes
+no parameters and returns the value `3`. Because these languages rely
+on type inference, the compilers can automatically deduce from looking
+at the returned type that foo is an integer variable&mdash;that is to
+say, a function that *takes no parameters* and returns an integer.
 
 Since zero-parameter functions are functions, by the magic called
 *currying*, any function with `n` parameters can be called with `n-1`
