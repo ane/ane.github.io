@@ -26,15 +26,13 @@ What are the biggest barriers of entry?
 
 If we disregard matters of syntax, the first thing that will stand out
 will be *immutability*. How does one modify a variable after it has
-been declared? Why can't one modify variables after they've been declared?
+been declared? 
 
-Understanding the concept of immutabilityis vital.  There are many
-other foreign concepts later on that will boggle the mind, type
-classes, algebraic data types, higher order functions&mdash;all
-important, and vital as well&mdash;in this article, I will argue that
-just the concept of immutability has a profound effect on how the
-programmer *programs*, and it will alter the way the programmer writes
-and understands imperative code.
+Understanding the concept of immutability is vital. Though functional
+programming is loaded with new concepts that at a glance, seem strange
+and difficult to grasp, I will argue that just understanding the
+concept of immutability will have a profound effect on how the
+programmer writes and understands imperative code.
 
 ### There Are No Variables
 
