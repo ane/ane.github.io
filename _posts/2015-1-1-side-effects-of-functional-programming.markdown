@@ -245,29 +245,32 @@ references is absolutely forbidden. *This may have performance implications*.
 ### 2. Minimize stateful and complex objects, use objects as containers
 
 Objects are less about them doing things, more about them being used
-as container and encapsulating similar concepts. I believe this was
-the original intent of objects in Simula.
+as containers and for encapsulating closely related
+variables&mdash;something akin to micromodules at the type level. I
+believe this was the original intent of objects in Simula.
 
 ### 3. If you need stateful objects, make it explicit and easy to understand
 
 `database.Erase()` is probably a lot easier to understand than
 `tomato.Explode()` though slightly less fun. This idea has a lot to do
-with naming things, a significant challenge in programming.
+with naming things&mdash;a significant challenge in programming.
 
 ### 4. Type classing, sort of: inherit interfaces, not classes
 
 [Type classes](http://en.wikipedia.org/wiki/Type_class) are a powerful
 way to implement ad hoc polymorphism, and though interfaces operate on
-values and not on types, interface allow a similar fine-grained
+values and not on types, interfaces allow a similar fine-grained
 control on program logic.
 
-Class inheritance and multiple class inheritance bring only pain and
-regret, and code using them is prone to overengineering and
-unnecessary code entropy. Although interfaces are
+Class inheritance and multiple *class* inheritance have disastrous consequences. Not only do objects become opaque and hideously complicated, such designs are prone to being over-engineered.
+
+Although interfaces are
 [vastly inferior](http://cstheory.stackexchange.com/questions/9731/type-classes-vs-object-interfaces)
 to type classes, having classes implement interfaces (or abstract
 classes, the difference is minor) will make code safer, easier to
 understand, and easier to deconstruct.
+
+Interfaces are fundamentally typings, they provide efficient means to produce elegant polymorphic systems in OOP, though less powerful than type classes, they are still one of the best implementations thereof in OOP.
 
 ### 5. Define new variables, rely on backward context, avoid forward context
 
