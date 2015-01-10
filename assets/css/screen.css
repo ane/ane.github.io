@@ -232,12 +232,16 @@ h6 {
 }
 
 a {
-    color: #4A4A4A;
+    color: #00416A;
     transition: color ease 0.3s;
 }
 
-a:hover {
-    color: #111;
+a:hover, a:active {
+    color: #5D76CB;
+}
+
+a:visited {
+    color: #32127A;
 }
 
 p, ul, ol, dl {

@@ -205,11 +205,12 @@ two types of context: *forward* context, where the state of a variable
 is altered past its declaration, and *backward* context, where state
 at any given line is constructed from code preceding it. Imperative
 languages often contain both forward and backward context, but in
-functional programming everything is built on backward context. An
+functional programming code is declared based on backward context *only*.
 
 This significant difference is why the correctness of functional code
 is easy to verify. It's not just the type system, it's also the way
-programs are built: by building pieces on top of each other.
+programs are built, by extending a context in a linear fashion,
+instead of zig-zagging here and there, modifying state at a whim.
 
 In an imperative language, we may define a variable and assign values
 to it, and over the course of the computation it may take new values,
