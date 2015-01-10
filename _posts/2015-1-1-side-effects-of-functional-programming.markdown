@@ -8,9 +8,10 @@ tags:
 - introductory
 - haskell
 - ocaml
----
+--
+
 The lack of side-effects and immutability are definitive
-characteristics of functional programming: its declarative modus
+characteristics of functional programming: its declarative paradigm
 expresses clearly that variables cannot be altered after being
 declared. How does understanding this style affect the writing of
 ordinary imperative code, after the programmer, having learned and
