@@ -39,7 +39,7 @@ programmer writes and understands imperative code.
 In functional languages, e.g., Haskell and OCaml (and the ML family),
 no declared variable really is a variable, in the sense that its value
 can *vary*. They are all functions, a variable defined
-`let foo = 3`&mdash;an ordinary declaration&mdash; is just a function that takes
+`let foo = 3`, an ordinary declaration, is just a function that takes
 no parameters and returns the value `3`. Because these languages rely
 on type inference, the compilers can automatically deduce from looking
 at the returned type that foo is an integer variable&mdash;that is to
@@ -63,7 +63,7 @@ whereby `a` is fixed, and returns `a + b`.
 
 Since there really aren't any variables, just function calls, it
 follows that variables cannot really be altered, *because they
-aren't variables*&mdash;they are values. What implications does this have?
+aren't variables*, they are read-only values. What implications does this have?
 
 ### So It Shall Be Declared
 
