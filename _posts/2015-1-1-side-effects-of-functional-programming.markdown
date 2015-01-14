@@ -6,64 +6,38 @@ description: "How does learning functional programming affect the way you write 
 date:   2015-1-10
 tags: 
 - functional-programming
-- introductory
-- haskell
-- ocaml
+- software-engineering
+- opinionated
 ---
 
-The lack of side-effects and immutability are definitive
-characteristics of functional programming: its declarative paradigm
-expresses clearly that variables cannot be altered after their
-declaration. How does understanding this rule affect the writing of
-ordinary imperative code, after the programmer, having learned and
-understood immutable code, returns to imperative programming?
+How does learning functional programming affect the way you write imperative code? From a perspective of traditional, imperative programming, functional programming seems strange and counterintuitive. Yet there is beauty in its strangeness, though it might be difficult to see at a glance. Once you see it, everything changes.
 
 <!--break-->
 
-What happens when a layperson familiar with one or many imperative
-languages but not with functional programming, starts learning it?
-What are the biggest barriers of entry?
+Functional programming empowers programmers to think differently. It
+forces programmers to conceptualize programs as declarations of
+certain assertions, while imperative programming makes the programmer
+a foreman of a control flow, instead of fundamentally be the designer
+of a problem, and to be the one to build its solution.
 
-If we disregard matters of syntax, the first thing that will stand out
-will be *immutability*. How does one modify a variable after it has
-been declared? 
+The fact that everything is an expression, the objective of a function
+is *always* to return a value, iterations are *mappings* from a source
+to a target, `null` values are safely handled at compile time, pattern
+matching lets functions test their input value extremely tersely; all
+of these seem counterintuitive from the world of imperative
+programming yet are tremendously practical concepts.
 
-Understanding the concept of immutability is vital. Though functional
-programming is loaded with new concepts that at a glance, seem strange
-and difficult to grasp, I will argue that just understanding the
-concept of immutability will have a profound effect on how the
-programmer writes and understands imperative code.
+> "In mathematics you don't understand things. You just get used to them." &mdash;John von Neumann
 
-### There Are No Variables
+While these concepts seem strange and esoteric, and while they take
+time to learn and understand, they aren't ultimately difficult.
 
-In functional languages, e.g., Haskell and OCaml (and the ML family),
-no declared variable really is a variable, in the sense that its value
-can *vary*. They are all functions, a variable defined
-`let foo = 3`, an ordinary declaration, is just a function that takes
-no parameters and returns the value `3`. Because these languages rely
-on type inference, the compilers can automatically deduce from looking
-at the returned type that foo is an integer variable&mdash;that is to
-say, a function that *takes no parameters* and returns an integer.
+This post isn't about them, though, or how to learn or use them. This
+post is about what happens *after you learn them*.
 
-Since zero-parameter functions are functions, by the magic called
-*currying*, any function with `n` parameters can be called with `n-1`
-parameters, where n is greater than 0. To illustrate, the canonical
-example `let plus a b = a + b` can be used in another function like
-this: `let plusOne = plus 1`.  The type of plus is `int -> int -> int`,
-which can be read as "take an integer, another integer, and
-produce an integer".  The type of `plusOne` is `int -> int` since one
-of its arguments has been fixed, calling `plus 1`
-returns *a new function* with one fixed argument.
-
-In fact, any function taking `n` arguments is actually just `n`
-functions taking one argument each! Our canonical example `plusOne`
-first returns a function taking the first argument `a`&mdash;which binds a
-to a fixed value&mdash;and returns another function taking `b`,
-whereby `a` is fixed, and returns `a + b`.
-
-Since there really aren't any variables, just function calls, it
-follows that variables cannot really be altered, *because they
-aren't variables*, they are read-only values. What implications does this have?
+Can functional patterns creep into imperative code? Most certainly. In
+fact, it will have tremendous implications on the way one writes
+imperative code.
 
 ### So It Shall Be Declared
 
@@ -74,14 +48,14 @@ aren't variables*, they are read-only values. What implications does this have?
 > variable or static variable, modify one of its arguments, raise an
 > exception, write data to a display or file, read data, or call other
 > side-effecting
-> functions. [Wikipedia](http://en.wikipedia.org/wiki/Side_effect_(computer_science))
+> functions. ([Wikipedia](http://en.wikipedia.org/wiki/Side_effect_(computer_science)))
 
 In imperative programming, mutable variables are everywhere. We
 declare counters such as `i++` and rely on their steady updating, we
 fix an index `i` that points somewhere in memory and with each
 iteration the index is adjusted to an arbitrary direction, commonly,
-one step ahead, or maybe we just need to do something `n` times, print
-a string, or count sums.
+one step ahead, or maybe we just need to do something `n` times, to
+print a string, or to count sums.
 
 Loops in functional programming work in a different way: they are
 mappings, from one collection to another, when lists of integers are
@@ -100,57 +74,42 @@ nonsensical. A common trick around this is to wrap the action in
 something that conveys no value (e.g. `unit` in OCaml) or simply
 discard the results, again, no `i++` is necessary.
 
-Because everything is *declared to be something*, a value, or a
-function, or a mapping, these declarations remain steady and unchanged
-throughout execution.  We fix the result of `squaredIntegers[]` to be
-a result of a mapping, not the iterated consequence of an explicit action.
-
-In rough terms, our code cannot alter anything, it can only use those
-variables known at its *moment of declaration*, i.e., what knowledge is
-visible to it: the declared code that precedes it. Our code has no
-side-effects, it only produces more values to be evaluated further.
-
-So if we cannot have side-effects, then how do we interact with the
-outside world? How do we read files or write output to the screen?
-
-
 ### Schrödinger's Monad and Feline Thunks
 
-If functions cannot have side effects, interacting with the outside
-world&mdash;e.g. input and output in the von Neumann model of
-computing&mdash; will be difficult. Some languages, such as OCaml and
-F#, both derived from the Standard ML family of languages, which
-permit side effects to a degree and it must be explicit, let you
-readily exit to the outside world, Haskell encapsulates any I/O into
-the IO monad, whereby any I/O actions are evaluated at runtime, hence
-not having any effect at compile time, functions are read-only values
-after all!
+Most functional languages employ a concept of *immutability*. This
+means that variables cannot change after declaration. In imperative
+programming this is common: `i++` above is a great example of
+this. But in many functional languages doing the following is simply
+not allowed.
 
-The IO encapsulation lets Haskell implement randomization, since
-functions are *declared* to always return or act the same way, we must
-wrap randomization into the IO monad because it tells us, among other
-things, that this is to be evaluated at runtime. Values not evaluated
-at compile time, or due to lazy evaluation at runtime, are known as
-*thunks* in Haskell.
+```Haskell
+foo = 1
+foo = 2
+```
 
-Because functions are declared to return the same result every time,
-IO events are deemed "unsafe", and hence the encapsulation lets us
-perform unsafe computations inside a safe environment&mdash;in
-Haskell, the IO monad.
+While Haskell is the only language that categorically disallows any
+mutation (though possible using the `ST` construct), this is invalid
+in a lot of languages.
 
-In Haskell, to interact with the outside world, you must encapsulate
-functions into a stateful computation, which the compiler understands
-have runtime-only considerations. Other languages such as OCaml aren't
-as strict and let you escape into the outside world whenever, and
-conveniently has a type `unit` which essentially is a value that
-conveys no meaning, much like the `void` of the C world.
+The notion immutability imparts a strong sense of having to really
+think when variables ought to be changed. If variables are read-only,
+and everything is an expression, the idea of changing an abstract
+state veers towards composotion of results. This means that instead of
+having parts of the program modify a shared state, the state is
+constructed by joining different computations in a pipeline.
 
-To summarize, immutability and the lack of real side-effects are key
-features in functional languages, while some languages allow it
-*explicitly* (OCaml and F#, to name a few), in general, languages such
-as Haskell encourage you to think in a manner completely different to
-traditional imperative programming. This paradigm is a menace: it has
-profound effects on how the programmer writes code.
+This pattern is sometimes silly, though; immutable data structures are
+awkward and *in most cases* inefficient compared to their imperative
+variants, though exceptions *do* occur. On the other hand,
+immutability is fantastic for parallellization. Software transactional
+memory is trivial to implement in functional languages.
+
+The lack of side-effects is really only a feature of Haskell. Most
+functional languages allow mutation, sometimes explicitly; purity
+alone doesn't impact the programmer as much as immutability
+does. Local immutability forces one to program differently: more about
+values, less about manipulating memory.
+
 
 ## Effects On The Programmer
 
@@ -180,7 +139,7 @@ I mentioned the concept of "moments of declaration", e.g.[^2],
 ~~~ haskell
 x = 1                              -- x's moment of declaration
 y = x + 3                          -- y's moment of declaration
-bar = map (\z -> z * z) [1 .. y]  -- bar's moment of declaration
+bar = map (\z -> z * z) [1 .. y]   -- bar's moment of declaration
 ~~~
 
 all of the values above see only anything that precedes them, nothing
@@ -191,12 +150,11 @@ I call *context piling*.
 
 ### Context piling
 
-Lines in computer programs tend to have a *context*, which means that
-to properly understand the content of a line, one must look at the
-lines surrounding it.  This is the case with the little Haskell
-snippet above: the declaration of `x` has no context, `y`'s context
-contains `x`, and `bar` has `y` and by extension also `x` in its
-context.
+Lines in computer programs are surrounded by *context*: their meaning
+can be deduced by looking at the surrounding lines.  This is the case
+with the little Haskell snippet above: the declaration of `x` has no
+context, `y`'s context contains `x`, and `bar` has `y` and by
+extension also `x` in its context.
 
 The readability of code is *all about parsing the context*. There are
 two types of context: *forward* context, where the state of a variable
@@ -237,8 +195,9 @@ exhaustive:
 ### 1. Minimize or avoid code with opaque side effects
 
 Instead of writing functions or methods that mutate their parameters,
-I prefer functions return values. Any sort of byrefs[^1] or passing
-references is absolutely forbidden. *This may have performance implications*.
+I prefer functions return values. Think with values, not with memory
+addresses. Byrefs[^1] are discouraged. *This may have performance
+implications in some languages*.
 
 ### 2. Minimize stateful and complex objects, use objects as containers
 
