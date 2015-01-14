@@ -32,7 +32,7 @@ programming yet are tremendously practical concepts.
 While these concepts seem strange and esoteric, and while they take
 time to learn and understand, they aren't ultimately difficult.
 
-This post isn't about them, though, or how to learn or use them. This
+This post isn't about learning them, though, or what they are. This
 post is about what happens *after you learn them*.
 
 Can functional patterns creep into imperative code? Most certainly. In
