@@ -17,8 +17,7 @@ How does learning functional programming affect the way you write imperative cod
 Functional programming empowers programmers to think differently. It
 forces programmers to conceptualize programs as declarations of
 certain assertions, while imperative programming makes the programmer
-a foreman of a control flow, instead of fundamentally be the designer
-of a problem, and to be the one to build its solution.
+a foreman of a control flow. 
 
 The fact that everything is an expression, the objective of a function
 is *always* to return a value, iterations are *mappings* from a source
@@ -35,7 +34,7 @@ time to learn and understand, they aren't ultimately difficult.
 This post isn't about learning them, though, or what they are. This
 post is about what happens *after you learn them*.
 
-Can functional patterns creep into imperative code? Most certainly. In
+Can functional patterns creep into imperative code? Yes they can, in
 fact, it will have tremendous implications on the way one writes
 imperative code.
 
