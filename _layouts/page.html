@@ -3,32 +3,35 @@ layout: default
 post_class: post-template page-template
 ---
 
-<nav class="main-nav">
+
+<header class="main-header post-head">
+	<nav class="main-nav">
     <a class="link" href="{{ site.baseurl }}">Home</a>
     <a class="link" href="{{ site.baseurl }}rss.xml">Subscribe</a>
-</nav>
+	</nav>
+</header>
 
 
 <main class="content" role="main">
-    <article class="post">
-        <!-- <header class="post-header">
-            <a id="blog-logo" href="{{site.baseurl}}">
-                {% if site.logo %}
-                    <img src="{{site.logo}}" alt="{{ site.name }}" />
-                {% else %}
-                    <span class="blog-title">{{ site.name }}</span>
-                {%endif%} 
-            </a>
-        </header> -->
+  <article class="post">
+    <!-- <header class="post-header">
+         <a id="blog-logo" href="{{site.baseurl}}">
+           {% if site.logo %}
+           <img src="{{site.logo}}" alt="{{ site.name }}" />
+           {% else %}
+           <span class="blog-title">{{ site.name }}</span>
+           {%endif%} 
+         </a>
+    </header> -->
 
-	<header class="post-header">
+		<header class="post-header">
 	    <h1 class="post-title">{{ page.title }}</h1>
-	</header>
+		</header>
 
-        <section class="post-content">
-            {{content}}
-        </section>
+    <section class="post-content">
+      {{content}}
+    </section>
 
-    </article>
+  </article>
 
 </main>
