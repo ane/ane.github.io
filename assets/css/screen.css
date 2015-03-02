@@ -455,7 +455,7 @@ margin on the iframe, cause it breaks stuff. */
     position: relative;
     width: 100%;
     max-width: 998px;
-    margin-left: 4rem;
+
 }
 
 /* ==========================================================================
@@ -470,6 +470,7 @@ margin on the iframe, cause it breaks stuff. */
 		margin: 4rem auto;
     background-size: cover;
     overflow: hidden;
+		padding: 0 4rem;
 }
 
 .main-header .inner {
@@ -481,7 +482,7 @@ margin on the iframe, cause it breaks stuff. */
 }
 
 .vertical {
-    padding-bottom: 4rem;
+
 }
 
 .main-nav a.link {
