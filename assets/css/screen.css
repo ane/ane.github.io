@@ -480,7 +480,6 @@ margin on the iframe, cause it breaks stuff. */
 
 .main-nav {
     position: relative;
-    padding: 4rem 4.5rem 0;
 }
 
 .vertical {
@@ -1065,7 +1064,6 @@ body:not(.post-template) .post-title {
 }
 
 .no-cover.post-head.main-header {
-    height: 85px;
     min-height: 0;
     margin-bottom: 0;
     background: transparent;
