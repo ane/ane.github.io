@@ -5,9 +5,8 @@ title:  "The Side-effects of Functional Programming"
 description: "How does learning functional programming affect the way you write imperative code? From a perspective of traditional, imperative programming, functional programming seems strange and counterintuitive. Yet there is beauty in its strangeness, though it might be difficult to see at a glance. Once you see it, everything changes."
 date:   2015-1-10
 tags: 
-- functional-programming
-- software-engineering
-- opinionated
+- fp
+- oop
 ---
 
 How does learning functional programming affect the way you write imperative code? From a perspective of traditional, imperative programming, functional programming seems strange and counterintuitive. Yet there is beauty in its strangeness, though it might be difficult to see at a glance. Once you see it, everything changes.
