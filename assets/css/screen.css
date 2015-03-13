@@ -463,8 +463,8 @@ margin on the iframe, cause it breaks stuff. */
 .main-header {
     position: relative;
     display: table;
-    width: 75rem;
-		margin: 0px auto;
+    width: 50rem;
+		margin: 2em auto;
     background-size: cover;
     overflow: hidden;
 		padding: 0 4rem;
@@ -709,7 +709,7 @@ margin on the iframe, cause it breaks stuff. */
 /* Every post, on every page, gets this style on its <article> tag */
 .post {
     position: relative;
-    max-width: 75rem;
+    max-width: 50rem;
     margin: 0px auto;
     padding: 0 4rem 4rem 4rem;
     border-bottom: #EBF2F6 1px solid;
@@ -845,7 +845,7 @@ body:not(.post-template) .post-title {
    ========================================================================== */
 
 .post-template .post-header {
-   margin-bottom: 3.4rem;
+   margin-bottom: 1rem;
 }
 
 .post-template .post-title {
@@ -1203,7 +1203,7 @@ body:not(.post-template) .post-title {
 .pagination {
     position: relative;
     width: 80%;
-    max-width: 998px;
+    max-width: 50rem;
     margin-left: 4rem;
     font-family: "Open Sans", sans-serif;
     font-size: 1.3rem;
@@ -1288,7 +1288,7 @@ body:not(.post-template) .post-title {
    ========================================================================== */
 
 .site-footer {
-    max-width: 998px;
+    max-width: 50rem;
     position: relative;
     margin: 8rem auto;
     padding: 4rem;
@@ -1356,8 +1356,6 @@ body:not(.post-template) .post-title {
     }
 
     .page-title {
-        font-size: 4rem;
-        letter-spacing: -1px;
     }
 
     .page-description {
@@ -1370,7 +1368,7 @@ body:not(.post-template) .post-title {
     }
 
     body:not(.post-template) .post-title {
-        font-size: 3.2rem;
+
     }
 
     hr {
