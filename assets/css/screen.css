@@ -467,7 +467,7 @@ margin on the iframe, cause it breaks stuff. */
 		margin: 2em auto;
     background-size: cover;
     overflow: hidden;
-		padding: 0 4rem;
+		padding: 0 2rem;
 }
 
 .main-header .inner {
@@ -711,8 +711,7 @@ margin on the iframe, cause it breaks stuff. */
     position: relative;
     max-width: 50rem;
     margin: 0px auto;
-    padding: 0 4rem 4rem 4rem;
-    border-bottom: #EBF2F6 1px solid;
+    padding: 0 2rem 2rem 2rem;
     word-break: break-word;
     hyphens: auto;
 }
@@ -1206,6 +1205,7 @@ body:not(.post-template) .post-title {
     margin: 0px auto;
     font-family: "Open Sans", sans-serif;
     color: #9EABB3;
+		padding: 0 2rem;
 }
 
 .pagination a {
@@ -1287,9 +1287,9 @@ body:not(.post-template) .post-title {
 .site-footer {
     max-width: 50rem;
     position: relative;
-    margin: 8rem auto;
-    padding: 1rem 0 0 0;
-    border-top: #EBF2F6 1px solid;
+    margin: 2rem auto;
+    padding: 0 2rem;
+  
     font-family: "Open Sans", sans-serif;
     font-size: 1rem;
     line-height: 1.75em;
@@ -1374,30 +1374,6 @@ body:not(.post-template) .post-title {
 
     ol, ul {
         padding-left: 2em;
-    }
-
-    h1 {
-        font-size: 4.5rem;
-    }
-
-    h2 {
-        font-size: 3.6rem;
-    }
-
-    h3 {
-        font-size: 3.1rem;
-    }
-
-    h4 {
-        font-size: 2.5rem;
-    }
-
-    h5 {
-        font-size: 2.2rem;
-    }
-
-    h6 {
-        font-size: 1.8rem;
     }
 
     .author-profile {
@@ -1570,32 +1546,6 @@ body:not(.post-template) .post-title {
     h1, h2, h3,
     h4, h5, h6 {
         margin: 0 0 0.3em 0;
-    }
-
-    h1 {
-        font-size: 2.8rem;
-        letter-spacing: -1px;
-    }
-
-    h2 {
-        font-size: 2.4rem;
-        letter-spacing: 0;
-    }
-
-    h3 {
-        font-size: 2.1rem;
-    }
-
-    h4 {
-        font-size: 1.9rem;
-    }
-
-    h5 {
-        font-size: 1.8rem;
-    }
-
-    h6 {
-        font-size: 1.8rem;
     }
 
     body:not(.post-template) .post-title {
