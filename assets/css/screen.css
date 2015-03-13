@@ -737,7 +737,7 @@ margin on the iframe, cause it breaks stuff. */
 }
 
 body:not(.post-template) .post-title {
-    font-size: 3.6rem;
+
 }
 
 .post-title a {
@@ -1202,13 +1202,10 @@ body:not(.post-template) .post-title {
 /* The main wrapper for our pagination links */
 .pagination {
     position: relative;
-    width: 80%;
     max-width: 50rem;
-    margin-left: 4rem;
+    margin-left: 0px auto;
     font-family: "Open Sans", sans-serif;
-    font-size: 1.3rem;
     color: #9EABB3;
-    text-align: center;
 }
 
 .pagination a {
@@ -1291,7 +1288,7 @@ body:not(.post-template) .post-title {
     max-width: 50rem;
     position: relative;
     margin: 8rem auto;
-    padding: 4rem;
+    padding: 1rem 0 0 0;
     border-top: #EBF2F6 1px solid;
     font-family: "Open Sans", sans-serif;
     font-size: 1rem;
