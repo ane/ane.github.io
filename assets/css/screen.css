@@ -1203,7 +1203,7 @@ body:not(.post-template) .post-title {
 .pagination {
     position: relative;
     max-width: 50rem;
-    margin-left: 0px auto;
+    margin: 0px auto;
     font-family: "Open Sans", sans-serif;
     color: #9EABB3;
 }
