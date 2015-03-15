@@ -9,7 +9,7 @@ tags:
 - oop
 ---
 
-How does learning functional programming affect the way you write imperative code? From a perspective of traditional, imperative programming, functional programming seems strange and counterintuitive. Yet there is beauty in its strangeness, though it might be difficult to see at a glance. Once you see it, everything changes.
+From a perspective of traditional, imperative programming, functional programming seems strange and counterintuitive. Yet there is beauty in its strangeness, though it might be difficult to see at a glance. Once you see it, everything changes.
 
 <!--break-->
 
@@ -20,10 +20,10 @@ a foreman of a control flow.
 
 The fact that everything is an expression, the objective of a function
 is *always* to return a value, iterations are *mappings* from a source
-to a target, `null` values are safely handled at compile time, pattern
-matching lets functions test their input value extremely tersely; all
-of these seem counterintuitive from the world of imperative
-programming yet are tremendously practical concepts.
+to a target, `null` values are (usually) safely handled at compile
+time, pattern matching lets functions test their input value extremely
+tersely; all of these seem counterintuitive from the world of
+imperative programming yet are tremendously practical concepts.
 
 > "In mathematics you don't understand things. You just get used to them." &mdash;John von Neumann
 
