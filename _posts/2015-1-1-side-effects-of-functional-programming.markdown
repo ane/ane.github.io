@@ -9,10 +9,6 @@ tags:
 - oop
 ---
 
-From a perspective of traditional, imperative programming, functional programming seems strange and counterintuitive. Yet there is beauty in its strangeness, though it might be difficult to see at a glance. Once you see it, everything changes.
-
-<!--break-->
-
 Functional programming empowers programmers to think differently. It
 forces programmers to conceptualize programs as declarations of
 certain assertions, while imperative programming makes the programmer
