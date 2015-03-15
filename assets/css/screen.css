@@ -169,7 +169,6 @@ table { border-collapse: collapse; border-spacing: 0; }
 html {
     height: 100%;
     max-height: 100%;
-    font-size: 62.5%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
@@ -178,7 +177,6 @@ body {
     max-height: 100%;
     font-family: "Open Sans", "Ubuntu Sans", "Lucida Sans Unicode", "Trebuchet MS", "Helvetica", "Arial", sans-serif;
     letter-spacing: 0.01rem;
-    font-size: 1.7rem;
     line-height: 1.75em;
     color: #3A4145;
     -webkit-font-feature-settings: 'kern' 1;
@@ -206,29 +204,29 @@ h4, h5, h6 {
 }
 
 h1 {
-    font-size: 4rem;
-    letter-spacing: -2px;
+ 
+ 
 }
 
 h2 {
-    font-size: 3rem;
-    letter-spacing: -1px;
+ 
+ 
 }
 
 h3 {
-    font-size: 2rem;
+ 
 }
 
 h4 {
-    font-size: 1rem;
+ 
 }
 
 h5 {
-    font-size: 2rem;
+ 
 }
 
 h6 {
-    font-size: 2rem;
+ 
 }
 
 a {
@@ -248,7 +246,6 @@ p, ul, ol, dl {
     -webkit-font-feature-settings: 'liga' 1, 'onum' 1, 'kern' 1;
     -moz-font-feature-settings: 'liga' 1, 'onum' 1, 'kern' 1;
     -o-font-feature-settings: 'liga' 1, 'onum' 1, 'kern' 1;
-    margin: 0 0 1.75em 0;
 }
 
 ol, ul {
@@ -466,11 +463,11 @@ margin on the iframe, cause it breaks stuff. */
 .main-header {
     position: relative;
     display: table;
-    width: 998px;
-		margin: 4rem auto;
+    width: 50rem;
+		margin: 2em auto;
     background-size: cover;
     overflow: hidden;
-		padding: 0 4rem;
+		padding: 0 2rem;
 }
 
 .main-header .inner {
@@ -712,10 +709,9 @@ margin on the iframe, cause it breaks stuff. */
 /* Every post, on every page, gets this style on its <article> tag */
 .post {
     position: relative;
-    max-width: 998px;
-    margin: 4rem auto;
-    padding: 0 4rem 4rem 4rem;
-    border-bottom: #EBF2F6 1px solid;
+    max-width: 50rem;
+    margin: 0px auto;
+    padding: 0 2rem 2rem 2rem;
     word-break: break-word;
     hyphens: auto;
 }
@@ -740,7 +736,7 @@ margin on the iframe, cause it breaks stuff. */
 }
 
 body:not(.post-template) .post-title {
-    font-size: 3.6rem;
+
 }
 
 .post-title a {
@@ -761,7 +757,7 @@ body:not(.post-template) .post-title {
     display: block;
     margin: 1.75rem 0 0 0;
     font-family: "Open Sans", sans-serif;
-    font-size: 1.5rem;
+
     line-height: 2.2rem;
     color: #9EABB3;
 }
@@ -769,7 +765,6 @@ body:not(.post-template) .post-title {
 .post-meta .tags {
     color: #888;
     font-weight: bold;
-    font-size: 1.3rem;
 }
 
 
@@ -802,7 +797,7 @@ body:not(.post-template) .post-title {
     padding-left: 12px;
     border-left: #d5dbde 1px solid;
     text-transform: uppercase;
-    font-size: 1.3rem;
+
     white-space: nowrap;
 }
 
@@ -849,7 +844,7 @@ body:not(.post-template) .post-title {
    ========================================================================== */
 
 .post-template .post-header {
-   margin-bottom: 3.4rem;
+   margin-bottom: 1rem;
 }
 
 .post-template .post-title {
@@ -1206,13 +1201,11 @@ body:not(.post-template) .post-title {
 /* The main wrapper for our pagination links */
 .pagination {
     position: relative;
-    width: 80%;
-    max-width: 998px;
-    margin-left: 4rem;
+    max-width: 50rem;
+    margin: 0px auto;
     font-family: "Open Sans", sans-serif;
-    font-size: 1.3rem;
     color: #9EABB3;
-    text-align: center;
+		padding: 0 2rem;
 }
 
 .pagination a {
@@ -1292,11 +1285,11 @@ body:not(.post-template) .post-title {
    ========================================================================== */
 
 .site-footer {
-    max-width: 998px;
+    max-width: 50rem;
     position: relative;
-    margin: 8rem auto;
-    padding: 4rem;
-    border-top: #EBF2F6 1px solid;
+    margin: 2rem auto;
+    padding: 0 2rem;
+  
     font-family: "Open Sans", sans-serif;
     font-size: 1rem;
     line-height: 1.75em;
@@ -1360,8 +1353,6 @@ body:not(.post-template) .post-title {
     }
 
     .page-title {
-        font-size: 4rem;
-        letter-spacing: -1px;
     }
 
     .page-description {
@@ -1374,7 +1365,7 @@ body:not(.post-template) .post-title {
     }
 
     body:not(.post-template) .post-title {
-        font-size: 3.2rem;
+
     }
 
     hr {
@@ -1383,30 +1374,6 @@ body:not(.post-template) .post-title {
 
     ol, ul {
         padding-left: 2em;
-    }
-
-    h1 {
-        font-size: 4.5rem;
-    }
-
-    h2 {
-        font-size: 3.6rem;
-    }
-
-    h3 {
-        font-size: 3.1rem;
-    }
-
-    h4 {
-        font-size: 2.5rem;
-    }
-
-    h5 {
-        font-size: 2.2rem;
-    }
-
-    h6 {
-        font-size: 1.8rem;
     }
 
     .author-profile {
@@ -1579,32 +1546,6 @@ body:not(.post-template) .post-title {
     h1, h2, h3,
     h4, h5, h6 {
         margin: 0 0 0.3em 0;
-    }
-
-    h1 {
-        font-size: 2.8rem;
-        letter-spacing: -1px;
-    }
-
-    h2 {
-        font-size: 2.4rem;
-        letter-spacing: 0;
-    }
-
-    h3 {
-        font-size: 2.1rem;
-    }
-
-    h4 {
-        font-size: 1.9rem;
-    }
-
-    h5 {
-        font-size: 1.8rem;
-    }
-
-    h6 {
-        font-size: 1.8rem;
     }
 
     body:not(.post-template) .post-title {
