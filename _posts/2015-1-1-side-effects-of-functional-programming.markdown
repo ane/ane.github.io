@@ -9,8 +9,8 @@ tags:
 - oop
 ---
 
-Functional programming empowers programmers to think differently. It
-forces programmers to conceptualize programs as declarations of
+Functional programming forces programmers to think differently. It
+requires programmers to conceptualize programs as declarations of
 certain assertions, while imperative programming makes the programmer
 a foreman of a control flow. 
 
@@ -118,29 +118,32 @@ programming and progresses to an intermediate level. Our programmer
 then goes back to writing imperative code.
 
 I can predict what happens based on my experiences and
-observations. For a background, I had my first steps with OCaml some
-five years ago and then found Haskell in university, where it baffled
-me and went over my head until I groked its beauty.  I learned it on
-the side, and I later studied type theory and some principles of
-programming languages, to understand how languages work at a higher
-level. During that time, I did imperative programming in a variety of
-languages (Python, C#, C++) to name a few at work; functional
-programming and having fun with it was entirely a hobby.
+observations. I learnt FP almost by accident, by stumbling on the then-new
+F# language via a typo in a C#-related Google search, and trying it out.
+"Hey," I thought, "this is interesting!". I had the chance to take some
+courses on FP in university and learnt quite a deal more about it, though
+initially Haskell went over my head in a *swoosh*.
 
-Over the years, I noticed a strange change in the way I code. Before,
-I mentioned the concept of "moments of declaration", e.g.[^2],
+Since then, I've had some chance to employ FP professionally (Erlang and
+some F#), most of it has been left to hobby projects, and most of that has been
+Haskell.
 
-~~~ haskell
+Over the years, while doing FP mostly on the side, I noticed a fundamental
+change in the way I coded. But before I go any further on that, let us go back
+to the concept of "moments of declaration", e.g.[^2], 
+
+~~~haskell
 x = 1                              -- x's moment of declaration
 y = x + 3                          -- y's moment of declaration
 bar = map (\z -> z * z) [1 .. y]   -- bar's moment of declaration
 ~~~
 
-all of the values above see only anything that precedes them, nothing
-that comes after. This paradigm embedded itself deeply in my mind, to
-the extent that it transformed my imperative code to be written in
-this style, in the "let" fashion. It also led me to discover a concept
-I call *context piling*.
+Here, all of the expressions above see only the values that precede
+them, and everything that comes after them is invisible. This paradigm
+embedded itself deeply in my mind, to the extent that it transformed
+my imperative code to be written in this style, in the "let"
+fashion. It also led me to discover a concept I call *context
+piling*.
 
 ### Context piling
 
