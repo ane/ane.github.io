@@ -5,67 +5,43 @@ cover: false
 about: 'about.html'
 ---
 
-<header class="main-header {% if page.cover %}" style="background-image: url({{ page.cover }}) {%else%}no-cover{% endif %}">
-    <nav class="main-nav">
-            {% if page.logo %}
-                <a class="blog-logo" href="{{ site.baseurl }}">
-                    <img src="{{ page.logo }}" alt="Blog Logo" />
-                </a>
-            {% endif %}
-	<a class="link" href="{{ page.about }}">About</a>
-        <a class="link" href="{{ site.baseurl }}rss.xml">Subscribe</a>
-    </nav>
-    <div class="vertical">
-        <div class="main-header-content inner">
-            <h1>Blog Posts</h1>
-        </div>
-    </div>
-    <a class="scroll-down icon-arrow-left" href="#content" data-offset="-45"><span class="hidden">Scroll Down</span></a>
+<header>
+  <h3>
+    {{ site.author }}
+    &nbsp;
+    &nbsp;
+    <small>
+      <a class="link" href="{{ site.baseurl }}about.html">About</a>
+    </small>
+    &nbsp;
+    &nbsp;
+    <small>
+      <a class="link" href="{{ site.baseurl }}rss.xml">Subscribe</a>
+    </small>
+  </h3>
 </header>
 
+<div>
+  {% for post in paginator.posts %}
+  <header>
+    <h1 class="page-header">
+      <a href="{{ post.url }}">{{ post.title }}</a>
+    </h1>
+    <p>
+      <time class="text-muted" datetime="{{ post.date | date:"%Y-%m-%d" }}">
+        {{ post.date | date_to_string }}
+      </time> 
+    </p>
+    <p>
+      <span>
+        {% for tag in post.tags %}
+        <code>#{{ tag }}</code>
+        {% endfor %}
+      </span>
+    </p>
+  </header>
+  {{ post.content }}
+  {% endfor %}
 
-<main id="content" class="content" role="main">
-
-
-    <div class="extra-pagination inner">
-        {% include pagination.html %}
-    </div>
-
-    {% for post in paginator.posts %}
-
-    <article class="post">
-      <header class="post-header">
-				<time class="meta" datetime="{{ post.date | date:"%Y-%m-%d" }}">
-					{{ post.date | date_to_string }}
-				</time> 
-				<a href="{{ post.url }}">{{ post.title }}</a>
-				<span class="meta">
-					{% for tag in post.tags %}
-					#{{ tag }}
-					{% endfor %}
-				</span>
-      </header>
-    </article>
-
-    <!-- Capser below -->
-<!--     <article class="{{post_class}}">
-    <header class="post-header">
-        <h2 class="post-title"><a href="{{url}}">{{{title}}}</a></h2>
-    </header>,
-    <section class="post-excerpt">
-        <p>{{excerpt words="26"}} <a class="read-more" href="{{url}}">&raquo;</a></p>
-    </section>
-    <footer class="post-meta">
-        {{#if author.image}}<img class="author-thumb" src="{{author.image}}" alt="Author image" nopin="nopin" />{{/if}}
-        {{author}}
-        {{tags prefix=" on "}}
-        <time class="post-date" datetime="{{date format='YYYY-MM-DD'}}">{{date format="DD MMMM YYYY"}}</time>
-    </footer>
-    </article> -->
-    <!--  -->
-
-    {% endfor %}
-
-    {% include pagination.html %}
-
-</main>
+  {% include pagination.html %}
+</div>

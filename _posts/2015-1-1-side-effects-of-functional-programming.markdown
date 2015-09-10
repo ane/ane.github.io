@@ -76,10 +76,10 @@ programming this is common: `i++` above is a great example of
 this. But in many functional languages doing the following is simply
 not allowed.
 
-```Haskell
+~~~haskell
 foo = 1
 foo = 2
-```
+~~~
 
 While Haskell is the only language that categorically disallows any
 mutation (though possible using the `ST` construct), this is invalid
