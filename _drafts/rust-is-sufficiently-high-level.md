@@ -4,7 +4,6 @@ disqus: true
 title:  "Rust is sufficiently high-level"
 description: "The Rust programming language is described as a language primarily designed for systems programming. Systems programming languages tend to be very perfomant, but the performance may come at a cost to the programmer."
 date:   2015-09-10
-published: false
 tags: 
 - rust
 ---
