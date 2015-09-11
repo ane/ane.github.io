@@ -9,3 +9,11 @@ pre {
     font-family: "Source Code Pro", monospace;
     font-size: 11pt;
 }
+
+.post-title {
+    color: #333;
+}
+
+.main-header {
+    border-bottom: 1px solid #ccc;
+}

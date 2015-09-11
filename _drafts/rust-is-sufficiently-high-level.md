@@ -8,7 +8,7 @@ tags:
 - rust
 ---
 
-blah blah 
+==blah== _hello_ ~~wt blah 
 
 ```rust
 // This code is editable and runnable!
@@ -30,8 +30,7 @@ fn main() {
         }
     }
 
-    println!("The program \"{}\" calculates the value {}",
-              program, accumulator);
+    println!("The program \"{}\" calculates the value {}", program, accumulator);
 }
 ```
               

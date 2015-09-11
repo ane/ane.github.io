@@ -21,7 +21,8 @@ time, pattern matching lets functions test their input value extremely
 tersely; all of these seem counterintuitive from the world of
 imperative programming yet are tremendously practical concepts.
 
-> "In mathematics you don't understand things. You just get used to them." &mdash;John von Neumann
+> In mathematics you don't understand things. You just get used to them.
+> <footer><cite>John von Neumann</cite></footer>
 
 While these concepts seem strange and esoteric, and while they take
 time to learn and understand, they aren't ultimately difficult.
@@ -42,7 +43,8 @@ imperative code.
 > variable or static variable, modify one of its arguments, raise an
 > exception, write data to a display or file, read data, or call other
 > side-effecting
-> functions. ([Wikipedia](http://en.wikipedia.org/wiki/Side_effect_(computer_science)))
+> functions.
+> <footer><cite>[Wikipedia](http://en.wikipedia.org/wiki/Side_effect_(computer_science))</cite></footer>
 
 In imperative programming, mutable variables are everywhere. We
 declare counters such as `i++` and rely on their steady updating, we
