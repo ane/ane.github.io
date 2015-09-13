@@ -75,6 +75,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/override.css" />
     <link rel="stylesheet" href="/assets/pygments.css" />
+
+    <script type="text/javascript" src="/assets/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/assets/toc.js"></script>
   </head>
   <body class="{% if page.post_class %}{{page.post_class}}{% else %}home-template{% endif %}">
     <div class="container">
@@ -87,12 +90,7 @@
               Copyright &copy; {{ site.time | date: "%Y" }} <a href="{{ site.baseurl }}">{{ site.name }}</a> under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.
             </address>
           </footer>
-          
           <script src="https://cdn.jsdelivr.net/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-          <script type="text/javascript" src="/assets/js/jquery-1.11.1.min.js"></script>
-          <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
-          <script type="text/javascript" src="/assets/js/index.js"></script>
-
           <!-- Google Analytics Tracking code -->
           <script type="text/javascript">
 
