@@ -5,29 +5,6 @@ cover: false
 about: 'about.html'
 ---
 
-<header class="main-header">
-  <div>
-    <h3>
-      {{ site.author }}
-      <div class="text-muted pull-right">
-        <small>
-          <a class="link" href="{{ site.baseurl }}about.html">About</a>
-        </small>
-        &nbsp;
-        &nbsp;
-        <small>
-          <a class="link" href="{{ site.baseurl }}archive.html">Archive</a>
-        </small>
-        &nbsp;
-        &nbsp;
-        <small>
-          <a class="link" href="{{ site.baseurl }}rss.xml">RSS</a>
-        </small>
-      </div>
-    </h3>
-  </div>
-</header>
-
 <div>
   {% for post in paginator.posts %}
   <header>

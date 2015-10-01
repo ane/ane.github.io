@@ -4,41 +4,25 @@ archive: false
 post_class: post-template
 ---
 
-<header class="main-header">
-  <h3>
-    <h3>
-      <a class="link" href="{{ site.baseurl }}">{{ site.author }}</a>
-      <div class="text-muted pull-right">
-        <small>
-          <a class="link" href="{{ site.baseurl }}about.html">About</a>
-        </small>
-        &nbsp;
-        &nbsp;
-        <small>
-          <a class="link" href="{{ site.baseurl }}archive.html">Archive</a>
-        </small>
-        &nbsp;
-        &nbsp;
-        <small>
-          <a class="link" href="{{ site.baseurl }}rss.xml">RSS</a>
-        </small>
-      </div>
-    </h3>
-  </h3>
-</header>
-
 <header class="post-header">
   <h1>{{ page.title }}</h1>
   <section class="text-muted">                
-    <p>
+    <div>
       <time datetime="{{ page.date | date:"%Y-%m-%d" }}">{{ page.date | date: "%A, %B %-d, %Y" }}</time>
-    </p>
+      <span class="pull-right">
+        {% for tag in page.tags %}
+        <a href="/tags/{{ tag }}" class="label label-primary">{{ tag }}</a>
+        {% endfor %}    
+      </span>
+    </div>
     {% if page.categories.size > 0 %} 
     under 
     {{ page.categories | array_to_sentence_string | prepend: 'on ' }} 
     {% endif %}
   </section>
 </header>
+
+<br>
 
 {{content}}
 

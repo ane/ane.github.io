@@ -72,6 +72,7 @@
     <meta name="twitter:image:src" content="{{ site.url }}/images/assets/profile.png">
     {% endif %}
 
+    <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,400italic,700,700italic|Open Sans:400,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/override.css" />
     <link rel="stylesheet" href="/assets/pygments.css" />
@@ -79,8 +80,33 @@
   <body class="{% if page.post_class %}{{page.post_class}}{% else %}home-template{% endif %}">
     <div class="container">
       <div class="row">
-        <div class="col-md-12 col-lg-8 col-lg-offset-2">
+        <div class="col-md-12 col-lg-10 col-lg-offset-1">
+
+          <header class="main-header">
+            <div>
+              <h3>
+                <a href="{{ site.baseurl }}" style="color: black">{{ site.author }}</a>
+                <div class="text-muted pull-right">
+                  <small>
+                    <a class="link" href="{{ site.baseurl }}about.html">About</a>
+                  </small>
+                  &nbsp;
+                  &nbsp;
+                  <small>
+                    <a class="link" href="{{ site.baseurl }}archive.html">Archive</a>
+                  </small>
+                  &nbsp;
+                  &nbsp;
+                  <small>
+                    <a class="link" href="{{ site.baseurl }}rss.xml">RSS</a>
+                  </small>
+                </div>
+              </h3>
+            </div>
+          </header>
+          <div class="content">
           {{ content }}
+          </div>
           <footer>
             <hr>
             <address>

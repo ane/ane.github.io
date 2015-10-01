@@ -1,8 +1,16 @@
 body {
     font-size: 18px;
-    font-family: sans-serif;
-    line-height: 1.5;
+    font-family: "Open Sans", "Helvetica Neue", "Helvetica", Arial, sans-serif;
+    line-height: 1.45;
     color: #000;
+}
+
+.main-header h3 {
+    font-family: "Open Sans", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Droid Serif", "Georgia", serif;
 }
 
 pre {
