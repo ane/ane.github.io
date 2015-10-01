@@ -234,29 +234,6 @@ easy to understand. When you declare a new variable based on backward
 context, you invalidate the backward context and thus your code is
 more about the *line context* than any other context.
 
-### 6. Static typing if you can
-
-Because nobody likes dynamic typing. It only leads to awful code. A
-bonus if the typing is strong, i.e., you cannot assign `"cat"` to an
-`int`, which you can in C (though modern compilers will produce a
-warning).
-
-### 7. Lazy evaluation is your friend
-
-Generators like `yield` in C# or Python are a fantastic way of making
-code that would otherwise be ineffiecnt become lean and
-efficient. Lazy evaluation may not be as pervasive in those languages
-as it is in Haskell, where everything is lazily evaluated, but where
-it can be used, it can be used to a great effect.
-
----
-
-I attribute most of these changes to learning functional
-programming. These paradigms aren't unlearnable without learning
-functional programming, on the contrary, I think some of these are a
-result of careful scrutiny and focus on producing good code, avoiding
-bad patterns and anti-patterns.
-
 
 ## Effects on quality
 
