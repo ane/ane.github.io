@@ -7,14 +7,14 @@ post_class: post-template
 <header class="post-header">
   <h1>{{ page.title }}</h1>
   <section class="text-muted">                
-    <div>
-      <time datetime="{{ page.date | date:"%Y-%m-%d" }}">{{ page.date | date: "%A, %B %-d, %Y" }}</time>
-      <span class="pull-right">
+    <p>
+      <time class="text-muted" datetime="{{ page.date | date:"%Y-%m-%d" }}">
+        {{ page.date | date: "%A, %B %-d, %Y" }}
         {% for tag in page.tags %}
-        <a href="/tags/{{ tag }}" class="label label-primary">{{ tag }}</a>
+        <code><a href="/tags/{{ tag }}">{{ tag }}</a></code>
         {% endfor %}    
-      </span>
-    </div>
+      </time>
+    </p>
     {% if page.categories.size > 0 %} 
     under 
     {{ page.categories | array_to_sentence_string | prepend: 'on ' }} 

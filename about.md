@@ -1,7 +1,7 @@
 ---
 layout: page
 date: 2015-1-1 12:00 UTC
-title: About me 
+title: About 
 ---
 
 I'm a programmer living in Jyväskylä, Finland. Professionally, I'm a software engineer.
