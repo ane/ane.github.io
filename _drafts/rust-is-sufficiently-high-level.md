@@ -88,5 +88,45 @@ the following:
     longer borrowed but *owned*, so that it can be passed to the new thread.
   * The closure for the spawned thread is a
     [move closure](https://doc.rust-lang.org/book/closures.html#move-closures ). Such closures have
-    their own stack frame and 
+    their own stack frame. This is necessary for threads because they may outlive the parent. If you
+    remove all calls to `thread::sleep`, you will not see anything.
+
+Sounds like a lot of effort? We can simplify the code by removing all the calls to sleep, since the
+others aren't sleeping either. The Racket `thread` procedure waits for its result to complete, and
+so does the C version. We can remove any randomness by waiting on the threads using join guards:
+
+```rust
+use std::thread;
+ 
+fn main() {
+    let mut guards = Vec::new();
+    
+    for word in "Enjoy Rosetta Code".split_whitespace() {
+        let local_word = word.to_owned();
+        let guard = thread::spawn(move || {
+            println!("{}", local_word);
+        });
+        guards.push(guard);
+    }
+    
+    for g in guards.into_iter() {
+        g.join().unwrap();
+    }
+}
+``` 
+
+Perhaps less obtrusive, but the important elements remain: ownership, mutability and move
+semantics. Even from such a simple example it is evident that writing simple stuff in Rust takes a
+bit more effort.
+
+## Create, Read, Update, Delete
+
+If you're interested in performance and memory safety, Rust is the way to go. The small list of
+features I listed above is only a small part of Rust. With its focus on safety and performance, Rust
+is great for embedded systems, compilers, window managers and so forth. What about user
+applications? Website backends? Would you write a simple
+[CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete ) web application in Rust?
+
+
+
 
