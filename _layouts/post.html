@@ -5,7 +5,7 @@ post_class: post-template
 ---
 
 <header class="post-header">
-  <h1>{{ page.title }}</h1>
+  <h1 class="page-header">{{ page.title }}</h1>
   <section class="text-muted">                
     <p>
       <time class="text-muted" datetime="{{ page.date | date:"%Y-%m-%d" }}">
@@ -22,20 +22,7 @@ post_class: post-template
   </section>
 </header>
 
-<br>
-
 {{content}}
-
-{% if page.archive %}
-<section class="archive">
-  <h5>Archive</h5>
-  <ul>
-    {% for post in site.posts %}
-    <li><span>{{ post.date | date_to_string }}</span>  <a href="{{ post.url }}">{{ post.title }}</a></li>
-    {% endfor %}    
-  </ul>
-</section>
-{% endif %}
 
 <footer class="post-footer">
   <!-- If we want to display author's name and bio -->

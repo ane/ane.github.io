@@ -1,7 +1,7 @@
 body {
     font-size: 18px;
     font-family: "Open Sans", "Helvetica Neue", "Helvetica", Arial, sans-serif;
-    line-height: 1.45;
+    line-height: 1.5;
     color: #000;
 }
 
@@ -13,6 +13,10 @@ h1, h2, h3, h4, h5, h6 {
     font-family: "Droid Serif", "Georgia", serif;
 }
 
+p {
+    hyphens: auto;
+}
+
 pre {
     font-family: "Source Code Pro", monospace;
     font-size: 11pt;
@@ -20,8 +24,4 @@ pre {
 
 .post-title {
     color: #333;
-}
-
-.main-header {
-    border-bottom: 1px solid #ccc;
 }
