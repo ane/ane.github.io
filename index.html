@@ -6,22 +6,28 @@ about: 'about.html'
 ---
 
 <div>
-  {% for post in paginator.posts %}
-  <header>
-    <h1 class="page-header">
-      <a class="post-title" href="{{ post.url }}">{{ post.title }}</a>
-    </h1>
-    <p>
-      <time class="text-muted" datetime="{{ post.date | date:"%Y-%m-%d" }}">
-        {{ post.date | date: "%A, %B %-d, %Y" }}
-        {% for tag in post.tags %}
-        <code><a href="/tags/{{ tag }}">{{ tag }}</a></code>
-        {% endfor %}    
-      </time>
-    </p>
-  </header>
-  {{ post.content }}
-  {% endfor %}
+    {% if paginator.posts.size > 0 %}
+    {% for post in paginator.posts %}
+    <header>
+        <h1 class="page-header">
+            <a class="post-title" href="{{ post.url }}">{{ post.title }}</a>
+        </h1>
+        <p>
+            <time class="text-muted" datetime="{{ post.date | date:"%Y-%m-%d" }}">
+                {{ post.date | date: "%A, %B %-d, %Y" }}
+                {% for tag in post.tags %}
+                <code><a href="/tags/{{ tag }}">{{ tag }}</a></code>
+                {% endfor %}    
+            </time>
+        </p>
+    </header>
+    {{ post.content }}
+    {% endfor %}
 
-  {% include pagination.html %}
+    {% include pagination.html %}
+    {% else %}
+    <hr/>
+    <h3>:-(</h3>
+    <p>I'm sorry, but there are no posts.</p>
+    {% endif %}
 </div>
