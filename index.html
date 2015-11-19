@@ -9,7 +9,7 @@ about: 'about.html'
     {% if paginator.posts.size > 0 %}
     {% for post in paginator.posts %}
     <header>
-        <h1 class="page-header">
+        <h1>
             <a class="post-title" href="{{ post.url }}">{{ post.title }}</a>
         </h1>
         <p>
@@ -26,7 +26,6 @@ about: 'about.html'
 
     {% include pagination.html %}
     {% else %}
-    <hr/>
     <h3>:-(</h3>
     <p>I'm sorry, but there are no posts.</p>
     {% endif %}
