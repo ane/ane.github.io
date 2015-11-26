@@ -13,6 +13,10 @@ h1, h2, h3, h4, h5, h6 {
     font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
 }
 
+.post-archive-title {
+    margin-bottom: 0.1em;
+}
+
 p {
     hyphens: auto;
 }
@@ -24,4 +28,13 @@ pre {
 
 .post-title {
     color: #333;
+}
+
+ul.posts {
+    padding-left: 0;
+}
+
+li.post {
+    margin: 2em 0;
+    list-style-type: none;
 }

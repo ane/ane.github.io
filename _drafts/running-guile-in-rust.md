@@ -2,6 +2,7 @@
 layout: post
 date: 2015-1-1 12:00 UTC
 title: Embedding a Guile interpreter in Rust 
+summary: Shows how to embed a Guile Scheme REPL in a Rust program 
 disqus: true
 ---
 
