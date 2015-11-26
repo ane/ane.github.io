@@ -6,6 +6,8 @@ summary: Shows how to embed a Guile Scheme REPL in a Rust program
 disqus: true
 ---
 
+<div id="toc"></div>
+
 [Guile](http://www.gnu.org/software/guile/) is a
 [Scheme](https://en.wikipedia.org/wiki/Scheme_%28programming_language%29)
 implementation that is the official extension language of the GNU
@@ -82,5 +84,16 @@ libc = "0.2.2"
 [build-dependencies]
 pkg-config = "0.3.6"
 ```
+
+## Bla
+
+## Hurr
+
+## Durr
+
+# Derp
+
+## Herp
+
 
 
