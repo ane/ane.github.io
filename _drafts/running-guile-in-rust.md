@@ -1,12 +1,10 @@
 ---
-layout: post
+layout: post-toc
 date: 2015-1-1 12:00 UTC
 title: Embedding a Guile interpreter in Rust 
 summary: Shows how to embed a Guile Scheme REPL in a Rust program 
 disqus: true
 ---
-
-<div id="toc"></div>
 
 [Guile](http://www.gnu.org/software/guile/) is a
 [Scheme](https://en.wikipedia.org/wiki/Scheme_%28programming_language%29)
@@ -85,15 +83,86 @@ libc = "0.2.2"
 pkg-config = "0.3.6"
 ```
 
-## Bla
+## Building the REPL
 
-## Hurr
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sit amet eleifend elit, quis feugiat
+risus. Aenean condimentum ultricies eros a mattis. Fusce aliquam neque id commodo finibus. Sed
+varius non urna non commodo. Nunc mollis vehicula dapibus. Aenean nec leo pharetra, tincidunt nibh
+ac, tempor ex. Etiam eleifend tincidunt elementum. Fusce nec nulla id mi ullamcorper fringilla et
+id velit.
 
-## Durr
+Fusce sed tempus metus, sit amet vehicula dolor. Nullam et molestie ex. Nulla non tincidunt
+sem. Integer est eros, suscipit a magna et, rhoncus consequat metus. Nulla facilisi. Integer
+bibendum porttitor dui maximus venenatis. Aenean ut purus ligula. Proin tempus tincidunt ipsum, non
+pellentesque velit dapibus sed. Etiam vitae vehicula diam. Nunc ac porttitor nibh, id faucibus
+lectus. Mauris vehicula ex vitae tellus euismod sagittis. Cras sed turpis eget mi pellentesque
+pellentesque.
 
-# Derp
+## Type equivalencies
 
-## Herp
+Sed tempor odio sit amet turpis fermentum, vel laoreet est feugiat. Nulla non vehicula sem. In nec
+tellus finibus risus rhoncus dapibus quis at lorem. Vestibulum finibus imperdiet metus, vitae
+pharetra eros bibendum euismod. Nam dictum porttitor elit, quis viverra neque convallis at. Proin
+bibendum elementum placerat. Maecenas ultricies erat quis dapibus semper. Suspendisse
+potenti. Mauris commodo cursus lorem sed posuere. Duis cursus turpis elit, non eleifend dui interdum
+in.
+
+## Static or dynamic?
+
+Nulla non tincidunt urna. Fusce sapien lorem, sodales a eros sed, suscipit facilisis justo. Mauris
+consectetur quam in massa faucibus tincidunt. Duis consequat nisl non eros sagittis blandit. Quisque
+efficitur libero at sapien pharetra aliquet. Nulla tempor turpis consectetur nibh posuere, ac dictum
+diam luctus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
+
+Morbi lobortis arcu convallis sagittis ornare. In molestie erat lacus, a feugiat dui volutpat
+in. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In eu odio
+vitae felis venenatis dapibus eu quis elit. Sed facilisis lectus felis, a vehicula felis molestie
+sit amet. Aliquam volutpat eleifend hendrerit. Aliquam non feugiat magna.
+
+# Calling Rust from Guile
+
+Praesent iaculis tortor est, vitae porttitor arcu imperdiet et. Vivamus auctor felis euismod tellus
+aliquam, ac tempor mi posuere. Vestibulum nec lorem sed metus fermentum maximus ac blandit sapien.
+
+Pellentesque ultricies dolor nulla, in porta turpis tristique ut. Duis vehicula augue eget odio
+dignissim, eu tincidunt diam accumsan. Curabitur mattis arcu congue mauris suscipit
+ultricies. Praesent dignissim vehicula neque.
+
+Phasellus ipsum nibh, feugiat sed ipsum sed, luctus rutrum orci. Ut sed ipsum non erat congue
+tincidunt. Nulla et sapien quam. Ut maximus posuere diam, et varius orci scelerisque
+ullamcorper. Sed quis molestie lorem.
+
+## Rust types in Scheme
+
+Sed tempor odio sit amet turpis fermentum, vel laoreet est feugiat. Nulla non vehicula sem. In nec
+tellus finibus risus rhoncus dapibus quis at lorem. Vestibulum finibus imperdiet metus, vitae
+pharetra eros bibendum euismod. Nam dictum porttitor elit, quis viverra neque convallis at. Proin
+bibendum elementum placerat. Maecenas ultricies erat quis dapibus semper. Suspendisse
+potenti. Mauris commodo cursus lorem sed posuere. Duis cursus turpis elit, non eleifend dui interdum
+in.
+
+Praesent iaculis tortor est, vitae porttitor arcu imperdiet et. Vivamus auctor felis euismod tellus
+aliquam, ac tempor mi posuere. Vestibulum nec lorem sed metus fermentum maximus ac blandit sapien.
+
+Pellentesque ultricies dolor nulla, in porta turpis tristique ut. Duis vehicula augue eget odio
+dignissim, eu tincidunt diam accumsan. Curabitur mattis arcu congue mauris suscipit
+ultricies. Praesent dignissim vehicula neque.
+
+Phasellus ipsum nibh, feugiat sed ipsum sed, luctus rutrum orci. Ut sed ipsum non erat congue
+tincidunt. Nulla et sapien quam. Ut maximus posuere diam, et varius orci scelerisque
+ullamcorper. Sed quis molestie lorem.
+
+# Conclusion
+
+Nulla non tincidunt urna. Fusce sapien lorem, sodales a eros sed, suscipit facilisis justo. Mauris
+consectetur quam in massa faucibus tincidunt. Duis consequat nisl non eros sagittis blandit. Quisque
+efficitur libero at sapien pharetra aliquet. Nulla tempor turpis consectetur nibh posuere, ac dictum
+diam luctus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
+
+Morbi lobortis arcu convallis sagittis ornare. In molestie erat lacus, a feugiat dui volutpat
+in. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In eu odio
+vitae felis venenatis dapibus eu quis elit. Sed facilisis lectus felis, a vehicula felis molestie
+sit amet. Aliquam volutpat eleifend hendrerit. Aliquam non feugiat magna.
 
 
 

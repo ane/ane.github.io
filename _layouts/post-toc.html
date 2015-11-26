@@ -1,0 +1,50 @@
+---
+layout: default
+js:
+- /assets/js/jquery.sticky.js
+---
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <div id="toc-container">
+                <div id="toc"></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <header class="post-header">
+                <h1>{{ page.title }}</h1>
+                <section class="text-muted">                
+                    <p>
+                        <time class="text-muted" datetime="{{ page.date | date:"%Y-%m-%d" }}">
+                            {{ page.date | date: "%A, %B %-d, %Y" }}
+                            {% for tag in page.tags %}
+                            <code><a href="/tags/{{ tag }}">{{ tag }}</a></code>
+                            {% endfor %}    
+                        </time>
+                    </p>
+                    {% if page.categories.size > 0 %} 
+                    under 
+                    {{ page.categories | array_to_sentence_string | prepend: 'on ' }} 
+                    {% endif %}
+                </section>
+            </header>
+
+
+            <article>
+                {{ content }}
+            </article>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+ $(document).ready(function() {
+     $('#toc').sticky({topSpacing:30});
+     $('#toc').toc({ selectors: "h1, h2", container: 'article' });
+ });
+</script>
+
+{% for url in page.js %}
+<script src="{{ url }}"></script>
+{% endfor %}

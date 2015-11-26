@@ -39,6 +39,10 @@ li.post {
     list-style-type: none;
 }
 
+#toc-container {
+    margin-top: 3.5em;
+}
+
 #toc ul {
     margin: 0;
     padding: 0;
@@ -47,6 +51,7 @@ li.post {
 
 #toc li {
     margin-bottom: 5px;
+    font-size: 18px;
     list-style-type: none;
     border-left: 2px solid transparent;
 }
@@ -64,10 +69,6 @@ li.post {
     padding-left: 30px;
 }
 
-#toc .toc-h2 {
-    padding-left: 50px;
-}
-
 #toc .toc-active {
-    border-left: 2px solid blue;
+    border-left: 2px solid #337AB7;
 }
