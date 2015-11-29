@@ -1,6 +1,6 @@
-name: Antoine Kalmbach
-description: and his thoughts on programming
-meta_description: "Antoine's Blog"
+name: ane
+description: programming
+meta_description: "A personal programming-oriented blog of Antoine Kalmbach."
 
 encoding: utf-8
 markdown: redcarpet
