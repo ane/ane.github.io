@@ -18,7 +18,9 @@ about: 'about.html'
                         <small>
                             <date class="text-muted">{{ post.date | date: "%d %B, %Y" }}</date> {% if post.summary %} &mdash; {{ post.summary }} {% endif %}
                         </small>
-                        {% for tag in post.tags %} <code><a href="/tags/{{ tag }}">{{ tag }}</a></code> {% endfor %}
+                        <p>
+                            <span class="text-muted">tags:</span> {% for tag in post.tags %} <code><a href="/tags/{{ tag }}">{{ tag }}</a></code> {% endfor %}
+                        </p>
                     </li>
                     {% endfor %}
                 </ul>

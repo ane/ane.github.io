@@ -6,7 +6,7 @@ body {
 }
 
 .main-header h3 {
-    font-family: "Open Sans", sans-serif;
+    font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -14,6 +14,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .post-archive-title {
+    font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
     margin-bottom: 0.1em;
 }
 
@@ -23,7 +24,6 @@ p {
 
 pre {
     font-family: "Source Code Pro", monospace;
-    font-size: 11pt;
 }
 
 .post-title {
@@ -74,5 +74,5 @@ li.post {
 }
 
 article.post {
-    margin-bottom: 8em;
+    margin-bottom: 5em;
 }

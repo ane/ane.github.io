@@ -9,10 +9,13 @@ post_class: post-template
         <div class="col-md-6 col-md-offset-3">
             <header class="post-header">
                 <h1>{{ page.title }}</h1>
+                {% if page.summary %}
+                <h4>{{ page.summary }}</h4>
+                {% endif %}
                 <section class="text-muted">                
                     <p>
                         <time class="text-muted" datetime="{{ page.date | date:"%Y-%m-%d" }}">
-                            {{ page.date | date: "%A, %B %-d, %Y" }}
+                            {{ page.date | date: "%B %-d, %Y" }}
                             {% for tag in page.tags %}
                             <code><a href="/tags/{{ tag }}">{{ tag }}</a></code>
                             {% endfor %}    
@@ -25,24 +28,17 @@ post_class: post-template
                 </section>
             </header>
 
+            <br>
+
             <article>
                 {{content}}
             </article>
 
             <footer class="post-footer">
-                <!-- If we want to display author's name and bio -->
-                {% if site.author %}
-                <figure class="author-image">
-                    <a class="img" href="{{ site.baseurl }}" style="background-image: url(/assets/images/profile.png)">
-                        <span class="hidden">{{site.author}}'s Picture</span></a>
-                </figure>
-                <section class="author">
-                    <!-- Author Name -->
-                    <h4> {{ site.author }} </h4>
-                    <!-- Author Bio -->
-                </section>                
-                {% endif %}
 
+                <br>
+                <br>
+                <br>
                 <!-- Share links section -->
                 {% include share.html %}
                 
