@@ -8,11 +8,11 @@ excerpt_separator: <!--break-->
 logo: false
 paginate: 3
 baseurl: /
-domain_name: 'http://ane.iki.fi/'
+domain_name: 'http://ane.iki.fi'
 highlighter: pygments
 
 # Details for the RSS feed generator
-url:            'http://ane.iki.fi/'
+url:            'http://ane.iki.fi'
 author:         'Antoine Kalmbach'
 google_analytics: UA-58162697-1
 redcarpet:
