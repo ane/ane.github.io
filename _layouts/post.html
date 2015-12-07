@@ -16,9 +16,6 @@ post_class: post-template
                     <p>
                         <time class="text-muted" datetime="{{ page.date | date:"%Y-%m-%d" }}">
                             {{ page.date | date: "%B %-d, %Y" }}
-                            {% for tag in page.tags %}
-                            <code><a href="/tags/{{ tag }}">{{ tag }}</a></code>
-                            {% endfor %}    
                         </time>
                     </p>
                     {% if page.categories.size > 0 %} 
