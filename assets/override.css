@@ -90,6 +90,6 @@ li.post {
     border-left: 2px solid #337AB7;
 }
 
-article.post {
-    margin-bottom: 5em;
+article.post + article.post {
+    margin-top: 5em;
 }
