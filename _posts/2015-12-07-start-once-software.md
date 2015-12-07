@@ -17,7 +17,7 @@ analysis tool starts, calculates its data, reports results, and then stays *on*,
 monitoring for changes. When changes occur, the program analyzes the changes,
 repeating the process until it is terminated. This execution model is efficient:
 incremental updates are easier to calculate than starting scratch. There's a
-caveat: the process has to stay online and preserving its data, and this eats up
+caveat: the process has to stay online and preserve its data. This eats up
 memory.
 
 This is an obvious resource overhead. That overhead is becoming a smaller and
