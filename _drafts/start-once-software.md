@@ -9,8 +9,8 @@ tags:
 ---
 
 Software development tools are in a state of flux. There are two competing
-directions in which static analysis tools&mdash;linters and
-typecheckers&mdash;are heading towards. 
+directions towards which static analysis tools&mdash;like linters and
+typecheckers&mdash;are heading. 
 
 The first direction, an arguably modern one[^3], is the online model: an
 analysis tool starts, calculates its data, reports results, and then stays *on*,
@@ -161,8 +161,8 @@ regard Gocode is a rare gem among the Go tooling ecosystem.
     wouldn't be surprised if it comes with the benefit of more speed, it may be
     a good idea even for large datasets (e.g. half a terabyte in size).
 [^2]: Facebook uses the term "online" when describing Flow
-[^3]: Yes, I know REPLs have been around since the eighties, but this isn't the
-    same thing.
+[^3]: Yes, I know REPLs have been around since the eighties, but this isn't
+    exactly the same thing.
 [^4]: They aren't *exactly* the same thing. Since I'm talking about computer
     programs performing some kind of data analysis, and mentioning the Chinese
     room experiment, I realize that I'm opening a massive can of worms; the

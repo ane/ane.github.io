@@ -78,6 +78,7 @@
         <link rel="stylesheet" href="/assets/pygments.css" />
 
         <script type="text/javascript" src="/assets/js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="/assets/toc.min.js"></script>
         <script src="/assets/hyphenator.js" type="text/javascript"></script>
         <script src="/assets/hylo.js" type="text/javascript"></script>
@@ -88,28 +89,32 @@
                 <div class="row">
                     <div class="col-md-6 col-md-offset-3">
                         <header class="main-header">
-                            <div>
-                                <h3>
-                                    <a href="{{ site.baseurl }}" style="color: black">{{ site.name }} &amp; {{ site.description }}</a>
-                                    <div class="text-muted pull-right">
-                                        <small>
+                            <nav id="topnav" class="navbar navbar-default">
+                                <div class="navbar-header">
+                                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse-navbar" aria-expanded="false">
+                                        <span class="sr-only">Toggle navigation</span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                    </button>
+                                    <a class="navbar-brand" href="{{ site.baseurl }}">{{ site.name }} &amp; {{ site.description }}</a>
+                                </div>
+                                <div class="collapse navbar-collapse" id="collapse-navbar">
+                                    <ul class="nav navbar-nav navbar-right">
+                                        <li>
                                             <a class="link" href="{{ site.baseurl }}about.html">About</a>
-                                        </small>
-                                        &nbsp;
-                                        &nbsp;
-                                        <small>
+                                        </li>
+                                        <li>
                                             <a class="link" href="{{ site.baseurl }}archive.html">Archive</a>
-                                        </small>
-                                        &nbsp;
-                                        &nbsp;
-                                        <small>
+                                        </li>
+                                        <li>
                                             <a class="link" href="{{ site.baseurl }}rss.xml">RSS</a>
-                                        </small>
-                                    </div>
-                                </h3>
-                                <hr/>
-                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
                         </header>
+                        <hr/>
                     </div>
                 </div>
             </div>

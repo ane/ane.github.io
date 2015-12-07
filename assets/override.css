@@ -18,6 +18,23 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 0.1em;
 }
 
+.site-tag {
+    font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
+    display: inline-block;
+    margin-right: 12px;
+}
+
+nav#topnav {
+    font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
+    border: 0;
+    background-color: #fff;
+    margin: 1em -15px -1em -15px;
+}
+
+.navbar-brand {
+    font-size: 25px;
+}
+
 p {
     hyphens: auto;
 }

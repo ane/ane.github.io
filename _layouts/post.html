@@ -33,6 +33,11 @@ post_class: post-template
             <article>
                 {{content}}
             </article>
+            <hr/>
+            <p>
+                Tags: {% for tag in page.tags %} <code><a href="/tags/{{ tag }}">{{ tag }}</a></code> {% endfor %}    
+            </p>
+            
 
             <footer class="post-footer">
 

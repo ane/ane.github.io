@@ -4,6 +4,11 @@ date: 2015-1-1 12:00 UTC
 title: Embedding a Guile interpreter in Rust 
 summary: Embedding a Guile Scheme REPL in a Rust program 
 disqus: true
+tags:
+  - software
+  - software
+  - rust
+  - scheme
 ---
 
 [GNU Guile](http://www.gnu.org/software/guile/) is an implementation of the
