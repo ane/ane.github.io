@@ -19,3 +19,4 @@ redcarpet:
   extensions: ["footnotes", "fenced_code_blocks", "strikethrough", "autolink", "superscript", "highlight", "underline", "quote", "with_toc_data", "tables"]
 gems:
   - jekyll-sitemap
+  - jekyll-feed
