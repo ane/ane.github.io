@@ -17,3 +17,5 @@ author:         'Antoine Kalmbach'
 google_analytics: UA-58162697-1
 redcarpet:
   extensions: ["footnotes", "fenced_code_blocks", "strikethrough", "autolink", "superscript", "highlight", "underline", "quote", "with_toc_data", "tables"]
+gems:
+  - jekyll-sitemap
