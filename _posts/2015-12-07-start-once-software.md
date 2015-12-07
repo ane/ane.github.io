@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2015-12-07 
+date: 2015-12-07 12:00:00 UTC
 title: Start-once software
 summary: Our development tools are transitioning away from batch oriented processing
 disqus: true
