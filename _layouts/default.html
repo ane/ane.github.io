@@ -22,7 +22,9 @@
         {% else %}
         <meta content="website" property="og:type">
         {% endif %}
-        {% if page.description %}
+        {% if page.summary %}
+        <meta content="{{ page.summary }}" property="og:description">
+        {% else if page.description %}
         <meta content="{{ page.description }}" property="og:description">
         {% else %}
         <meta content="{{ site.meta_description }}" property="og:description">
@@ -37,7 +39,7 @@
         {% if page.image %}
         <meta content="{{ site.url }}/assets/images/posts/{{ page.image }}" property="og:image">
         {% else %}
-        <meta content="{{ site.url }}/assets/images/profile.png" property="og:image">
+        <meta content="{{ site.url }}/assets/images/profile.jpg" property="og:image">
         {% endif %}
         {% if page.categories %}
         {% for category in page.categories limit:1 %}
@@ -61,15 +63,18 @@
         {% if page.url %}
         <meta name="twitter:url" content="{{ site.url }}{{ page.url }}">
         {% endif %}
-        {% if page.description %}
+
+        {% if page.summary %}
+        <meta name="twitter:description" content="{{ page.summary }}">
+        {% else if page.description %}
         <meta name="twitter:description" content="{{ page.description }}">
         {% else %}
         <meta name="twitter:description" content="{{ site.description }}">
         {% endif %}
         {% if page.image %}
-        <meta name="twitter:image:src" content="{{ site.url }}/images/assets/profile.png">
+        <meta name="twitter:image:src" content="{{ site.url }}/images/assets/profile.jpg">
         {% else %}
-        <meta name="twitter:image:src" content="{{ site.url }}/images/assets/profile.png">
+        <meta name="twitter:image:src" content="{{ site.url }}/images/assets/profile.jpg">
         {% endif %}
 
         <link href='https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700,700italic|Open+Sans:400,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
