@@ -5,6 +5,31 @@ js:
 ---
 
 <div class="container-fluid">
+    <div class="row full-size">
+        <div class="col-md-8 col-md-offset-2">
+        <header>
+            <h1>{{ page.title }}</h1>
+            
+            {% if page.summary %}
+            <h3>{{ page.summary }}</h3>
+            {% endif %}
+
+            <br/>
+
+            <section class="text-muted">                
+                <p>
+                    <time class="text-muted" datetime="{{ page.date | date:"%Y-%m-%d" }}">
+                        {{ page.date | date: "%A, %B %-d, %Y" }}
+                    </time>
+                    <p>
+                        by <a href="{{ site.baseurl }}">{{ site.author }}</a>
+                    </p>
+                    {% include share.html %}
+                </p>
+            </section>
+        </header>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-3">
             <div id="toc-container">
@@ -12,28 +37,14 @@ js:
             </div>
         </div>
         <div class="col-md-6">
-            <header class="post-header">
-                <h1>{{ page.title }}</h1>
-                <section class="text-muted">                
-                    <p>
-                        <time class="text-muted" datetime="{{ page.date | date:"%Y-%m-%d" }}">
-                            {{ page.date | date: "%A, %B %-d, %Y" }}
-                            {% for tag in page.tags %}
-                            <code><a href="/tags/{{ tag }}">{{ tag }}</a></code>
-                            {% endfor %}    
-                        </time>
-                    </p>
-                    {% if page.categories.size > 0 %} 
-                    under 
-                    {{ page.categories | array_to_sentence_string | prepend: 'on ' }} 
-                    {% endif %}
-                </section>
-            </header>
-
-
             <article>
                 {{ content }}
             </article>
+            <hr/>
+            <p>
+                Tags: {% for tag in page.tags %} <code><a href="/tags/{{ tag }}">{{ tag }}</a></code> {% endfor %}    
+            </p>
+            
         </div>
     </div>
 </div>

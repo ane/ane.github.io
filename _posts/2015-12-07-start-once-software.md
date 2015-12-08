@@ -12,26 +12,27 @@ Software development tools are in a state of flux. There are two competing
 directions towards which static analysis tools&mdash;like linters and
 typecheckers&mdash;are heading. 
 
-The first direction, an arguably modern one[^3], is the online model: an
-analysis tool starts, calculates its data, reports results, and then stays *on*,
-monitoring for changes. When changes occur, the program analyzes the changes,
-repeating the process until it is terminated. This execution model is efficient:
-incremental updates are easier to calculate than starting scratch. There's a
-caveat: the process has to stay online and preserve its data. This eats up
-memory.
+The first direction is the online model: an analysis tool starts, calculates its
+data, reports results, and then stays *on*, monitoring for changes. When changes
+occur, the program analyzes the changes, and recomputes the effects. This
+execution model is efficient: incremental updates are easier to calculate than
+starting from scratch. This approach is arguably more modern[^3], since we're
+leveraging the full potential of a client-server model.
 
-This is an obvious resource overhead. That overhead is becoming a smaller and
-smaller concern every day. A gigabyte of workstation-quality DDR3 memory is
-about
-[US$5](http://www.newegg.com/Product/Product.aspx?Item=N82E16820231314&cm_re=ddr3-_-20-231-314-_-Product).
+The obvious caveat is such a process will eat up memory. These days this is
+becoming less and less of a problem, since a gigabyte of desktop-quality DDR3
+memory costs about [US$5](http://www.newegg.com/Product/Product.aspx?Item=N82E16820231314&cm_re=ddr3-_-20-231-314-_-Product).
 
 The *other* direction is to stay in batch more: fire up, perform analysis,
-report results, die. This works if the data you're working with isn't large. If
-the workload is large (100k-1M lines), it actually makes more sense to compute
-an initial "model" of the system, and then *incrementally* update the model when
-the system changes.
+report results, and die. This is a proven method. Batch-oriented software has
+been around for ages, and it works really well if the data you're working with
+isn't large.
 
-I was inspired by this [this comment on Hacker News](https://news.ycombinator.com/item?id=10271755):
+However, if the workload is large, say 100k-1M lines, it actually makes more
+sense to compute an initial "model" of the system, and then *incrementally*
+update the model when the system changes.
+
+My line of reasoning was inspired by [this comment on Hacker News](https://news.ycombinator.com/item?id=10271755):
 
 > Over and over I see reports of iteration speed being critical to
 > real-world projects, and that's certainly my experience.  
