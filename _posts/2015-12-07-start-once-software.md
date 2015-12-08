@@ -82,38 +82,39 @@ process that is run every time the target changes, and then do effectively what
 is done in step three above. This is *kind of* what I described above, but the
 difference is that any model is lost inbetween batch runs.
 
-In fact, such file system notification based batch processes remind[^4] me of the
+In fact, file system notification based batch processes remind[^4] me of the
 [the Chinese room experiment](https://en.wikipedia.org/wiki/The_Chinese_Room):
 such tools don't really have a *understanding* of the model that is
 **persistent**, but due to a simultaneously crude and brilliant approach, we get the
 subtle impression that such a persistent, evolving understanding actually exists.
 
-In start-once software, the goal is to have the model always in memory and
-perform incremental updates. Such a program can react quickly to massive changes
-in a codebase. Naturally, speed comes at the cost of memory, but as mentioned in
-the quote, if it makes development faster, I think this is a perfectly
+In start-once software, the goal is to always keep the model in working memory
+and update it incrementally. Such a program can react quickly to massive
+codebase changes. Naturally, speed comes at the cost of memory, but as mentioned
+in the quote, if it makes development faster, I think this is a perfectly
 justifiable cost.
 
-This doesn't only apply to static analysis tools: this can work with any
-streaming data. Memory is cheap, but speed always isn't. A good example is a log
-processor that computes the state of some system based on the content of some
-logs. A start-once processor would continuously monitor the log inputs and update its model
-of the system. If it has to churn through a lot of logs at the start, it may
-have an start-up delay, but because the model is persistent, any changes to the
-model can be computed quickly.
+This line of thinking doesn't apply only to static analysis tools. It can work
+with any streaming data. Memory is cheap, but speed always isn't. A good example
+is a log processor that computes the state of some system based on the content
+of some logs. A start-once processor would continuously monitor the log inputs
+and update its model of the system. If it has to churn through a lot of logs at
+the start, it may have a initial delaym but because the model is persistent, any
+changes to the model can be computed quickly.
 
-Storing the model can be done in two ways. If RAM becomes a limitation (it
-shouldn't), a fast database should be used. There's a caveat with this:
-databases *solely* exist because of the prohibitively high cost of ephemeral
-memory compared to the cost of non-volatile memory. We had to invent some kind
-of storage that wasn't ephemeral, because ephemeral storage was very
-limited. This is no longer true[^1]. Now that memory is cheap (GB of DDR3 is 50
-US$ on newegg), this isn't so much of a threat anymore.
+Storing the model can be done in two ways. If RAM becomes a limitation (will
+it?), a fast database should be used. AFter all, databases *solely* exist
+because of the prohibitively high cost of ephemeral memory compared to the cost
+of non-volatile memory. Traditionally!
 
-Precautions can be taken in the software in case of a irreversible fault. The
-model could be stored as a persistent image&mdash;yes, raw memory or an accurate
-representation thereof, or a database&mdash;and then instantly loaded. Once the program
-recovers, it restores the model immediately, reducing the boot time.
+Previously, because of the cost of ephemeral memory, we had to invent a cheaper
+form of storage. Now that memory is cheap, this isn't so much of a threat
+anymore.
+
+When it comes to fault-tolerance, precautions can be taken. The model could be
+stored as a persistent image&mdash;yes, raw memory or an accurate representation
+thereof, or a database. Once the program recovers, it restores the model
+immediately, reducing the boot time.
 
 This model also be extended to web servers: instead of recompiling everything at
 every request (hello PHP), one could compile *once* and then compile changes
