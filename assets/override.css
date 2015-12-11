@@ -31,6 +31,11 @@ nav#topnav {
     margin: 1em -15px -1em -15px;
 }
 
+.post-meta {
+    font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
+    font-size: 80%;
+}
+
 .navbar-brand {
     font-size: 25px;
 }
@@ -114,4 +119,14 @@ article.post + article.post {
 
 .full-size .share-icon {
     font-size: 30px;
+}
+
+article a {
+    border-bottom: 1px solid #337ab7;
+}
+
+article a:hover {
+    text-decoration: none;
+    background-color: #337ab7;
+    color: white;
 }

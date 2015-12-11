@@ -32,7 +32,7 @@ js:
     </div>
     <div class="row">
         <div class="col-md-3">
-            <div id="toc-container">
+            <div id="toc-container" class="hidden-xs">
                 <div id="toc"></div>
             </div>
         </div>
@@ -44,7 +44,11 @@ js:
             <p>
                 Tags: {% for tag in page.tags %} <code><a href="/tags/{{ tag }}">{{ tag }}</a></code> {% endfor %}    
             </p>
-            
+
+            <!-- Disqus comments -->
+            {% if page.disqus %}
+            {% include disqus.html %}
+            {% endif %}
         </div>
     </div>
 </div>

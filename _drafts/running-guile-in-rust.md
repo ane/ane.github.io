@@ -6,7 +6,6 @@ summary: How to embed a Guile Scheme interpreter in a Rust program
 disqus: true
 tags:
   - software
-  - software
   - rust
   - scheme
 ---
