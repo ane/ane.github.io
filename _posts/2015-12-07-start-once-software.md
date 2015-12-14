@@ -10,7 +10,7 @@ tags:
 
 Software development tools are in a state of flux. There are two competing
 directions towards which static analysis tools&mdash;like linters and
-typecheckers&mdash;are heading. 
+type checkers&mdash;are heading. 
 
 The first direction is the online model: an analysis tool starts, calculates its
 data, reports results, and then stays *on*, monitoring for changes. When changes
@@ -23,7 +23,7 @@ The obvious caveat is such a process will eat up memory. These days this is
 becoming less and less of a problem, since a gigabyte of desktop-quality DDR3
 memory costs about [US$5](http://www.newegg.com/Product/Product.aspx?Item=N82E16820231314&cm_re=ddr3-_-20-231-314-_-Product).
 
-The *other* direction is to stay in batch more: fire up, perform analysis,
+The *other* direction is to stay in batch mode: fire up, perform analysis,
 report results, and die. This is a proven method. Batch-oriented software has
 been around for ages, and it works really well if the data you're working with
 isn't large.
@@ -99,7 +99,7 @@ with any streaming data. Memory is cheap, but speed always isn't. A good example
 is a log processor that computes the state of some system based on the content
 of some logs. A start-once processor would continuously monitor the log inputs
 and update its model of the system. If it has to churn through a lot of logs at
-the start, it may have a initial delaym but because the model is persistent, any
+the start, it may have a initial delay but because the model is persistent, any
 changes to the model can be computed quickly.
 
 Storing the model can be done in two ways. If RAM becomes a limitation (will
