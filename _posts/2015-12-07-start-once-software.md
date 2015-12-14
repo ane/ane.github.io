@@ -84,7 +84,7 @@ difference is that any model is lost inbetween batch runs.
 
 In fact, file system notification based batch processes remind[^4] me of the
 [the Chinese room experiment](https://en.wikipedia.org/wiki/The_Chinese_Room):
-such tools don't really have a *understanding* of the model that is
+such tools don't really have an *understanding* of the model that is
 **persistent**, but due to a simultaneously crude and brilliant approach, we get the
 subtle impression that such a persistent, evolving understanding actually exists.
 
@@ -99,7 +99,7 @@ with any streaming data. Memory is cheap, but speed always isn't. A good example
 is a log processor that computes the state of some system based on the content
 of some logs. A start-once processor would continuously monitor the log inputs
 and update its model of the system. If it has to churn through a lot of logs at
-the start, it may have a initial delay but because the model is persistent, any
+the start, it may have an initial delay but because the model is persistent, any
 changes to the model can be computed quickly.
 
 Storing the model can be done in two ways. If RAM becomes a limitation (will
