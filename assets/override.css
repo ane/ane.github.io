@@ -49,7 +49,7 @@ pre {
 }
 
 .post-title {
-    color: #333;
+    border: none;
 }
 
 ul.posts {

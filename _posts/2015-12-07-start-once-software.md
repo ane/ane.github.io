@@ -12,7 +12,12 @@ Software development tools are in a state of flux. There are two competing
 directions towards which static analysis tools&mdash;like linters and
 type checkers&mdash;are heading. 
 
-The first direction is the online model: an analysis tool starts, calculates its
+The traditional direction is to stay in batch mode. Fire up, perform analysis,
+report results, and die. This is a proven method. Batch-oriented software has
+been around for ages, and it works really well if the data you're working with
+isn't large.
+
+The new direction is an online model: an analysis tool starts, calculates its
 data, reports results, and then stays *on*, monitoring for changes. When changes
 occur, the program analyzes the changes, and recomputes the effects. This
 execution model is efficient: incremental updates are easier to calculate than
@@ -22,11 +27,6 @@ leveraging the full potential of a client-server model.
 The obvious caveat is such a process will eat up memory. These days this is
 becoming less and less of a problem, since a gigabyte of desktop-quality DDR3
 memory costs about [US$5](http://www.newegg.com/Product/Product.aspx?Item=N82E16820231314&cm_re=ddr3-_-20-231-314-_-Product).
-
-The *other* direction is to stay in batch mode: fire up, perform analysis,
-report results, and die. This is a proven method. Batch-oriented software has
-been around for ages, and it works really well if the data you're working with
-isn't large.
 
 However, if the workload is large, say 100k-1M lines, it actually makes more
 sense to compute an initial "model" of the system, and then *incrementally*
