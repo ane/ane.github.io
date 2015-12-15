@@ -12,12 +12,11 @@ Software development tools are in a state of flux. There are two competing
 directions towards which static analysis tools&mdash;like linters and
 type checkers&mdash;are heading. 
 
-The traditional direction is to stay in batch mode. Fire up, perform analysis,
-report results, and die. This is a proven method. Batch-oriented software has
-been around for ages, and it works really well if the data you're working with
-isn't large.
+The traditional direction is to operate in a *batch* model. Fire up, perform analysis, report
+results, and die. This is a proven method. Batch-oriented software has been around for ages, and it
+works really well if the data you're working with isn't large.
 
-The new direction is an online model: an analysis tool starts, calculates its
+The new direction is an *online* model: an analysis tool starts, calculates its
 data, reports results, and then stays *on*, monitoring for changes. When changes
 occur, the program analyzes the changes, and recomputes the effects. This
 execution model is efficient: incremental updates are easier to calculate than
