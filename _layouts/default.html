@@ -97,18 +97,15 @@
     </head>
     <body class="{% if page.post_class %}{{page.post_class}}{% else %}home-template{% endif %}">
         <div class="hyphenate">
-            {{ content }}
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-                        <footer>
-                            <hr>
-                            <address>
-                                Copyright &copy; {{ site.time | date: "%Y" }} <a href="{{ site.baseurl }}">{{ site.author }}</a> under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
-                            </address>
-                        </footer>
-                    </div>
-                </div>
+            <div class="container">
+                {{ content }}
+                
+                <footer>
+                    <hr>
+                    <address>
+                        Copyright &copy; {{ site.time | date: "%Y" }} <a href="{{ site.baseurl }}">{{ site.author }}</a> under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
+                    </address>
+                </footer>
             </div>
             <script src="https://cdn.jsdelivr.net/bootstrap/3.3.5/js/bootstrap.min.js"></script>
             <!-- Google Analytics Tracking code -->

@@ -7,31 +7,25 @@ about: 'about.html'
 
 {% include header.html %}
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-            <section>
-                {% if site.posts.size > 0 %}
-                <h1>Blog posts</h1>
-                <ul>
-                    {% for post in site.posts %}
-                    <li>
-                        <a href="{{ post.url }}">{{ post.title }}</a> &mdash; <date class="text-muted">{{ post.date | date: "%d %B, %Y" }}</date> 
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                <h3>:-(</h3>
-                <p>I'm sorry, but there are no posts.</p>
-                {% endif %}
-                <h1>Tags</h1>
-                {% assign tags = site.tags | sort %}
-                {% for tag in tags %}
-                <span class="site-tag">
-                    <a href="/tags/{{ tag | first | slugify }}/" style="font-size: {{ tag | last | size  |  times: 4 | plus: 80  }}%">{{ tag[0] | replace:'-', ' ' }} ({{ tag | last | size }}){% unless forloop.last %},{% endunless %}</a>
-                </span>
-                {% endfor %}
-            </section>
-        </div>
-    </div>
-</div>
+<section>
+    {% if site.posts.size > 0 %}
+    <h1>Blog posts</h1>
+    <ul>
+        {% for post in site.posts %}
+        <li>
+            <a href="{{ post.url }}">{{ post.title }}</a> &mdash; <date class="text-muted">{{ post.date | date: "%d %B, %Y" }}</date> 
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <h3>:-(</h3>
+    <p>I'm sorry, but there are no posts.</p>
+    {% endif %}
+    <h1>Tags</h1>
+    {% assign tags = site.tags | sort %}
+    {% for tag in tags %}
+    <span class="site-tag">
+        <a href="/tags/{{ tag | first | slugify }}/" style="font-size: {{ tag | last | size  |  times: 4 | plus: 80  }}%">{{ tag[0] | replace:'-', ' ' }} ({{ tag | last | size }}){% unless forloop.last %},{% endunless %}</a>
+    </span>
+    {% endfor %}
+</section>

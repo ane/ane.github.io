@@ -1,7 +1,7 @@
 ---
 layout: page
 date: 2015-1-1 12:00 UTC
-title: About 
+title: Antoine Kalmbach 
 ---
 
 I'm a programmer by profession, and I live in Jyväskylä, Finland.

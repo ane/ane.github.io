@@ -5,17 +5,11 @@ post_class: post-template page-template
 
 {% include header.html %}
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <main class="content" role="main">
-                <article class="post">
-                    <h1>{{ page.title }}</h1>
-                    <section class="post-content">
-                        {{content}}
-                    </section>
-                </article>
-            </main>
-        </div>
-    </div>
-</div>
+<main class="content" role="main">
+    <article class="post">
+        <h1>{{ page.title }}</h1>
+        <section class="post-content">
+            {{content}}
+        </section>
+    </article>
+</main>

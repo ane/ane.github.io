@@ -36,10 +36,6 @@ nav#topnav {
     font-size: 80%;
 }
 
-.navbar-brand {
-    font-size: 25px;
-}
-
 p {
     hyphens: auto;
 }
@@ -127,6 +123,5 @@ article a {
 
 article a:hover {
     text-decoration: none;
-    background-color: #337ab7;
-    color: white;
+    border-bottom: none;
 }
