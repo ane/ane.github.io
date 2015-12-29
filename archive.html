@@ -9,7 +9,7 @@ about: 'about.html'
 
 <section>
     {% if site.posts.size > 0 %}
-    <h1>Blog posts</h1>
+    <h3>Blog posts</h3>
     <ul>
         {% for post in site.posts %}
         <li>
@@ -21,7 +21,7 @@ about: 'about.html'
     <h3>:-(</h3>
     <p>I'm sorry, but there are no posts.</p>
     {% endif %}
-    <h1>Tags</h1>
+    <h3>Tags</h3>
     {% assign tags = site.tags | sort %}
     {% for tag in tags %}
     <span class="site-tag">
