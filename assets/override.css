@@ -1,39 +1,39 @@
 body {
-    font-size: 20px;
-    font-family: "PT Serif", "Droid Serif", "Georgia", serif;
-    line-height: 1.5;
     color: #000;
+    font-size: 20px;
 }
 
-.main-header h3 {
-    font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
+dd {
+    margin-left: 40px;
 }
+
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
 }
 
 .post-archive-title {
-    font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
     margin-bottom: 0.1em;
 }
 
 .site-tag {
-    font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
     display: inline-block;
     margin-right: 12px;
 }
 
-nav#topnav {
-    font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
-    border: 0;
-    background-color: #fff;
-    margin: 1em -15px -1em -15px;
+.navbar-default .navbar-brand {
+    color: #333;
+    font-size: 22px;
+}
+
+.navbar-nav {
 }
 
 .post-meta {
-    font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
     font-size: 80%;
+}
+
+.share-icon {
+    font-size: 30px;
 }
 
 p {
@@ -115,13 +115,4 @@ article.post + article.post {
 
 .full-size .share-icon {
     font-size: 30px;
-}
-
-article a {
-    border-bottom: 1px solid #337ab7;
-}
-
-article a:hover {
-    text-decoration: none;
-    border-bottom: none;
 }

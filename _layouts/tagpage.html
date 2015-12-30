@@ -2,10 +2,8 @@
 layout: default
 ---
 
-{% include header.html %}
-
 <section>
-    <h3>Tagged '{{ page.tag }}'</h3>
+    <h3 class="page-header">Posts tagged '{{ page.tag }}'</h3>
     <ul>
         {% for post in site.tags[page.tag] %}
         <li>

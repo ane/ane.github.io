@@ -5,11 +5,9 @@ cover: false
 about: 'about.html'
 ---
 
-{% include header.html %}
-
 <section>
     {% if site.posts.size > 0 %}
-    <h3>Blog posts</h3>
+    <h2 class="page-header">Archive</h2>
     <ul>
         {% for post in site.posts %}
         <li>

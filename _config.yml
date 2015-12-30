@@ -1,4 +1,4 @@
-name: ane
+name: Antoine Kalmbach
 description: programming
 meta_description: "A personal programming-oriented blog of Antoine Kalmbach."
 
@@ -7,7 +7,7 @@ markdown: redcarpet
 excerpt_separator: <!--break-->
 logo: false
 paginate: 3
-baseurl: /
+baseurl: ""
 domain_name: 'http://ane.iki.fi'
 highlighter: pygments
 

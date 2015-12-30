@@ -5,8 +5,6 @@ cover: false
 about: 'about.html'
 ---
 
-{% include header.html %}
-
 <div>
     {% if paginator.posts.size > 0 %}
     {% for post in paginator.posts %}
@@ -23,10 +21,6 @@ about: 'about.html'
             </p>
         </header>
         {{ post.content }}
-        <hr/>
-        <p>
-            Tags: {% for tag in post.tags %} <code><a href="/tags/{{ tag }}">{{ tag }}</a></code> {% endfor %}    
-        </p>
     </article>
     {% endfor %}
 

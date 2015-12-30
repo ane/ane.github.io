@@ -4,8 +4,6 @@ archive: false
 post_class: post-template
 ---
 
-{% include header.html %}
-
 <header>
     <h1>{{ page.title }}</h1>
     <section class="text-muted">                
@@ -28,12 +26,12 @@ post_class: post-template
 <hr/>
 
 <footer class="post-footer">
+    <!-- Share links section -->
+    {% include share.html %}
 
     <br>
     <br>
     <br>
-    <!-- Share links section -->
-    {% include share.html %}
     
     <!-- Disqus comments -->
     {% if page.disqus %}

@@ -4,9 +4,8 @@ js:
 - /assets/js/jquery.sticky.js
 ---
 
-<div class="container-fluid">
-    <div class="row full-size">
-        <div class="col-md-8 col-md-offset-2">
+<div class="row full-size">
+    <div class="col-md-12">
         <header>
             <h1>{{ page.title }}</h1>
             
@@ -28,28 +27,27 @@ js:
                 </p>
             </section>
         </header>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div id="toc-container" class="hidden-xs">
+            <div id="toc"></div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-3">
-            <div id="toc-container" class="hidden-xs">
-                <div id="toc"></div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <article>
-                {{ content }}
-            </article>
-            <hr/>
-            <p>
-                Tags: {% for tag in page.tags %} <code><a href="/tags/{{ tag }}">{{ tag }}</a></code> {% endfor %}    
-            </p>
+    <div class="col-md-9">
+        <article>
+            {{ content }}
+        </article>
+        <hr/>
+        <p>
+            Tags: {% for tag in page.tags %} <code><a href="/tags/{{ tag }}">{{ tag }}</a></code> {% endfor %}    
+        </p>
 
-            <!-- Disqus comments -->
-            {% if page.disqus %}
-            {% include disqus.html %}
-            {% endif %}
-        </div>
+        <!-- Disqus comments -->
+        {% if page.disqus %}
+        {% include disqus.html %}
+        {% endif %}
     </div>
 </div>
 

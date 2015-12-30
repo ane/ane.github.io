@@ -133,21 +133,21 @@ small in a fraction of a section.
 
 I hope more tools will adopt this model. We certainly do have the resources now.
 
-### Addendum: examples of start-once static analysis
+## Addendum: examples of start-once static analysis tools
 
-#### [Flow](http://flowtype.org)
+### [Flow](http://flowtype.org)
 
 A static analysis tool for JavaScript by Facebook, written in OCaml. Upon
 launch, it starts a server that runs initial analysis and monitors for
 changes.
 
-#### [Hack](http://hacklang.org/)
+### [Hack](http://hacklang.org/)
 
 A PHP-inspired gradually typed programming language for the HHVM virtual
 machine. It runs a type checker in the background in the same way as Flow
 does. Also in OCaml!
 
-#### [gocode](http://github.com/nsf/gocode)
+### [gocode](http://github.com/nsf/gocode)
 
 Auto-completion service for Go. It uses a client-server model where completion
 requests are sent to the completion server via a JSON-based RPC. Conversely,

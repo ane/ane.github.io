@@ -1,10 +1,12 @@
 ---
 layout: page
 date: 2015-1-1 12:00 UTC
-title: Antoine Kalmbach 
+title: About me
 ---
 
-I'm a programmer by profession, and I live in Jyväskylä, Finland.
+I'm a software developer living in Jyväskylä, Finland.
+
+
 
 You can drop me an [email](mailto:ane@iki.fi) or find me on
 [Github](https://github.com/ane).
