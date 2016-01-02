@@ -10,9 +10,7 @@ Now that the design of the site is finished, I can finally focus on the essentia
 
 I've decided that this year I will be writing a bit more, here, and
 elsewhere. To that end, when it comes to this site, I've had to perform a simple
-but challenging task: lowering standards.
-
-I wasn't publishing much because I had too high standards for content. Under
+but challenging task: lowering standards. I wasn't publishing much because I had exceedingly high standards for content. Under
 those standards, Every blog post had to be a thoroughly researched and carefully
 argued piece, capable of standing the test of time.
 
@@ -20,17 +18,13 @@ This was a monumental mistake.
 
 Researching something thoroughly requires an extraordinary amount of time, and
 writing opinionated articles that stand the test of time requires an
-extraordinary amount of foresight &mdash; neither of which I have, yet.
-
-I have already managed to delete one post that contained opinions I no longer
+extraordinary amount of foresight &mdash; neither of which I have, yet. I have already managed to delete one post that contained opinions I no longer
 agreed with, because I was thinking that its content was wrong and I was a
 moron for publishing it.
 
 My desire for more content stems from the process of gradual improvement. The
 more you write the better you get. And I cannot do this unless I start from the
-very basics.
-
-I could, of course, simply write guides on how to do XYZ with $THING, but I want
+very basics. I could, of course, simply write guides on how to do XYZ with $THING, but I want
 to tell stories, not write recipes. This doesn't mean there won't be any guides,
 however!
 
