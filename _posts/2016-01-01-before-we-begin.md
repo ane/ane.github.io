@@ -29,7 +29,7 @@ to tell stories, not write recipes. This doesn't mean there won't be any guides,
 however!
 
 The desire for increased content and its frequency also stems from the simple
-fact that somebody these things. Besides using Google Analytics to keep track, a
+fact that somebody *reads* this. Besides Google Analytics telling me so, a
 few weeks ago I even received a
 [pull request](https://github.com/ane/ane.github.io/pull/1) for typo fixes.
 
