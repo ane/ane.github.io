@@ -51,7 +51,7 @@ Longer, more in-depth stories, if ever completed, are available under the
 *articles* category. This is to mark a distinction. To qualify as an article,
 the writing will a) contain properly researched writing and references b) be
 reviewed by somebody else. I'm currently
-[working on something](https://ane.iki.fi/ebi) that may one day be considered
+[working on something](http://ane.iki.fi/ebi) that may one day be considered
 something like that.
 
 You're welcome to snoop in the
