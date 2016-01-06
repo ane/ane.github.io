@@ -9,10 +9,6 @@ title: The expression problem as a litmus test
 The [expression problem](https://en.wikipedia.org/wiki/Expression_problem) is a famous problem in
 programming languages. 
 
-> "The Expression Problem is a new name for an old problem. The goal is to define a datatype by
-> cases, where one can add new cases to the datatype and new functions over the datatype, without
-> recompiling existing code, and while retaining static type safety (e.g., no casts)."
-
 Using *interfaces* (like in Java) as the datatype example, the problem simply asks whether it is
 possible to derive the interface and add new methods to the interface, without having to recompile
 existing code or to resort to using casts.
@@ -66,6 +62,8 @@ either patterns or open classes. Ruby's
 [refinements](http://devblog.avdi.org/2015/05/20/so-whats-the-deal-with-ruby-refinements-anyway/)
 can be used for this purpose as well.
 
+## Polymorphic variants
+
 That's a quick introduction to the problem. I think the expression problem is a perfect
 [litmus test](https://en.wikipedia.org/wiki/Litmus#Uses) of sorts for programming languages, that
 is, the measure of the expressive power of the language is the quality of the solutions the language
@@ -74,7 +72,7 @@ presents to expression problem.
 The expression problem is theoretically solvable in any language, but to varying degrees of
 elegance. In Java one must resort to using the
 [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern), and in my mind this is the most
-unelegant way of going about it. I would rate the solutions on a spectrum: with the most *basic*
+inelegant way of going about it. I would rate the solutions on a spectrum: with the most *basic*
 solution being the visitor pattern, at the other end we have something like
 [polymorphic variants](http://www.math.nagoya-u.ac.jp/~garrigue/papers/fose2000.html) and type
 classes. Multimethods and protocols are somewhere in between.
@@ -106,7 +104,7 @@ let volume shp = match shp with
 ```
 
 So now I've extended the `shape` type with another type `Cube`, and I haven't touched `vertices` and
-`area` functions. The `volume` function can be done even more succintly:
+`area` functions. The `volume` function can be done even more succinctly:
 
 ```ocaml
 let short_volume shp = match shp with
@@ -184,11 +182,14 @@ Error: This pattern matches values of type [? `Octagon ]
        The second variant type does not allow tag(s) `Octagon
 ```
 
-The problem with polymorphic variants is you quickly reach an absurd level of complexity and are
-forced to use annotations or subtyping to ensure maximal type safety. So although polymorphic
-variants are *nice*, and they do let us solve the expression problem, they're an unsteady compromise
-between type safety and brevity. You can certainly make elegant abstractions with them but they get
-unwieldy quickly. They aren't as efficient compared to regular variants either.
+## Not a silver bullet
+
+Unfortunately, polymorphic variants are *problematic*. The problem with polymorphic variants is you
+quickly reach an absurd level of complexity and are forced to use annotations or subtyping to ensure
+maximal type safety. So although polymorphic variants are *nice*, and they do let us solve the
+expression problem, they're an unsteady compromise between type safety and brevity. You can
+certainly make elegant abstractions with them but they get unwieldy quickly. They aren't as
+efficient compared to regular variants either.
 
 So what are the options? In OCaml 4.02, you can use *extensible variant types*: 
 
@@ -213,7 +214,9 @@ An extensible variant is defined using `..`, and extension is done with the `+=`
 caveat is that you must handle the default `_` case in pattern matching. Extensible variants are
 another neat trick for solving the expression problem.
 
-To summarize, the expression problem is a great litmus test that measures the expressive power of a
+## A measure of expressive power
+
+The expression problem is a great litmus test that measures the expressive power of a
 programming language. The actual measurement of the test can be either the brevity of the code or
 its type safety. The solutions range from the clumsy Visitor Pattern in Java to polymorphic and
 extensible variants in OCaml and to type classes in Haskell. Clojure and Elixir have
