@@ -39,10 +39,21 @@ types, and you needn't touch the above code. However, as soon as you do that, yo
 made a silly mistake: our shapes are *flat* so their volume is zero. Quickly, you realize you need a
 three-dimensional `Cube` shape.
 
-And here's the onion: you'll have to modify the existing code in two places: the definition of
-`shape` *and* both methods `area` and `vertices`. In OOP, this isn't the case, since you can just
-derive the new `IShape` interface and be done with it, but you can't extend the interface without
-violating the problem constraints.
+```ocaml
+let volume shp = match shp with
+    Circle _ -> 0.
+  | Square _ -> 0.
+  | Cube s   -> a *. a *. a        (* Cube isn't defined *)
+```
+
+Oops!
+
+Here's the onion: to get the `Cube` working, you'll have to modify the existing code in two places:
+the definition of `shape` *and* both methods `area` and `vertices`.
+
+In OOP, this isn't the case, since you can just derive the new `IShape` interface and be done with
+it, but the problem arises when you're adding the `volume` function, because you need to modify
+`IShape`, and thus every class that derives it.
 
 In FP, adding new functions over the datatypes is easy, but adding new cases to the datatype is
 tricky, because you have to modify existing functions. In OOP, adding new functions over the
@@ -66,5 +77,8 @@ solution being the visitor pattern, at the other end we have something like
 [polymorphic variants](http://www.math.nagoya-u.ac.jp/~garrigue/papers/fose2000.html). Type classes,
 multimethods and protocols are something in between. 
 
-Why are polymorphic variants at the very end, that is, the most elegant solutions?
+Why are polymorphic variants at the very end, that is, the most elegant solutions? What makes them
+better than type classes, for instance?
+
+
 
