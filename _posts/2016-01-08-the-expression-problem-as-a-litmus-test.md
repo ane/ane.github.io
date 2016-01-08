@@ -31,7 +31,7 @@ type shape = Circle of float | Rectangle of float * float
 
 let area shp = match shp with
     Circle radius -> 3.14159 *. radius *. radius
-  | Rectangle (w, h) -> width *. height
+  | Rectangle (width, height) -> width *. height
   
 let vertices shp = match shp with 
     Circle _ -> infinity
