@@ -1,5 +1,7 @@
 ---
 layout: post
+disqus: true
+date: 2015-01-08
 tags: 
 - plt
 - ocaml
