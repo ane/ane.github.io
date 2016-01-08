@@ -36,7 +36,7 @@ let area shp = match shp with
 let vertices shp = match shp with 
     Circle _ -> infinity
   | Rectangle (_, _) -> 4
-```
+``` 
 
 So in FP, you could create a function called `volume` that computes the volume for the existing
 types, and you needn't touch the above code. However, as soon as you do that, you realize you've
@@ -76,7 +76,7 @@ presents to expression problem.
 The expression problem is theoretically solvable in any language, but to varying degrees of
 elegance. In Java one must resort to using the
 [visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern), and in my mind this is the most
-unelegant way of going about it. I would rate the solutions on a spectrum: with the most *basic*
+inelegant way of going about it. I would rate the solutions on a spectrum: with the most *basic*
 solution being the visitor pattern, at the other end we have something like
 [polymorphic variants](http://www.math.nagoya-u.ac.jp/~garrigue/papers/fose2000.html) and type
 classes. Multimethods and protocols are somewhere in between.
@@ -108,7 +108,7 @@ let volume shp = match shp with
 ```
 
 So now I've extended the `shape` type with another type `Cube`, and I haven't touched `vertices` and
-`area` functions. The `volume` function can be done even more succintly:
+`area` functions. The `volume` function can be done even more succinctly:
 
 ```ocaml
 let short_volume shp = match shp with
