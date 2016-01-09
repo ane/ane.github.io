@@ -4,7 +4,7 @@ date: 2015-1-1 12:00 UTC
 title: About me
 ---
 
-I'm a Finnish--French software engineer living in Jyväskylä, Finland.
+I'm a Finnish&ndash;French software engineer living in Jyväskylä, Finland.
 
 This blog is mainly about programming and software. For a bit of background, you can read a
 [a meta post of sorts]({% post_url 2016-01-01-before-we-begin %}) that describes the tone of the
