@@ -11,6 +11,10 @@ title: The expression problem as a litmus test
 The [expression problem](https://en.wikipedia.org/wiki/Expression_problem) is a famous problem in
 programming languages. 
 
+> "The Expression Problem is a new name for an old problem. The goal is to define a datatype by
+> cases, where one can add new cases to the datatype and new functions over the datatype, without		
+> recompiling existing code, and while retaining static type safety (e.g., no casts)."
+
 Using *interfaces* (like in Java) as the datatype example, the problem simply asks whether it is
 possible to derive the interface and add new methods to the interface, without having to recompile
 existing code or to resort to using casts.
@@ -69,7 +73,7 @@ can be used for this purpose as well.
 That's a quick introduction to the problem. I think the expression problem is a perfect
 [litmus test](https://en.wikipedia.org/wiki/Litmus#Uses) of sorts for programming languages, that
 is, the measure of the expressive power of the language is the quality of the solutions the language
-presents to expression problem.
+presents to the expression problem.
 
 The expression problem is theoretically solvable in any language, but to varying degrees of
 elegance. In Java one must resort to using the
