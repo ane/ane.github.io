@@ -1,5 +1,7 @@
 ---
 layout: post
+disqus: true
+date: 2016-01-08
 tags: 
 - plt
 - ocaml
@@ -25,12 +27,12 @@ type shape = Circle of float | Rectangle of float * float
 
 let area shp = match shp with
     Circle radius -> 3.14159 *. radius *. radius
-  | Rectangle (w, h) -> width *. height
+  | Rectangle (width, height) -> width *. height
   
 let vertices shp = match shp with 
     Circle _ -> infinity
   | Rectangle (_, _) -> 4
-```
+``` 
 
 So in FP, you could create a function called `volume` that computes the volume for the existing
 types, and you needn't touch the above code. However, as soon as you do that, you realize you've
