@@ -1,7 +1,6 @@
 name: Antoine Kalmbach
 description: programming
-meta_description: "A personal programming-oriented blog of Antoine Kalmbach."
-
+meta_description: "The personal blog of Antoine Kalmbach, a Finnish-French software engineer."
 encoding: utf-8
 markdown: redcarpet
 excerpt_separator: <!--break-->
