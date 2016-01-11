@@ -112,3 +112,7 @@ article.post + article.post {
 .full-size .share-icon {
     font-size: 30px;
 }
+
+.container {
+    max-width: 70rem;
+}
