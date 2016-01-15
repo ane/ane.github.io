@@ -1,0 +1,9 @@
+digraph {
+    rankdir="LR"
+
+    Storage -> MQ -> Cache;
+    Cache -> "Computing System";
+    Cache -> "Service Backend";
+    MQ -> "BI System";
+    "Service Backend" -> "Application";
+}

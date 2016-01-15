@@ -116,3 +116,8 @@ article.post + article.post {
 .container {
     max-width: 70rem;
 }
+
+.center {
+    margin: 0 auto;
+    text-align: center;
+}
