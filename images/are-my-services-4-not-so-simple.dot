@@ -6,4 +6,8 @@ digraph {
     C -> E;
     B -> I;
     E -> P;
+
+    A -> I[style="dashed"];
+    A -> P[style="dashed"];
+    A -> S[style="dashed"];
 }
