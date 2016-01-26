@@ -1,17 +1,5 @@
-body {
-    color: #000;
-}
-
-dd {
-    margin-left: 40px;
-}
-
-
-h1, h2, h3, h4, h5, h6 {
-}
-
-.post-archive-title {
-    margin-bottom: 0.1em;
+#topnav {
+    margin-bottom: 2rem;
 }
 
 .site-tag {
@@ -19,37 +7,22 @@ h1, h2, h3, h4, h5, h6 {
     margin-right: 12px;
 }
 
-.navbar-default .navbar-brand {
-    color: #333;
-    font-size: 22px;
+blockquote {
+    padding: .5rem 1rem;
+    font-size: 1.25rem;
+    border-left: .25rem solid #eceeef;
 }
 
-.navbar-nav {
+blockquote p {
+    margin-bottom: 0;
 }
-
-.post-meta {
-    font-size: 80%;
-}
-
+ 
 .share-icon {
     font-size: 30px;
 }
 
 p {
     hyphens: auto;
-}
-
-.post-title {
-    border: none;
-}
-
-ul.posts {
-    padding-left: 0;
-}
-
-li.post {
-    margin: 2em 0;
-    list-style-type: none;
 }
 
 #toc ul {
@@ -113,7 +86,7 @@ article.post + article.post {
 }
 
 .container {
-    max-width: 70rem;
+    max-width: 50rem;
 }
 
 .center {

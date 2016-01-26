@@ -1,5 +1,5 @@
 digraph {
     rankdir="LR"
     {rankdir=same; A -> B -> C}
-    A -> C[style=dashed; label="the implied dependency"];
+    A -> C[style=dashed; label="an implicit dependency"];
 }
