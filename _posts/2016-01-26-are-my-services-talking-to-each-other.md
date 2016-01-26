@@ -206,7 +206,7 @@ Either way, the original problem is an interesting one. I suppose the only relia
 things is to do what the Internet Protocol does: acknowledgment and error checking. While certainly
 a lot of work, it will be reliable. We all love reinventing wheels, don't we?
 
-My opinion? Don't fix what's not broken! While we all benefit from loose coupling, and while
+My opinion? Don't fix what isn't broken! While we all benefit from loose coupling, and while
 microservices definitely are *most of the time* an improvement over monoliths, both bring hurdles
 and challenges of their own. The bottom line is that networking is not easy, and if one forgets
 this, problems *will* occur. 
