@@ -32,7 +32,7 @@ other, forming a complex network. Let's start from the basics and consider a sim
 You could assume **A** is an event log, for example, of financial transactions; **B** is a message
 queue and **C** is a fast queryable cache for the transactions. We want to be able to query the
 cache quickly for log events and rely on the message queue of transporting them from **A** to **C**,
-while *preferably* having a hard software dependency from **A** to **C**.
+while preferably not having a hard software dependency from **A** to **C**.
 
 The illusion is that while there are neither code nor protocol dependencies between **A** and **C**,
 a semantic dependency exists: the one in our heads! **A** is content on dumping information
