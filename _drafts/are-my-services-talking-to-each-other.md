@@ -2,10 +2,10 @@
 layout: post
 title: Are my services talking to each other?
 disqus: true
-date: 2016-01-31
+date: 2016-01-26
 tags: 
   - architecture
-  - networking
+  - software
   - frp
 ---
 
@@ -14,12 +14,12 @@ I am faced with an interesting thought experiment, which asks:
 > If I can see two of my friends, and I know they should be communicating to each other, what is the
 > simplest way of making sure they are doing so?
 
-Your first instinct is to *look* at them and *listen*, but what if the communication method is
-subtler than that?  What if you are, metaphorically speaking, deaf, and cannot eavesdrop on their
-messages?
+Your first instinct is to *look* at them and *listen*. What if the communication method is
+subtler than that? What if you are, metaphorically speaking, *deaf*, and cannot eavesdrop on their
+conversation?
 
-This problem arises when you have a non-trivial amount of distributed components talking to each
-othe, forming a complex network. Let's start from the basics and consider a simple one:
+A problem like arises when you have a non-trivial amount of distributed components talking to each
+other, forming a complex network. Let's start from the basics and consider a simple one:
 
 <center>
 ![A simple example](/images/are-my-services-1-simple.png)
@@ -29,15 +29,16 @@ othe, forming a complex network. Let's start from the basics and consider a simp
 </small>
 </center>
 
-You could assume **A** is an event log, **B** is a message queue and **C** is a cache. We want
-to be able to query the cache quickly for log events and rely on the message queue of transporting
-them from **A** to **C**, while *preferably* having **A** not be dependent on **C**.
+You could assume **A** is an event log, for example, of financial transactions; **B** is a message
+queue and **C** is a fast queryable cache for the transactions. We want to be able to query the
+cache quickly for log events and rely on the message queue of transporting them from **A** to **C**,
+while *preferably* having a hard software dependency from **A** to **C**.
 
 The illusion is that while there are neither code nor protocol dependencies between **A** and **C**,
-a semantic dependency *does* exist. It's all in our heads! **A** is content on dumping information
+a semantic dependency exists: the one in our heads! **A** is content on dumping information
 towards **B**, but what we're really interested in is messages getting through all the way to
-**C**. So in reality, if we superimpose dependencies on top of information flows, we end up with
-this:
+**C**. So in reality, if we superimpose our perceived dependencies on top of information flows, we
+end up with this:
 
 <center>
 ![A simple example, part two.](/images/are-my-services-3-simple.png)
@@ -48,9 +49,10 @@ this:
 What if the chain breaks? What happens when A can't push messages onward to B, and we get a
 blackout? Who gets notified? C doesn't know what's happening in A, it's just not getting
 information! In line of the original question, if I can see both A and C are doing fine, but they're
-not talking to each other? Who failed?
+not talking to each other, where is or *who* is the broken phone?
 
-With such a simple case this is easy, but let's build a more complicated network:
+With such a simple case as above, pointing this out is easy, so let's make our network a bit more
+complicated.
 
 <center>
 ![A slightly more complex example](/images/are-my-services-2-not-so-simple.png)
@@ -62,21 +64,21 @@ application; I - a business intelligence system; S - a storage system</em>
 </center>
 
 Let's assume each one of these components is an independent service, each load balanced and with
-redundancies that aren't visible beyond the node itself, and that communication is done over a
+redundancies that aren't visible beyond the node itself[^1], and that communication is done over a
 computer network using some protocol.
 
 The depicted network consists of a set of applications that all in one way or the other build on top
-of an event log, A. In one branch, there's a fast queryable cache for the event log, the app back-end is an interface
-for the cache (like a REST API), and the storage acts as a long-term backup system. The second
-branch consists of a business intelligence system that analyzes the event log data and does
-something with it. 
+of an event log, A. In one branch, there's a fast queryable cache for the transaction log, the app
+back-end is an interface for the cache (like a REST API), and the storage acts as a long-term backup
+system. The second branch consists of a business intelligence system that analyzes the event log
+data and does something with it.
 
-Indirectly, there are dependency arrows that emanate from the root of the network tree (A) to its
-leaves S, P and I. From an observer's perspective, these are the relationships that
-matter. Furthermore, we can see those dependencies, but we build the code in such a way that it does
-not. The event log simply dumps data to a message queue, and that's it. What is worse, is that the
-implicit dependencies each propagate up the chain. Not only does the leaf node depend on the root
-node, it also depends on the intermediate nodes.
+Indirectly, there are dependency arrows emanating from the root of the network tree (A) to its
+leaves S, P and I. From an observer's perspective, these are the relationships that matter. These
+are the *implicit dependencies*. Furthermore, we can see those dependencies, but we build the code
+in such a way that it does not! The event log simply dumps data to a message queue, and that's
+it. What is worse, is that the implicit dependencies each propagate up the chain. Not only does the
+leaf node depend on the root node, it also depends on the intermediate nodes.
 
 <center>
 ![A slightly more complex example](/images/are-my-services-4-not-so-simple.png)
@@ -94,13 +96,13 @@ the root node to the leaf nodes and we have to quickly identify where the discon
 ## Seeing is not enough
 
 Our first instinct is to peer at the logs. So we go through each *edge* in the network and see if
-there's a fault. This means looking at least at *n-1* edges for each fault! Adding insult to injury
-are the implicit dependencies we have to keep in mind.
+there's a fault. This means for `n` nodes looking at least at *n-1* edges for each fault! Adding
+insult to injury are the implicit dependencies we have to keep in mind.
 
-Something that gives me *visibility* is not enough in this case. I am interested in the flow of
-information from one place or the other. Thus using service discovery tools like ZooKeeper do not
-solve the problem. The thought experiment already assumes that the nodes are there, only the
-communication between them is broken.
+Additionally, something that gives me *visibility* is not enough in this case. I am interested in
+the flow of information from one place or the other. Thus using service discovery tools like
+ZooKeeper do not solve the problem. The thought experiment already assumes that the nodes are there,
+only the communication between them is broken.
 
 In the Internet world, with the TCP protocol, communication is reliable and error-checked. That means,
 if A were a network element and wanted to send things over to C, in case of a successful delivery C
@@ -108,23 +110,24 @@ will acknowledge this back to A.
 
 For various reasons, it may be that in a distributed service network this approach is not
 feasible. This is the cost of abstractions: when you enforce loose coupling, you have to deal with
-the consequences of looseness. We *could* build the Logger aware of the user-facing Application but
-that may be overkill.
+the consequences of looseness. We *could* build the transaction log aware of the user-facing
+Application but that may be overkill.
 
 For the particular problem of *acknowledging* from a message queue root to a consumer leaf, there
 are various solutions. You either implement this on your own, which while laborious, essentially
 follows the principle of error-checking. The caveat is this grows in complexity with every new node.
 Another option is to use a message queue
-([one of these is not like the others](https://en.wikipedia.org/wiki/Apache_Kafka)) that supports
+([one of these things is not like the others](https://en.wikipedia.org/wiki/Apache_Kafka)) that supports
 this natively. 
 
-## Signals to the rescue?
+## The rescue signal
 
 We could build a centralized logging system to which each node logs its events. This centralized
 system contains *all* events from *all* nodes. To make the data meaningful, you need to construct a
-way to determine the flow of information. Worse, the system will require manual or semi-automated
-inspection to determine when any event is missing its acknowledgment, that is, A logged an event of
-sending `Foo` to message queue but the user application back-end `E` never processed it.
+way to determine the flow of information, that is, grouping events together semantically. Worse, the
+system will require manual or semi-automated inspection to determine when any event is missing its
+acknowledgment, that is, A logged an event of sending `Foo` to message queue but the user
+application back-end `E` never processed it.
 
 A system like this could work using a
 [FRP](https://en.wikipedia.org/wiki/Functional_reactive_programming) approach: since FRP signals map
@@ -203,8 +206,10 @@ Either way, the original problem is an interesting one. I suppose the only relia
 things is to do what the Internet Protocol does: acknowledgment and error checking. While certainly
 a lot of work, it will be reliable. We all love reinventing wheels, don't we?
 
-My opinion? Don't fix what's not broken! While we all benefit from loose coupling and microservices
-definitely are *most of the time* an improvement over monoliths, they bring in hurdles and
-challenges of their own. The bottom line is that networking is not easy, and if one forgets this,
-problems *will* occur. The microservice architecture is growing ever popular, so further research
-into networking *at the software level* is definitely needed.
+My opinion? Don't fix what's not broken! While we all benefit from loose coupling, and while
+microservices definitely are *most of the time* an improvement over monoliths, both bring hurdles
+and challenges of their own. The bottom line is that networking is not easy, and if one forgets
+this, problems *will* occur. 
+
+[^1]: So for all intents and purposes the nodes represent services as a whole instead of individual
+    physical units, whatever they may be.

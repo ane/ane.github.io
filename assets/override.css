@@ -1,3 +1,21 @@
+body {
+    font-family: "Georgia", serif;
+}
+
+.content {
+    font-size: 20px;
+}
+
+nav,
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6 {
+    font-family: sans-serif;
+}
+
 #topnav {
     margin-bottom: 2rem;
 }

@@ -1,12 +1,12 @@
 digraph {
     rankdir=LR;
     
-    Producer -> "+"[label="(t=Write, src=Producer, msg=\"foo\")"];
-    Consumer -> "+"[label="(t=Read, src=Producer, msg=\"foo\")"];
+    Producer -> "+":nw[label="(t=Write, src=Producer, msg=\"foo\")"];
+    Consumer -> "+":sw[label="(t=Read, src=Producer, msg=\"foo\")"];
 
     "+" [shape=diamond];
     
-    X [shape=box,label="Communication!"];
+    X [label="Communication!"];
     
     "+" -> X;
 }

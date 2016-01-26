@@ -6,22 +6,808 @@
   xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
   <channel>
     <title>Antoine Kalmbach</title>
-    <link>http://ane.iki.fi/</link>
-    <description>and his thoughts on programming</description>
-    <pubDate>Fri, 02 Jan 2015 14:00:00 +0200</pubDate>
+    <link>http://ane.iki.fi</link>
+    <description>Antoine Kalmbach's Blog</description>
+    <pubDate>Tue, 26 Jan 2016 00:00:00 +0200</pubDate>
     <item>
-      <title>The Side-effects of Functional Programming</title>
-      <link>http://ane.iki.fi//2015/01/02/side-effects-of-functional-programming.html</link>
-      <description>&lt;p&gt;The lack of side-effects and immutability are definitive
-characteristics of functional programming: its declarative modus
-expresses clearly that variables cannot be altered after being
-declared. How does understanding this style affect the writing of
-ordinary imperative code, after the programmer, having learned and
-understood immutable code, returns to imperative programming?&lt;/p&gt;
+      <title>Are my services talking to each other?</title>
+      <link>http://ane.iki.fi/2016/01/26/are-my-services-talking-to-each-other.html</link>
+      <description>&lt;p&gt;I am faced with an interesting thought experiment, which asks:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;If I can see two of my friends, and I know they should be communicating to each other, what is the
+simplest way of making sure they are doing so?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Your first instinct is to &lt;em&gt;look&lt;/em&gt; at them and &lt;em&gt;listen&lt;/em&gt;. What if the communication method is
+subtler than that? What if you are, metaphorically speaking, &lt;em&gt;deaf&lt;/em&gt;, and cannot eavesdrop on their
+conversation?&lt;/p&gt;
+
+&lt;p&gt;A problem like arises when you have a non-trivial amount of distributed components talking to each
+other, forming a complex network. Let&amp;#39;s start from the basics and consider a simple one:&lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;
+&lt;img src=&quot;/images/are-my-services-1-simple.png&quot; alt=&quot;A simple example&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;small&gt;
+&lt;em&gt;arrows indicate flows of information, i.e. x &amp;rarr; y means x sends information to y&lt;/em&gt;
+&lt;/small&gt;
+&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;You could assume &lt;strong&gt;A&lt;/strong&gt; is an event log, for example, of financial transactions; &lt;strong&gt;B&lt;/strong&gt; is a message
+queue and &lt;strong&gt;C&lt;/strong&gt; is a fast queryable cache for the transactions. We want to be able to query the
+cache quickly for log events and rely on the message queue of transporting them from &lt;strong&gt;A&lt;/strong&gt; to &lt;strong&gt;C&lt;/strong&gt;,
+while &lt;em&gt;preferably&lt;/em&gt; having a hard software dependency from &lt;strong&gt;A&lt;/strong&gt; to &lt;strong&gt;C&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The illusion is that while there are neither code nor protocol dependencies between &lt;strong&gt;A&lt;/strong&gt; and &lt;strong&gt;C&lt;/strong&gt;,
+a semantic dependency exists: the one in our heads! &lt;strong&gt;A&lt;/strong&gt; is content on dumping information
+towards &lt;strong&gt;B&lt;/strong&gt;, but what we&amp;#39;re really interested in is messages getting through all the way to
+&lt;strong&gt;C&lt;/strong&gt;. So in reality, if we superimpose our perceived dependencies on top of information flows, we
+end up with this:&lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;
+&lt;img src=&quot;/images/are-my-services-3-simple.png&quot; alt=&quot;A simple example, part two.&quot;&gt;
+&lt;/center&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;tolerating-faults&quot;&gt;Tolerating faults&lt;/h2&gt;
+
+&lt;p&gt;What if the chain breaks? What happens when A can&amp;#39;t push messages onward to B, and we get a
+blackout? Who gets notified? C doesn&amp;#39;t know what&amp;#39;s happening in A, it&amp;#39;s just not getting
+information! In line of the original question, if I can see both A and C are doing fine, but they&amp;#39;re
+not talking to each other, where is or &lt;em&gt;who&lt;/em&gt; is the broken phone?&lt;/p&gt;
+
+&lt;p&gt;With such a simple case as above, pointing this out is easy, so let&amp;#39;s make our network a bit more
+complicated.&lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;
+&lt;img src=&quot;/images/are-my-services-2-not-so-simple.png&quot; alt=&quot;A slightly more complex example&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;small&gt;
+&lt;em&gt;A - an event log; B - a message queue; C - a cache; E - app back-end; P - a user-facing
+application; I - a business intelligence system; S - a storage system&lt;/em&gt;
+&lt;/small&gt;
+&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;Let&amp;#39;s assume each one of these components is an independent service, each load balanced and with
+redundancies that aren&amp;#39;t visible beyond the node itself&lt;sup id=&quot;fnref1&quot;&gt;&lt;a href=&quot;#fn1&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;, and that communication is done over a
+computer network using some protocol.&lt;/p&gt;
+
+&lt;p&gt;The depicted network consists of a set of applications that all in one way or the other build on top
+of an event log, A. In one branch, there&amp;#39;s a fast queryable cache for the transaction log, the app
+back-end is an interface for the cache (like a REST API), and the storage acts as a long-term backup
+system. The second branch consists of a business intelligence system that analyzes the event log
+data and does something with it.&lt;/p&gt;
+
+&lt;p&gt;Indirectly, there are dependency arrows emanating from the root of the network tree (A) to its
+leaves S, P and I. From an observer&amp;#39;s perspective, these are the relationships that matter. These
+are the &lt;em&gt;implicit dependencies&lt;/em&gt;. Furthermore, we can see those dependencies, but we build the code
+in such a way that it does not! The event log simply dumps data to a message queue, and that&amp;#39;s
+it. What is worse, is that the implicit dependencies each propagate up the chain. Not only does the
+leaf node depend on the root node, it also depends on the intermediate nodes.&lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;
+&lt;img src=&quot;/images/are-my-services-4-not-so-simple.png&quot; alt=&quot;A slightly more complex example&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;small&gt;
+&lt;em&gt;Implicit dependencies&lt;/em&gt;
+&lt;/small&gt;
+&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;The inherent hazard in all this, of course, is that there&amp;#39;s a communication error. Even though we
+(hopefully) built the system following the
+&lt;a href=&quot;https://en.wikipedia.org/wiki/Robustness_principle&quot;&gt;robustness principle&lt;/a&gt;, data isn&amp;#39;t flowing from
+the root node to the leaf nodes and we have to quickly identify where the disconnect happened.&lt;/p&gt;
+
+&lt;h2 id=&quot;seeing-is-not-enough&quot;&gt;Seeing is not enough&lt;/h2&gt;
+
+&lt;p&gt;Our first instinct is to peer at the logs. So we go through each &lt;em&gt;edge&lt;/em&gt; in the network and see if
+there&amp;#39;s a fault. This means for &lt;code&gt;n&lt;/code&gt; nodes looking at least at &lt;em&gt;n-1&lt;/em&gt; edges for each fault! Adding
+insult to injury are the implicit dependencies we have to keep in mind.&lt;/p&gt;
+
+&lt;p&gt;Additionally, something that gives me &lt;em&gt;visibility&lt;/em&gt; is not enough in this case. I am interested in
+the flow of information from one place or the other. Thus using service discovery tools like
+ZooKeeper do not solve the problem. The thought experiment already assumes that the nodes are there,
+only the communication between them is broken.&lt;/p&gt;
+
+&lt;p&gt;In the Internet world, with the TCP protocol, communication is reliable and error-checked. That means,
+if A were a network element and wanted to send things over to C, in case of a successful delivery C
+will acknowledge this back to A.&lt;/p&gt;
+
+&lt;p&gt;For various reasons, it may be that in a distributed service network this approach is not
+feasible. This is the cost of abstractions: when you enforce loose coupling, you have to deal with
+the consequences of looseness. We &lt;em&gt;could&lt;/em&gt; build the transaction log aware of the user-facing
+Application but that may be overkill.&lt;/p&gt;
+
+&lt;p&gt;For the particular problem of &lt;em&gt;acknowledging&lt;/em&gt; from a message queue root to a consumer leaf, there
+are various solutions. You either implement this on your own, which while laborious, essentially
+follows the principle of error-checking. The caveat is this grows in complexity with every new node.
+Another option is to use a message queue
+(&lt;a href=&quot;https://en.wikipedia.org/wiki/Apache_Kafka&quot;&gt;one of these things is not like the others&lt;/a&gt;) that supports
+this natively. &lt;/p&gt;
+
+&lt;h2 id=&quot;the-rescue-signal&quot;&gt;The rescue signal&lt;/h2&gt;
+
+&lt;p&gt;We could build a centralized logging system to which each node logs its events. This centralized
+system contains &lt;em&gt;all&lt;/em&gt; events from &lt;em&gt;all&lt;/em&gt; nodes. To make the data meaningful, you need to construct a
+way to determine the flow of information, that is, grouping events together semantically. Worse, the
+system will require manual or semi-automated inspection to determine when any event is missing its
+acknowledgment, that is, A logged an event of sending &lt;code&gt;Foo&lt;/code&gt; to message queue but the user
+application back-end &lt;code&gt;E&lt;/code&gt; never processed it.&lt;/p&gt;
+
+&lt;p&gt;A system like this could work using a
+&lt;a href=&quot;https://en.wikipedia.org/wiki/Functional_reactive_programming&quot;&gt;FRP&lt;/a&gt; approach: since FRP signals map
+&lt;em&gt;exactly&lt;/em&gt; to discrete events, one could build a rule engine. By
+&lt;a href=&quot;https://wiki.haskell.org/Functional_Reactive_Programming&quot;&gt;integrating time flow and compositional events&lt;/a&gt;,
+a centralized system could use its rule engine to listen to signals. A signal can be any event,
+e.g., a financial transaction that was logged into the event log. You can combine this signal with
+another event in a system that &lt;em&gt;consumes&lt;/em&gt; transactions and does something with them, like the
+business intelligence system. The sum of these two signals imply that &lt;q&gt;a financial transaction was
+consumed by the business intelligence system&lt;/q&gt;. This is also a signal!&lt;/p&gt;
+
+&lt;p&gt;Building a FRP-based rule engine isn&amp;#39;t easy, you&amp;#39;d need to construct a rule engine that can map
+diverse data events into high-level &lt;em&gt;signals&lt;/em&gt; and then create additional logic for &lt;em&gt;summing&lt;/em&gt; the
+signals. &lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;
+&lt;img src=&quot;/images/are-my-services-5-frp.png&quot; alt=&quot;The FRP approach&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;small&gt;
+&lt;em&gt;The sum of two signals is another signal. (Oh hey, this makes it a &lt;a href=&quot;https://en.wikipedia.org/wiki/Semigroup&quot;&gt;semigroup&lt;/a&gt;!)&lt;/em&gt;
+&lt;/small&gt;
+&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;Once such a system is built, it can be queried to determine the state of the network quite
+efficiently (and perhaps elegantly), but it does not introduce any fault tolerance and will only
+tell you where data &lt;strong&gt;is&lt;/strong&gt; moving, but not where it isn&amp;#39;t.&lt;/p&gt;
+
+&lt;h2 id=&quot;lurking-in-the-shadows&quot;&gt;Lurking in the shadows&lt;/h2&gt;
+
+&lt;p&gt;I guess that most of this stuff underlines the difficulties of unraveling a monolith into a
+microservice. Keeping track of network traffic is really hard, even at the hardware level (!), so
+when we push this abstraction to the software level, it is not a surprise that this can cause
+problems.&lt;/p&gt;
+
+&lt;p&gt;Playing with some toy solutions I thought of something I call a &lt;em&gt;shadow network&lt;/em&gt;. Let&amp;#39;s say our
+principal information source is an event monitor &lt;strong&gt;X&lt;/strong&gt; and we have a &lt;strong&gt;leaf node&lt;/strong&gt; in the
+information dependency tree that is interested in data originating from &lt;strong&gt;X&lt;/strong&gt;. &lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;
+&lt;img src=&quot;/images/are-my-services-6-shadow.png&quot; alt=&quot;Shadows&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;small&gt;
+&lt;em&gt;Each leaf node sends its data to the shadow node. The shadow node understands the data and can
+tell where it originated from, thereby seeing the implicit dependencies. The shadow node is
+effectively a &lt;em&gt;mirror&lt;/em&gt; of the root node(s).&lt;/em&gt;
+&lt;/small&gt;
+&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;In the shadow network, &lt;strong&gt;X&lt;/strong&gt; does not receive any new dependencies nor do the intermediaries, but
+the leaf nodes each push their actions to the &lt;em&gt;shadow node&lt;/em&gt;. The shadow node contains a &lt;em&gt;rule
+engine&lt;/em&gt; that can parse leaf events. A &lt;em&gt;rule&lt;/em&gt; is something that identifies a &lt;strong&gt;source&lt;/strong&gt;. It could be
+anything, from a simple parser (&lt;q&gt;this looks like Apache logs -&gt; it came from Apache!&lt;/q&gt;) or something
+more sophisticated. This introduces a dependency only to leaf nodes, but the problem is that the
+shadow node has to be kept up to date on how to correctly map events to sources. When you change the
+format of the data traveling across the network, you have to update the rule engine.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, this doesn&amp;#39;t really help us: you can query the shadow node to get the &lt;em&gt;implied
+dependencies&lt;/em&gt;, but that&amp;#39;s it. So while it requires less effort to develop, disregarding cases where
+creating rules causes difficulties, it suffers from the same flaw than the centralized FRP engine:
+it can only tell when data &lt;strong&gt;is&lt;/strong&gt; flowing but not when it &lt;strong&gt;isn&amp;#39;t&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;no-easy-answers&quot;&gt;No easy answers&lt;/h2&gt;
+
+&lt;p&gt;This makes both solutions rather untenable for monitoring a microservice architecture, but they can
+be used in cases where the service network grows large and you are working with opaque layers, that
+is, you &lt;em&gt;don&amp;#39;t know&lt;/em&gt; what&amp;#39;s between the leaves and the root, and you want to construct the implicit
+dependency graph. &lt;/p&gt;
+
+&lt;p&gt;Bolting temporal awareness in the shadow network works if the data is supposed to be regular. If the
+consuming leaf expects a tick from the origin(s) every &lt;code&gt;n&lt;/code&gt; seconds, the shadow rule engine can be
+built to be aware of this. If ticks aren&amp;#39;t happening when they are supposed to, you can create a
+fault on the implicit dependency. Alas, only regularly occurring data works here, so we&amp;#39;re out of
+luck for irregular events.&lt;/p&gt;
+
+&lt;p&gt;Either way, the original problem is an interesting one. I suppose the only reliable way of doing
+things is to do what the Internet Protocol does: acknowledgment and error checking. While certainly
+a lot of work, it will be reliable. We all love reinventing wheels, don&amp;#39;t we?&lt;/p&gt;
+
+&lt;p&gt;My opinion? Don&amp;#39;t fix what&amp;#39;s not broken! While we all benefit from loose coupling, and while
+microservices definitely are &lt;em&gt;most of the time&lt;/em&gt; an improvement over monoliths, both bring hurdles
+and challenges of their own. The bottom line is that networking is not easy, and if one forgets
+this, problems &lt;em&gt;will&lt;/em&gt; occur. &lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+
+&lt;li id=&quot;fn1&quot;&gt;
+&lt;p&gt;So for all intents and purposes the nodes represent services as a whole instead of individual
+physical units, whatever they may be.&amp;nbsp;&lt;a href=&quot;#fnref1&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;/ol&gt;
+&lt;/div&gt;
 </description>
-      <pubDate>Fri, 02 Jan 2015 14:00:00 +0200</pubDate>
-      <dc:date>2015-01-02T14:00:00+02:00</dc:date>
+      <pubDate>Tue, 26 Jan 2016 00:00:00 +0200</pubDate>
+      <dc:date>2016-01-26T00:00:00+02:00</dc:date>
     </item>
-    <dc:date>2015-01-02T14:00:00+02:00</dc:date>
+    <item>
+      <title>The expression problem as a litmus test</title>
+      <link>http://ane.iki.fi/2016/01/08/the-expression-problem-as-a-litmus-test.html</link>
+      <description>&lt;p&gt;The &lt;a href=&quot;https://en.wikipedia.org/wiki/Expression_problem&quot;&gt;expression problem&lt;/a&gt; is a famous problem in
+programming languages. &lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;q&gt;The Expression Problem is a new name for an old problem. The goal is to define a datatype by
+cases, where one can add new cases to the datatype and new functions over the datatype, without       
+recompiling existing code, and while retaining static type safety (e.g., no casts).&lt;/q&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Using &lt;em&gt;interfaces&lt;/em&gt; (like in Java) as the datatype example, the problem simply asks whether it is
+possible to derive the interface and add new methods to the interface, without having to recompile
+existing code or to resort to using casts.&lt;/p&gt;
+
+&lt;p&gt;Obviously, in a OOP language it&amp;#39;s easy to derive interfaces, but the problem uncovers the rigidity
+of the type system: you can&amp;#39;t modify (i.e. extend) the interface, because you have to modify all the
+classes classes that implement the interface.&lt;/p&gt;
+
+&lt;p&gt;Conversely, in functional programming languages, adding new methods operating on the interface is
+easy. Consider the canonical OCaml example:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot; data-lang=&quot;ocaml&quot;&gt;&lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Circle&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Circle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;14159&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;vertices&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; 
+    &lt;span class=&quot;nc&quot;&gt;Circle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;infinity&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(_,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;_)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So in FP, you could create a function called &lt;code&gt;volume&lt;/code&gt; that computes the volume for the existing
+types, and you needn&amp;#39;t touch the above code. However, as soon as you do that, you realize you&amp;#39;ve
+made a silly mistake: our shapes are &lt;em&gt;flat&lt;/em&gt; so their volume is zero. Quickly, you realize you need a
+three-dimensional &lt;code&gt;Cube&lt;/code&gt; shape.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot; data-lang=&quot;ocaml&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;volume&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Circle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Cube&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;        &lt;span class=&quot;c&quot;&gt;(* Cube isn&amp;#39;t defined *)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Oops!&lt;/p&gt;
+
+&lt;p&gt;Here&amp;#39;s the onion: to get the &lt;code&gt;Cube&lt;/code&gt; working, you&amp;#39;ll have to modify the existing code in two places:
+the definition of &lt;code&gt;shape&lt;/code&gt; &lt;em&gt;and&lt;/em&gt; both methods &lt;code&gt;area&lt;/code&gt; and &lt;code&gt;vertices&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In OOP, this isn&amp;#39;t the case, since you can just derive the new &lt;code&gt;IShape&lt;/code&gt; interface and be done with
+it, but the problem arises when you&amp;#39;re adding the &lt;code&gt;volume&lt;/code&gt; function, because you need to modify
+&lt;code&gt;IShape&lt;/code&gt;, and thus every class that derives it.&lt;/p&gt;
+
+&lt;p&gt;In FP, adding new functions over the datatypes is easy, but adding new cases to the datatype is
+tricky, because you have to modify existing functions. In OOP, adding new functions over the
+datatype is hard, because you need to modify each implementation; adding new cases to the datatype
+is easy, since all you need to do is derive the interface. FP has invented a multitude of ways to
+deal with this problem, ranging from type classes, traits to protocols; OOP usually solves with
+either patterns or open classes. Ruby&amp;#39;s
+&lt;a href=&quot;http://devblog.avdi.org/2015/05/20/so-whats-the-deal-with-ruby-refinements-anyway/&quot;&gt;refinements&lt;/a&gt;
+can be used for this purpose as well.&lt;/p&gt;
+
+&lt;h2 id=&quot;polymorphic-variants&quot;&gt;Polymorphic variants&lt;/h2&gt;
+
+&lt;p&gt;That&amp;#39;s a quick introduction to the problem. I think the expression problem is a perfect
+&lt;a href=&quot;https://en.wikipedia.org/wiki/Litmus#Uses&quot;&gt;litmus test&lt;/a&gt; of sorts for programming languages, that
+is, the measure of the expressive power of the language is the quality of the solutions the language
+presents to the expression problem.&lt;/p&gt;
+
+&lt;p&gt;The expression problem is theoretically solvable in any language, but to varying degrees of
+elegance. In Java one must resort to using the
+&lt;a href=&quot;https://en.wikipedia.org/wiki/Visitor_pattern&quot;&gt;visitor pattern&lt;/a&gt;, and in my mind this is the most
+inelegant way of going about it. I would rate the solutions on a spectrum: with the most &lt;em&gt;basic&lt;/em&gt;
+solution being the visitor pattern, at the other end we have something like
+&lt;a href=&quot;http://www.math.nagoya-u.ac.jp/%7Egarrigue/papers/fose2000.html&quot;&gt;polymorphic variants&lt;/a&gt; and type
+classes. Multimethods and protocols are somewhere in between.&lt;/p&gt;
+
+&lt;p&gt;When you compare polymorphic variants of OCaml with Haskell&amp;#39;s type classes, there&amp;#39;s a marked
+difference in brevity. Polymorphic variants are succincter than type classes but cannot provide the
+same level of type safety.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot; data-lang=&quot;ocaml&quot;&gt;&lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Circle&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Circle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;14159&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;w&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;vertices&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Circle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;infinity&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;w&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Not too different from the above declaration, the type is surrounded with brackets and the types are
+preceded with backticks. Recreating the volume function is easy.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot; data-lang=&quot;ocaml&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;volume&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Circle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Cube&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So now I&amp;#39;ve extended the &lt;code&gt;shape&lt;/code&gt; type with another type &lt;code&gt;Cube&lt;/code&gt;, and I haven&amp;#39;t touched &lt;code&gt;vertices&lt;/code&gt; and
+&lt;code&gt;area&lt;/code&gt; functions. The &lt;code&gt;volume&lt;/code&gt; function can be done even more succinctly:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot; data-lang=&quot;ocaml&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;short_volume&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;(* no volume in two dimensions! *)&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Cube&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It is also possible to constrain the polymorphic variants:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot; data-lang=&quot;ocaml&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;flatten&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Cube&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The type of this function is
+&lt;code&gt;[ &amp;lt; `Circle of float | `Cube of float | `Rectangle of float * float ] -&amp;gt; [&amp;gt; shape]&lt;/code&gt;. The
+&lt;code&gt;[&amp;lt; A | B]&lt;/code&gt; means a closed type: it can be only &lt;code&gt;A&lt;/code&gt; or &lt;code&gt;B&lt;/code&gt;, but nothing else, and &lt;code&gt;[&amp;gt; Foo]&lt;/code&gt; means
+&lt;q&gt;Foo or something else&lt;/q&gt;. So the &lt;code&gt;flatten&lt;/code&gt; function accepts &lt;code&gt;Circle&lt;/code&gt;, &lt;code&gt;Rectangle&lt;/code&gt; or &lt;code&gt;Cube&lt;/code&gt; and
+returns a &lt;code&gt;shape&lt;/code&gt; (or possibly something else). Trying to run &lt;code&gt;flatten (`Sphere 4)&lt;/code&gt; produces a
+type error:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;# flatten (`Sphere 3);;
+Characters 8-19:
+  flatten (`Sphere 3);;
+          ^^^^^^^^^^^
+Error: This expression has type [&amp;gt; `Sphere of int ]
+       but an expression was expected of type
+         [&amp;lt; `Circle of float
+          | `Cube of float * float
+          | `Rectangle of float * float ]
+       The second variant type does not allow tag(s) `Sphere
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;However, the following code compiles:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot; data-lang=&quot;ocaml&quot;&gt;&lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;polytope&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Cube&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Octahedron&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frobnicate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;flattened&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;flatten&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pt&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;flattened&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Already flaaat!&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Octagon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Eight coorneeeeerss&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The compiles, although we didn&amp;#39;t tell the compiler that &lt;code&gt;flatten&lt;/code&gt; does not return
+&lt;code&gt;Octagon&lt;/code&gt;. There are two ways to fix this: either explicitly annotate &lt;code&gt;pt&lt;/code&gt; to be of type
+&lt;code&gt;polytope&lt;/code&gt;, which produces this error:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Error: This expression has type polytope
+       but an expression was expected of type
+         [&amp;lt; `Circle of float | `Cube of float | `Rectangle of float * float ]
+       The second variant type does not allow tag(s) `Octahedron
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It is possible to further constrain the type with type annotations. We can make sure that the
+&lt;code&gt;flatten&lt;/code&gt; function returns &lt;em&gt;only&lt;/em&gt; flat shapes: &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot; data-lang=&quot;ocaml&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;safe_flatten&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Cube&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Sphere&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Circle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This produces the error:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Error: This pattern matches values of type [? `Octagon ]
+       but a pattern was expected which matches values of type shape
+       The second variant type does not allow tag(s) `Octagon
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;not-a-silver-bullet&quot;&gt;Not a silver bullet&lt;/h2&gt;
+
+&lt;p&gt;Unfortunately, polymorphic variants are &lt;em&gt;problematic&lt;/em&gt;. The problem with polymorphic variants is you
+quickly reach an absurd level of complexity and are forced to use annotations or subtyping to ensure
+maximal type safety. So although polymorphic variants are &lt;em&gt;nice&lt;/em&gt;, and they do let us solve the
+expression problem, they&amp;#39;re an unsteady compromise between type safety and brevity. You can
+certainly make elegant abstractions with them but they get unwieldy quickly. They aren&amp;#39;t as
+efficient compared to regular variants either.&lt;/p&gt;
+
+&lt;p&gt;So what are the options? In OCaml 4.02, you can use &lt;em&gt;extensible variant types&lt;/em&gt;: &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ocaml&quot; data-lang=&quot;ocaml&quot;&gt;&lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;boring_shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;boring_shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Circle&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Square&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;boring_area&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Circle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;14159&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Square&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;boring_shape&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;radical_area&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;match&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shp&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Circle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;boring_area&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Square&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;boring_area&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Rectangle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;w&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;An extensible variant is defined using &lt;code&gt;..&lt;/code&gt;, and extension is done with the &lt;code&gt;+=&lt;/code&gt; operator. The
+caveat is that you must handle the default &lt;code&gt;_&lt;/code&gt; case in pattern matching. Extensible variants are
+another neat trick for solving the expression problem.&lt;/p&gt;
+
+&lt;h2 id=&quot;a-measure-of-expressive-power&quot;&gt;A measure of expressive power&lt;/h2&gt;
+
+&lt;p&gt;The expression problem is a great litmus test that measures the expressive power of a
+programming language. The actual measurement of the test can be either the brevity of the code or
+its type safety. The solutions range from the clumsy Visitor Pattern in Java to polymorphic and
+extensible variants in OCaml and to type classes in Haskell. Clojure and Elixir have
+&lt;a href=&quot;http://clojure.org/protocols&quot;&gt;protocols&lt;/a&gt; that are both quite nice but not so type-safe since both
+are dynamically typed languages. What is more, since the expression problem is also about type
+safety, then strictly speaking the problem isn&amp;#39;t valid in a dynamic language. Any Lisper knows that
+Lisps &lt;em&gt;are&lt;/em&gt; super expressive anyway.&lt;/p&gt;
+</description>
+      <pubDate>Fri, 08 Jan 2016 00:00:00 +0200</pubDate>
+      <dc:date>2016-01-08T00:00:00+02:00</dc:date>
+    </item>
+    <item>
+      <title>Before we begin</title>
+      <link>http://ane.iki.fi/2016/01/01/before-we-begin.html</link>
+      <description>&lt;p&gt;Now that the design of the site is finished, I can finally focus on the essentials.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;ve decided that this year I will be writing a bit more, here, and elsewhere. To that end, when it
+comes to this site, I&amp;#39;ve had to perform a simple but challenging task: lowering my standards. &lt;/p&gt;
+
+&lt;p&gt;Last year, I did not publish anything because I had absurd standards for content. In my mind, every
+blog post had to be a thoroughly researched and carefully argued piece, capable of standing the test
+of time.&lt;/p&gt;
+
+&lt;p&gt;This was a monumental mistake.&lt;/p&gt;
+
+&lt;p&gt;Researching something thoroughly requires an extraordinary amount of time, and writing opinionated
+articles that can stand the test of time requires an extraordinary amount of foresight &amp;mdash; neither
+of which I yet have. I have already managed to delete one post which contained opinions I no longer
+agreed with. I thought its content was rubbish and I was a moron for publishing it, so my only
+recourse was to delete it, instead of learning from it.&lt;/p&gt;
+
+&lt;p&gt;My desire for more content stems from the process of gradual improvement: the more you write the
+better you get. I cannot do this unless I start from the very basics. I could, of course, simply
+write guides on how to do XYZ with $THING, but I want to tell stories, not write recipes. This
+doesn&amp;#39;t mean there won&amp;#39;t be any guides, however!&lt;/p&gt;
+
+&lt;p&gt;Another reason for wanting to write more stems from the simple funny fact that somebody &lt;em&gt;reads&lt;/em&gt;
+this. Besides Google Analytics telling me so, a few weeks ago I even received a
+&lt;a href=&quot;https://github.com/ane/ane.github.io/pull/1&quot;&gt;pull request&lt;/a&gt; for typo fixes.&lt;/p&gt;
+
+&lt;p&gt;So I know there&amp;#39;s at least &lt;em&gt;one&lt;/em&gt; guy who actually reads every word. Disclosure: according to GA,
+most of the visits are &lt;q&gt;accidental redirects&lt;/q&gt; (huh?), and that actual, longer visits aren&amp;#39;t common,
+but there were enough for me to extrapolate that there were, at the very least, &lt;em&gt;two&lt;/em&gt; readers.&lt;/p&gt;
+
+&lt;p&gt;So, that was the background. And now comes the disclaimer, of sorts.&lt;/p&gt;
+
+&lt;p&gt;This site is a blog. As this site is a blog, the writings are, first and foremost, opinion pieces,
+not research articles, and opinions change. You may find me advocating for stricter type systems one
+day, and for looser the next. I will only guarantee that, at &lt;em&gt;the time of writing&lt;/em&gt;, I will argue my
+points to the best of my abilities.&lt;/p&gt;
+
+&lt;p&gt;Longer, more in-depth stories, if ever completed, will be available under the &lt;em&gt;articles&lt;/em&gt; category. This
+is to mark a distinction. To qualify as an article, the writing will a) contain properly researched
+writing and references b) be reviewed by somebody else. I&amp;#39;m currently
+&lt;a href=&quot;http://ane.iki.fi/ebi&quot;&gt;working on something&lt;/a&gt; that may one day be considered something like that.&lt;/p&gt;
+
+&lt;p&gt;You&amp;#39;re welcome to snoop into the &lt;a href=&quot;https://github.com/ane/ane.github.io/tree/master/_drafts&quot;&gt;drafts&lt;/a&gt;
+folder of the GitHub repository of the site, but be warned, that stuff is obviously incomplete.&lt;/p&gt;
+
+&lt;p&gt;To be continued.&lt;/p&gt;
+</description>
+      <pubDate>Fri, 01 Jan 2016 00:00:00 +0200</pubDate>
+      <dc:date>2016-01-01T00:00:00+02:00</dc:date>
+    </item>
+    <item>
+      <title>Start-once software</title>
+      <link>http://ane.iki.fi/2015/12/07/start-once-software.html</link>
+      <description>&lt;p&gt;Software development tools are in a state of flux. There are two competing
+directions towards which static analysis tools&amp;mdash;like linters and
+type checkers&amp;mdash;are heading. &lt;/p&gt;
+
+&lt;p&gt;The traditional direction is to operate in a &lt;em&gt;batch&lt;/em&gt; model. Fire up, perform analysis, report
+results, and die. This is a proven method. Batch-oriented software has been around for ages, and it
+works really well if the data you&amp;#39;re working with isn&amp;#39;t large.&lt;/p&gt;
+
+&lt;p&gt;The new direction is an &lt;em&gt;online&lt;/em&gt; model: an analysis tool starts, calculates its
+data, reports results, and then stays &lt;em&gt;on&lt;/em&gt;, monitoring for changes. When changes
+occur, the program analyzes the changes, and recomputes the effects. This
+execution model is efficient: incremental updates are easier to calculate than
+starting from scratch. This approach is arguably more modern&lt;sup id=&quot;fnref1&quot;&gt;&lt;a href=&quot;#fn1&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;, since we&amp;#39;re
+leveraging the full potential of a client-server model.&lt;/p&gt;
+
+&lt;p&gt;The obvious caveat is such a process will eat up memory. These days this is
+becoming less and less of a problem, since a gigabyte of desktop-quality DDR3
+memory costs about &lt;a href=&quot;http://www.newegg.com/Product/Product.aspx?Item=N82E16820231314&amp;amp;cm_re=ddr3-_-20-231-314-_-Product&quot;&gt;US$5&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;However, if the workload is large, say 100k-1M lines, it actually makes more
+sense to compute an initial &lt;q&gt;model&lt;/q&gt; of the system, and then &lt;em&gt;incrementally&lt;/em&gt;
+update the model when the system changes.&lt;/p&gt;
+
+&lt;p&gt;My line of reasoning was inspired by &lt;a href=&quot;https://news.ycombinator.com/item?id=10271755&quot;&gt;this comment on Hacker News&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Over and over I see reports of iteration speed being critical to
+real-world projects, and that&amp;#39;s certainly my experience.  &lt;/p&gt;
+
+&lt;p&gt;But it&amp;#39;s something I rarely see featured in tool design. So many of
+our tools are still batch oriented: they start from scratch, read
+everything, process everything, and then exit. That made sense in an
+era where RAM and CPU were expensive. But now that they&amp;#39;re cheap, I
+want tools that I start when I arrive in the morning and kill when I
+go home. In between, they should work hard to make my life easy. &lt;/p&gt;
+
+&lt;p&gt;If I&amp;#39;m going to use a type checker, I want it to load the AST once,
+continuously monitor for changes, and be optimized for incremental
+changes. Ditto compilers, syntax checkers, linters, test runners,
+debugging tools. Everything that matters to me in my core feedback
+loop of writing a bit of code and seeing that it works.&lt;/p&gt;
+
+&lt;p&gt;For 4% of my annual salary, I can get a machine with 128GB of RAM and
+8 3.1 GHz cores. Please god somebody build tools that take advantage
+of that.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Arguably, the batch mode made sense in the past, when resources weren&amp;#39;t as
+plentiful as they are now. Now, we can afford a type checker that sits in the
+background, eating up half a gigabyte memory, and most of us won&amp;#39;t even &lt;em&gt;blink&lt;/em&gt;
+at that, as long as it helps us write better code&amp;mdash;and runs quickly.&lt;/p&gt;
+
+&lt;p&gt;To this end, one could call such software &lt;em&gt;start-once software&lt;/em&gt;&lt;sup id=&quot;fnref2&quot;&gt;&lt;a href=&quot;#fn2&quot; rel=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;, which&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Is launched &lt;strong&gt;once&lt;/strong&gt;, via some mechanism and given a target, e.g. a codebase, to
+monitor for changes&lt;/li&gt;
+&lt;li&gt;Computes an initial &lt;strong&gt;model&lt;/strong&gt;, the analysis, of the target&lt;/li&gt;
+&lt;li&gt;Whenever changes occur it instantly &lt;strong&gt;recomputes&lt;/strong&gt; a new model and informs
+the user of the effects of the changes. &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In this case, the target could be a collection of source files (a &lt;q&gt;project&lt;/q&gt;), 
+the model the compilation errors present in the source files, and the relevance
+is a way of communicating those errors to the user.&lt;/p&gt;
+
+&lt;p&gt;The basic idea can be taken from Facebook&amp;#39;s &lt;a href=&quot;http://www.flowtype.org&quot;&gt;Flow&lt;/a&gt;
+which does exactly this when you launch it initially, it boots up a server that
+keeps the state of the AST in memory. The server runs the analysis and the client
+reports the results. There&amp;#39;s an initial up-front cost to all of this from
+starting the server but subsequent calls are fast.&lt;/p&gt;
+
+&lt;p&gt;There are some pseudo-implementations of this paradigm: you can have a batch
+process that is run every time the target changes, and then do effectively what
+is done in step three above. This is &lt;em&gt;kind of&lt;/em&gt; what I described above, but the
+difference is that any model is lost inbetween batch runs.&lt;/p&gt;
+
+&lt;p&gt;In fact, file system notification based batch processes remind&lt;sup id=&quot;fnref3&quot;&gt;&lt;a href=&quot;#fn3&quot; rel=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt; me of the
+&lt;a href=&quot;https://en.wikipedia.org/wiki/The_Chinese_Room&quot;&gt;the Chinese room experiment&lt;/a&gt;:
+such tools don&amp;#39;t really have an &lt;em&gt;understanding&lt;/em&gt; of the model that is
+&lt;strong&gt;persistent&lt;/strong&gt;, but due to a simultaneously crude and brilliant approach, we get the
+subtle impression that such a persistent, evolving understanding actually exists.&lt;/p&gt;
+
+&lt;p&gt;In start-once software, the goal is to always keep the model in working memory
+and update it incrementally. Such a program can react quickly to massive
+codebase changes. Naturally, speed comes at the cost of memory, but as mentioned
+in the quote, if it makes development faster, I think this is a perfectly
+justifiable cost.&lt;/p&gt;
+
+&lt;p&gt;This line of thinking doesn&amp;#39;t apply only to static analysis tools. It can work
+with any streaming data. Memory is cheap, but speed always isn&amp;#39;t. A good example
+is a log processor that computes the state of some system based on the content
+of some logs. A start-once processor would continuously monitor the log inputs
+and update its model of the system. If it has to churn through a lot of logs at
+the start, it may have an initial delay but because the model is persistent, any
+changes to the model can be computed quickly.&lt;/p&gt;
+
+&lt;p&gt;Storing the model can be done in two ways. If RAM becomes a limitation (will
+it?), a fast database should be used. AFter all, databases &lt;em&gt;solely&lt;/em&gt; exist
+because of the prohibitively high cost of ephemeral memory compared to the cost
+of non-volatile memory. Traditionally!&lt;/p&gt;
+
+&lt;p&gt;Previously, because of the cost of ephemeral memory, we had to invent a cheaper
+form of storage. Now that memory is cheap, this isn&amp;#39;t so much of a threat
+anymore.&lt;/p&gt;
+
+&lt;p&gt;When it comes to fault-tolerance, precautions can be taken. The model could be
+stored as a persistent image&amp;mdash;yes, raw memory or an accurate representation
+thereof, or a database. Once the program recovers, it restores the model
+immediately, reducing the boot time.&lt;/p&gt;
+
+&lt;p&gt;This model also be extended to web servers: instead of recompiling everything at
+every request (hello PHP), one could compile &lt;em&gt;once&lt;/em&gt; and then compile changes
+incrementally. This idea isn&amp;#39;t new: &lt;em&gt;hot swapping&lt;/em&gt; has been around for decades,
+and its advantages are obvious. Heavy-duty services that take a while to reload
+and restore benefit massively of hot swapping. This is routine in the JVM,
+Erlang and Lisp worlds.&lt;/p&gt;
+
+&lt;p&gt;Instead of shutting down your engine to upgrade it, you simply replace the parts
+to be upgraded with new ones. &lt;/p&gt;
+
+&lt;p&gt;Extending this to static analysis tools isn&amp;#39;t a massive step. If the philosophy
+works with server programs I see no reason why it couldn&amp;#39;t work with data
+analysis tools. At the cost of ephemeral resources like memory, I want static
+analysis tools that can handle large codebases and compute any change big or
+small in a fraction of a section.&lt;/p&gt;
+
+&lt;p&gt;I hope more tools will adopt this model. We certainly do have the resources now.&lt;/p&gt;
+
+&lt;h2 id=&quot;addendum-examples-of-start-once-static-analysis-tools&quot;&gt;Addendum: examples of start-once static analysis tools&lt;/h2&gt;
+
+&lt;h3 id=&quot;flow&quot;&gt;&lt;a href=&quot;http://flowtype.org&quot;&gt;Flow&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;A static analysis tool for JavaScript by Facebook, written in OCaml. Upon
+launch, it starts a server that runs initial analysis and monitors for
+changes.&lt;/p&gt;
+
+&lt;h3 id=&quot;hack&quot;&gt;&lt;a href=&quot;http://hacklang.org/&quot;&gt;Hack&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;A PHP-inspired gradually typed programming language for the HHVM virtual
+machine. It runs a type checker in the background in the same way as Flow
+does. Also in OCaml!&lt;/p&gt;
+
+&lt;h3 id=&quot;gocode&quot;&gt;&lt;a href=&quot;http://github.com/nsf/gocode&quot;&gt;gocode&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;Auto-completion service for Go. It uses a client-server model where completion
+requests are sent to the completion server via a JSON-based RPC. Conversely,
+every other Go-related static analysis tool
+(&lt;a href=&quot;http://dominik.honnef.co/posts/2014/12/an_incomplete_list_of_go_tools/&quot;&gt;there are lots&lt;/a&gt;)
+is using the batch approach. That&amp;#39;s fine, since Go seems to be vehemently
+opposed to anything modern and advanced, and &lt;em&gt;sometimes&lt;/em&gt; justifiably so. In this
+regard Gocode is a rare gem among the Go tooling ecosystem.&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+
+&lt;li id=&quot;fn1&quot;&gt;
+&lt;p&gt;Yes, I know REPLs have been around since the eighties, but this isn&amp;#39;t
+exactly the same thing.&amp;nbsp;&lt;a href=&quot;#fnref1&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id=&quot;fn2&quot;&gt;
+&lt;p&gt;Facebook uses the term &lt;q&gt;online&lt;/q&gt; when describing Flow&amp;nbsp;&lt;a href=&quot;#fnref2&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id=&quot;fn3&quot;&gt;
+&lt;p&gt;They aren&amp;#39;t &lt;em&gt;exactly&lt;/em&gt; the same thing. Since I&amp;#39;m talking about computer
+programs performing some kind of data analysis, and mentioning the Chinese
+room experiment, I realize that I&amp;#39;m opening a massive can of worms; the
+comparison is a mere &lt;em&gt;simile&lt;/em&gt; here. The users of continuous
+(i.e. inotify-based) batch analysis tools are on the observing end of the
+Chinese room experiment.&amp;nbsp;&lt;a href=&quot;#fnref3&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+      <pubDate>Mon, 07 Dec 2015 12:00:00 -0000</pubDate>
+      <dc:date>2015-12-07T12:00:00Z</dc:date>
+    </item>
+    <item>
+      <title>Embedding a Guile interpreter in Rust</title>
+      <link>http://ane.iki.fi/2015/01/01/running-guile-in-rust.html</link>
+      <description>&lt;p&gt;&lt;a href=&quot;http://www.gnu.org/software/guile/&quot;&gt;GNU Guile&lt;/a&gt; is an implementation of the
+&lt;a href=&quot;https://en.wikipedia.org/wiki/Scheme_%28programming_language%29&quot;&gt;Scheme&lt;/a&gt; programming language, a
+functional Lisp dialect. Guile is also the official extension language of the GNU project. To this
+end, it has been designed to be easily embeddable into other languages, featuring excellent
+&lt;a href=&quot;http://www.gnu.org/software/guile/docs/master/guile.html/Programming-in-C.html#Programming-in-C&quot;&gt;C interoperability&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;With this in mind, I set out to experiment a little bit. Just like Guile,
+&lt;a href=&quot;http://www.rust-lang.org&quot;&gt;Rust&lt;/a&gt; boasts great C interoperability. I thought it would make for a fun
+experiment to try to get the two to talk together &amp;mdash; that&amp;#39;s right, by embedding the Guile
+interpreter inside a Rust program!&lt;/p&gt;
+
+&lt;p&gt;Never mind the why. Why not? &lt;/p&gt;
+
+&lt;h1 id=&quot;first-steps&quot;&gt;First steps&lt;/h1&gt;
+
+&lt;p&gt;I wanted the program to compile and run via &lt;a href=&quot;https://crates.io&quot;&gt;Cargo&lt;/a&gt;. This was something I wasn&amp;#39;t
+going to compromise on. I didn&amp;#39;t want to perform any incantations to divine the right arguments for
+&lt;code&gt;rustc&lt;/code&gt;, let alone invoke any strange intermediary programs. It was going to be &lt;code&gt;cargo run&lt;/code&gt; or bust.&lt;/p&gt;
+
+&lt;p&gt;To start, in order to link a program with Guile, I needed the appropriate linker and compiler
+flags. For a C program, obtaining them could be done with &lt;code&gt;pkg-config&lt;/code&gt; on the command line:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pkg-config guile-2.0 --libs
+-lguile-2.0 -lgc 
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pkg-config guile-2.0 --cflags
+-pthread -I/usr/include/guile/2.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Using these in Rust was straightforward. The Rust book&amp;#39;s
+&lt;a href=&quot;https://doc.rust-lang.org/book/ffi.html&quot;&gt;FFI guide&lt;/a&gt; gave some directions as to linking by using the
+&lt;code&gt;#[link=...]&lt;/code&gt; directive, but I felt it was easier to use the &lt;code&gt;pkg-config&lt;/code&gt; crate to generate a
+&lt;a href=&quot;http://doc.crates.io/build-script.html&quot;&gt;build script&lt;/a&gt; that handled this for me.&lt;/p&gt;
+
+&lt;p&gt;Build scripts are Rust programs that generate instructions for Cargo. &lt;code&gt;pkg-config&lt;/code&gt; (the Rust crate)
+generates such Cargo instructions in the vein of the real-world &lt;code&gt;pkg-config&lt;/code&gt; program. To get the
+Guile libraries linked, I used the following build script, called &lt;code&gt;build.rs&lt;/code&gt; in the project root
+folder:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-Rust&quot; data-lang=&quot;Rust&quot;&gt;&lt;span class=&quot;k&quot;&gt;extern&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pkg_config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;pkg_config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;statik&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;guile-2.0&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unwrap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This will link the Guile library statically (though I&amp;#39;m not sure it will work) to the program. To
+use the &lt;code&gt;pkg-config&lt;/code&gt; crate inside the build script, I needed to set up the project
+dependencies. Note that since the &lt;code&gt;pkg-config&lt;/code&gt; crate was used in the build script, it was a &lt;em&gt;build
+dependency&lt;/em&gt;, hence it went under the &lt;code&gt;[build-dependencies]&lt;/code&gt; section. This is what the &lt;code&gt;Cargo.toml&lt;/code&gt;
+file looked like after adding that:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;package&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;guiletest&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;version&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;0.1.0&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;authors&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;...&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;links&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;guile-2.0&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;build&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;build.rs&amp;quot;&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dependencies&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;libc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;0.2.2&amp;quot;&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;build-dependencies&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;pkg-config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;0.3.6&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;building-the-repl&quot;&gt;Building the REPL&lt;/h2&gt;
+
+&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sit amet eleifend elit, quis feugiat
+risus. Aenean condimentum ultricies eros a mattis. Fusce aliquam neque id commodo finibus. Sed
+varius non urna non commodo. Nunc mollis vehicula dapibus. Aenean nec leo pharetra, tincidunt nibh
+ac, tempor ex. Etiam eleifend tincidunt elementum. Fusce nec nulla id mi ullamcorper fringilla et id
+velit.&lt;/p&gt;
+
+&lt;p&gt;Fusce sed tempus metus, sit amet vehicula dolor. Nullam et molestie ex. Nulla non tincidunt
+sem. Integer est eros, suscipit a magna et, rhoncus consequat metus. Nulla facilisi. Integer
+bibendum porttitor dui maximus venenatis. Aenean ut purus ligula. Proin tempus tincidunt ipsum, non
+pellentesque velit dapibus sed. Etiam vitae vehicula diam. Nunc ac porttitor nibh, id faucibus
+lectus. Mauris vehicula ex vitae tellus euismod sagittis. Cras sed turpis eget mi pellentesque
+pellentesque.&lt;/p&gt;
+
+&lt;h2 id=&quot;type-equivalencies&quot;&gt;Type equivalencies&lt;/h2&gt;
+
+&lt;p&gt;Sed tempor odio sit amet turpis fermentum, vel laoreet est feugiat. Nulla non vehicula sem. In nec
+tellus finibus risus rhoncus dapibus quis at lorem. Vestibulum finibus imperdiet metus, vitae
+pharetra eros bibendum euismod. Nam dictum porttitor elit, quis viverra neque convallis at. Proin
+bibendum elementum placerat. Maecenas ultricies erat quis dapibus semper. Suspendisse
+potenti. Mauris commodo cursus lorem sed posuere. Duis cursus turpis elit, non eleifend dui interdum
+in.&lt;/p&gt;
+
+&lt;h2 id=&quot;static-or-dynamic&quot;&gt;Static or dynamic?&lt;/h2&gt;
+
+&lt;p&gt;Nulla non tincidunt urna. Fusce sapien lorem, sodales a eros sed, suscipit facilisis justo. Mauris
+consectetur quam in massa faucibus tincidunt. Duis consequat nisl non eros sagittis blandit. Quisque
+efficitur libero at sapien pharetra aliquet. Nulla tempor turpis consectetur nibh posuere, ac dictum
+diam luctus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;&lt;/p&gt;
+
+&lt;p&gt;Morbi lobortis arcu convallis sagittis ornare. In molestie erat lacus, a feugiat dui volutpat
+in. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In eu odio
+vitae felis venenatis dapibus eu quis elit. Sed facilisis lectus felis, a vehicula felis molestie
+sit amet. Aliquam volutpat eleifend hendrerit. Aliquam non feugiat magna.&lt;/p&gt;
+
+&lt;h1 id=&quot;calling-rust-from-guile&quot;&gt;Calling Rust from Guile&lt;/h1&gt;
+
+&lt;p&gt;Praesent iaculis tortor est, vitae porttitor arcu imperdiet et. Vivamus auctor felis euismod tellus
+aliquam, ac tempor mi posuere. Vestibulum nec lorem sed metus fermentum maximus ac blandit sapien.&lt;/p&gt;
+
+&lt;p&gt;Pellentesque ultricies dolor nulla, in porta turpis tristique ut. Duis vehicula augue eget odio
+dignissim, eu tincidunt diam accumsan. Curabitur mattis arcu congue mauris suscipit
+ultricies. Praesent dignissim vehicula neque.&lt;/p&gt;
+
+&lt;p&gt;Phasellus ipsum nibh, feugiat sed ipsum sed, luctus rutrum orci. Ut sed ipsum non erat congue
+tincidunt. Nulla et sapien quam. Ut maximus posuere diam, et varius orci scelerisque
+ullamcorper. Sed quis molestie lorem.&lt;/p&gt;
+
+&lt;h2 id=&quot;rust-types-in-scheme&quot;&gt;Rust types in Scheme&lt;/h2&gt;
+
+&lt;p&gt;Sed tempor odio sit amet turpis fermentum, vel laoreet est feugiat. Nulla non vehicula sem. In nec
+tellus finibus risus rhoncus dapibus quis at lorem. Vestibulum finibus imperdiet metus, vitae
+pharetra eros bibendum euismod. Nam dictum porttitor elit, quis viverra neque convallis at. Proin
+bibendum elementum placerat. Maecenas ultricies erat quis dapibus semper. Suspendisse
+potenti. Mauris commodo cursus lorem sed posuere. Duis cursus turpis elit, non eleifend dui interdum
+in.&lt;/p&gt;
+
+&lt;p&gt;Praesent iaculis tortor est, vitae porttitor arcu imperdiet et. Vivamus auctor felis euismod tellus
+aliquam, ac tempor mi posuere. Vestibulum nec lorem sed metus fermentum maximus ac blandit sapien.&lt;/p&gt;
+
+&lt;p&gt;Pellentesque ultricies dolor nulla, in porta turpis tristique ut. Duis vehicula augue eget odio
+dignissim, eu tincidunt diam accumsan. Curabitur mattis arcu congue mauris suscipit
+ultricies. Praesent dignissim vehicula neque.&lt;/p&gt;
+
+&lt;p&gt;Phasellus ipsum nibh, feugiat sed ipsum sed, luctus rutrum orci. Ut sed ipsum non erat congue
+tincidunt. Nulla et sapien quam. Ut maximus posuere diam, et varius orci scelerisque
+ullamcorper. Sed quis molestie lorem.&lt;/p&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;Nulla non tincidunt urna. Fusce sapien lorem, sodales a eros sed, suscipit facilisis justo. Mauris
+consectetur quam in massa faucibus tincidunt. Duis consequat nisl non eros sagittis blandit. Quisque
+efficitur libero at sapien pharetra aliquet. Nulla tempor turpis consectetur nibh posuere, ac dictum
+diam luctus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;&lt;/p&gt;
+
+&lt;p&gt;Morbi lobortis arcu convallis sagittis ornare. In molestie erat lacus, a feugiat dui volutpat
+in. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In eu odio
+vitae felis venenatis dapibus eu quis elit. Sed facilisis lectus felis, a vehicula felis molestie
+sit amet. Aliquam volutpat eleifend hendrerit. Aliquam non feugiat magna.&lt;/p&gt;
+</description>
+      <pubDate>Thu, 01 Jan 2015 12:00:00 -0000</pubDate>
+      <dc:date>2015-01-01T12:00:00Z</dc:date>
+    </item>
+    <dc:date>2016-01-26T00:00:00+02:00</dc:date>
   </channel>
 </rss>
