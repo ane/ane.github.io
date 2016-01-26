@@ -13,10 +13,6 @@ blockquote {
     border-left: .25rem solid #eceeef;
 }
 
-blockquote p {
-    margin-bottom: 0;
-}
- 
 .share-icon {
     font-size: 30px;
 }
