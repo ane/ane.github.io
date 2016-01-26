@@ -179,7 +179,7 @@ effectively a <em>mirror</em> of the root node(s).</em>
 In the shadow network, **X** does not receive any new dependencies nor do the intermediaries, but
 the leaf nodes each push their actions to the *shadow node*. The shadow node contains a *rule
 engine* that can parse leaf events. A *rule* is something that identifies a **source**. It could be
-anything, from a simple parser ("this looks like Apache logs -> it came from Apache!") or something
+anything, from a simple parser ("this looks like Apache logs" &rarr; "it came from Apache!") or something
 more sophisticated. This introduces a dependency only to leaf nodes, but the problem is that the
 shadow node has to be kept up to date on how to correctly map events to sources. When you change the
 format of the data traveling across the network, you have to update the rule engine.
