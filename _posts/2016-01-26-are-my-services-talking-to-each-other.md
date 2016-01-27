@@ -96,17 +96,17 @@ the root node to the leaf nodes and we have to quickly identify where the discon
 ## Seeing is not enough
 
 Our first instinct is to peer at the logs. So we go through each *edge* in the network and see if
-there's a fault. This means for `n` nodes looking at least at *n-1* edges for each fault! Adding
-insult to injury are the implicit dependencies we have to keep in mind.
+there's a fault. This means for `n` nodes looking at least at *n-1* edges for each fault! Moreover,
+the problem isn't fixed by using something that gives me *visibility* of the nodes, like ZooKeeper
+or other service discovery tools. This is because I am interested in the flow of information from
+one node to another. The thought experiment already assumes that the nodes are there, only the
+communication between them is broken.
 
-Additionally, something that gives me *visibility* is not enough in this case. I am interested in
-the flow of information from one place or the other. Thus using service discovery tools like
-ZooKeeper do not solve the problem. The thought experiment already assumes that the nodes are there,
-only the communication between them is broken.
-
-In the Internet world, with the TCP protocol, communication is reliable and error-checked. That means,
-if A were a network element and wanted to send things over to C, in case of a successful delivery C
-will acknowledge this back to A.
+In the Internet world, with the
+[Transmission Control Protocol](https://en.wikipedia.org/wiki/Transmission_Control_Protocol) ,
+communication is made reliable using error-checking and acknowledgments. That means, if A were a
+network element and wanted to send things over to C, in case of a successful delivery C will
+acknowledge this back to A.
 
 For various reasons, it may be that in a distributed service network this approach is not
 feasible. This is the cost of abstractions: when you enforce loose coupling, you have to deal with
