@@ -2,7 +2,7 @@
 layout: post
 title: Imprecision and abstraction
 disqus: true
-date: 2016-03-30
+date: 2016-03-17
 tags: 
   - general
   - fp
