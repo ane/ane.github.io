@@ -74,5 +74,5 @@ of how a functor works. Don't illustrate them as operations that can map stuff i
 boxes. Invent a problem and solve it using a functor. After all, they're such a basic concept, even
 those writing non-functional code end up doing them all the time.
 
-Let the abstraction sink in. Because it's the only thing that will survive.
+Let the abstraction sink in, it's the only thing that will survive.
 

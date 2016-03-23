@@ -26,16 +26,9 @@ post_class: post-template
 <hr/>
 
 <footer class="post-footer">
-    <!-- Share links section -->
-    {% include share.html %}
-
-    <br>
-    <br>
-    <br>
-    
-    <!-- Disqus comments -->
     {% if page.disqus %}
     {% include disqus.html %}
     {% endif %}
-    
+
+    {% include share.html %}
 </footer>

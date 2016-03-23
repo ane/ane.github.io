@@ -1,9 +1,9 @@
 body {
-    font-family: "Georgia", serif;
+    font-family: "Gentium Book Basic", "Palatino Linotype", "Georgia", serif;
 }
 
 .content {
-    font-size: 20px;
+    font-size: 23px;
 }
 
 pre {
@@ -21,7 +21,6 @@ nav,
 .content h4,
 .content h5,
 .content h6 {
-    font-family: sans-serif;
 }
 
 #topnav {
