@@ -21,13 +21,11 @@ conversation?
 A problem like arises when you have a non-trivial amount of distributed components talking to each
 other, forming a complex network. Let's start from the basics and consider a simple one:
 
-<center>
 ![A simple example](/images/are-my-services-1-simple.png)
 
 <small>
 *arrows indicate flows of information, i.e. x &rarr; y means x sends information to y*
 </small>
-</center>
 
 You could assume **A** is an event log, for example, of financial transactions; **B** is a message
 queue and **C** is a fast queryable cache for the transactions. We want to be able to query the
@@ -40,9 +38,7 @@ towards **B**, but what we're really interested in is messages getting through a
 **C**. So in reality, if we superimpose our perceived dependencies on top of information flows, we
 end up with this:
 
-<center>
 ![A simple example, part two.](/images/are-my-services-3-simple.png)
-</center>
 
 ## Tolerating faults
 
@@ -54,14 +50,12 @@ not talking to each other, where is or *who* is the broken phone?
 With such a simple case as above, pointing this out is easy, so let's make our network a bit more
 complicated.
 
-<center>
 ![A slightly more complex example](/images/are-my-services-2-not-so-simple.png)
 
 <small>
 <em>A - an event log; B - a message queue; C - a cache; E - app back-end; P - a user-facing
 application; I - a business intelligence system; S - a storage system</em>
 </small>
-</center>
 
 Let's assume each one of these components is an independent service, each load balanced and with
 redundancies that aren't visible beyond the node itself[^1], and that communication is done over a
@@ -80,13 +74,11 @@ in such a way that it does not! The event log simply dumps data to a message que
 it. What is worse, is that the implicit dependencies each propagate up the chain. Not only does the
 leaf node depend on the root node, it also depends on the intermediate nodes.
 
-<center>
 ![A slightly more complex example](/images/are-my-services-4-not-so-simple.png)
 
 <small>
 <em>Implicit dependencies</em>
 </small>
-</center>
 
 The inherent hazard in all this, of course, is that there's a communication error. Even though we
 (hopefully) built the system following the
@@ -143,13 +135,11 @@ Building a FRP-based rule engine isn't easy, you'd need to construct a rule engi
 diverse data events into high-level *signals* and then create additional logic for *summing* the
 signals. 
 
-<center>
 ![The FRP approach](/images/are-my-services-5-frp.png)
 
 <small>
 <em>The sum of two signals is another signal. (Oh hey, this makes it a [semigroup](https://en.wikipedia.org/wiki/Semigroup)!)</em>
 </small>
-</center>
 
 Once such a system is built, it can be queried to determine the state of the network quite
 efficiently (and perhaps elegantly), but it does not introduce any fault tolerance and will only
@@ -166,7 +156,6 @@ Playing with some toy solutions I thought of something I call a *shadow network*
 principal information source is an event monitor **X** and we have a **leaf node** in the
 information dependency tree that is interested in data originating from **X**. 
 
-<center>
 ![Shadows](/images/are-my-services-6-shadow.png)
 
 <small>
@@ -174,7 +163,6 @@ information dependency tree that is interested in data originating from **X**.
 tell where it originated from, thereby seeing the implicit dependencies. The shadow node is
 effectively a <em>mirror</em> of the root node(s).</em>
 </small>
-</center>
 
 In the shadow network, **X** does not receive any new dependencies nor do the intermediaries, but
 the leaf nodes each push their actions to the *shadow node*. The shadow node contains a *rule
