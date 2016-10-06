@@ -1,5 +1,2 @@
 source 'http://rubygems.org'
-gem 'github-pages'
-gem 'rouge', '1.6.2'
-gem 'pygments.rb'
-gem 'jekyll-feed'
+gem 'github-pages', group: :jekyll_plugins

@@ -169,18 +169,15 @@ table { border-collapse: collapse; border-spacing: 0; }
 html {
     height: 100%;
     max-height: 100%;
-    font-size: 62.5%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 body {
     height: 100%;
     max-height: 100%;
-    font-family: "Merriweather", serif;
-    letter-spacing: 0.01rem;
-    font-size: 1.8rem;
-    line-height: 1.75em;
-    color: #3A4145;
+    font-size: 18px;
+    font-family: sans-serif;
+    line-height: 1.5;
     -webkit-font-feature-settings: 'kern' 1;
     -moz-font-feature-settings: 'kern' 1;
     -o-font-feature-settings: 'kern' 1;
@@ -196,9 +193,6 @@ body {
 
 h1, h2, h3,
 h4, h5, h6 {
-    -webkit-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
-    -moz-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
-    -o-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
     color: #2E2E2E;
     line-height: 1.15em;
     margin: 0 0 0.4em 0;
@@ -206,45 +200,45 @@ h4, h5, h6 {
 }
 
 h1 {
-    font-size: 4rem;
-    letter-spacing: -2px;
+ 
+ 
 }
 
 h2 {
-    font-size: 3rem;
-    letter-spacing: -1px;
+ 
+ 
 }
 
 h3 {
-    font-size: 2rem;
+ 
 }
 
 h4 {
-    font-size: 1rem;
+ 
 }
 
 h5 {
-    font-size: 2rem;
+ 
 }
 
 h6 {
-    font-size: 2rem;
+ 
 }
 
 a {
-    color: #4A4A4A;
+    color: #00416A;
     transition: color ease 0.3s;
 }
 
-a:hover {
-    color: #111;
+a:hover, a:active {
+    color: #5D76CB;
+}
+
+a:visited {
+    color: #32127A;
 }
 
 p, ul, ol, dl {
-    -webkit-font-feature-settings: 'liga' 1, 'onum' 1, 'kern' 1;
-    -moz-font-feature-settings: 'liga' 1, 'onum' 1, 'kern' 1;
-    -o-font-feature-settings: 'liga' 1, 'onum' 1, 'kern' 1;
-    margin: 0 0 1.75em 0;
 }
 
 ol, ul {
@@ -451,7 +445,7 @@ margin on the iframe, cause it breaks stuff. */
     position: relative;
     width: 100%;
     max-width: 998px;
-    margin-left: 4rem;
+
 }
 
 /* ==========================================================================
@@ -462,11 +456,11 @@ margin on the iframe, cause it breaks stuff. */
 .main-header {
     position: relative;
     display: table;
-    width: 100%;
-    margin-bottom: 5rem;
-    background: #222 no-repeat center center;
+    width: 50rem;
+		margin: 2em auto;
     background-size: cover;
     overflow: hidden;
+		padding: 0 2rem;
 }
 
 .main-header .inner {
@@ -475,11 +469,10 @@ margin on the iframe, cause it breaks stuff. */
 
 .main-nav {
     position: relative;
-    padding: 4rem 4.5rem 0;
 }
 
 .vertical {
-    padding-bottom: 4rem;
+
 }
 
 .main-nav a.link {
@@ -592,6 +585,10 @@ margin on the iframe, cause it breaks stuff. */
     margin-right: 8px;
 }
 
+.meta {
+    color: #9EABB3;
+}
+
 .subscribe-button {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -675,9 +672,7 @@ margin on the iframe, cause it breaks stuff. */
 }
 
 .no-cover.main-header {
-    min-height: 160px;
-    max-height: 25%;
-    background: #f5f8fa;
+
 }
 
 .no-cover .page-title {
@@ -711,13 +706,9 @@ margin on the iframe, cause it breaks stuff. */
 /* Every post, on every page, gets this style on its <article> tag */
 .post {
     position: relative;
-    width: 100%;
-    max-width: 998px;
-    margin-top: 4rem;
-    margin-bottom: 4rem;
-    margin-left: 4rem;
-    padding-bottom: 4rem;
-    border-bottom: #EBF2F6 1px solid;
+    max-width: 50rem;
+    margin: 0px auto;
+    padding: 0 2rem 2rem 2rem;
     word-break: break-word;
     hyphens: auto;
 }
@@ -742,7 +733,7 @@ margin on the iframe, cause it breaks stuff. */
 }
 
 body:not(.post-template) .post-title {
-    font-size: 3.6rem;
+
 }
 
 .post-title a {
@@ -763,7 +754,7 @@ body:not(.post-template) .post-title {
     display: block;
     margin: 1.75rem 0 0 0;
     font-family: "Open Sans", sans-serif;
-    font-size: 1.5rem;
+
     line-height: 2.2rem;
     color: #9EABB3;
 }
@@ -771,7 +762,6 @@ body:not(.post-template) .post-title {
 .post-meta .tags {
     color: #888;
     font-weight: bold;
-    font-size: 1.3rem;
 }
 
 
@@ -804,7 +794,7 @@ body:not(.post-template) .post-title {
     padding-left: 12px;
     border-left: #d5dbde 1px solid;
     text-transform: uppercase;
-    font-size: 1.3rem;
+
     white-space: nowrap;
 }
 
@@ -851,7 +841,7 @@ body:not(.post-template) .post-title {
    ========================================================================== */
 
 .post-template .post-header {
-   margin-bottom: 3.4rem;
+   margin-bottom: 1rem;
 }
 
 .post-template .post-title {
@@ -962,6 +952,7 @@ body:not(.post-template) .post-title {
     position: absolute;
     top: 6rem;
     right: 0;
+    text-align: right;
     width: 140px;
 }
 
@@ -1059,12 +1050,10 @@ body:not(.post-template) .post-title {
    ========================================================================== */
 
 .post-head.main-header {
-    height: 65%;
-    min-height: 180px;
+
 }
 
 .no-cover.post-head.main-header {
-    height: 85px;
     min-height: 0;
     margin-bottom: 0;
     background: transparent;
@@ -1210,13 +1199,11 @@ body:not(.post-template) .post-title {
 /* The main wrapper for our pagination links */
 .pagination {
     position: relative;
-    width: 80%;
-    max-width: 998px;
-    margin-left: 4rem;
+    max-width: 50rem;
+    margin: 0px auto;
     font-family: "Open Sans", sans-serif;
-    font-size: 1.3rem;
     color: #9EABB3;
-    text-align: center;
+		padding: 0 2rem;
 }
 
 .pagination a {
@@ -1296,11 +1283,11 @@ body:not(.post-template) .post-title {
    ========================================================================== */
 
 .site-footer {
-    max-width: 998px;
+    max-width: 50rem;
     position: relative;
-    margin: 8rem 0 0 0;
-    padding: 4rem;
-    border-top: #EBF2F6 1px solid;
+    margin: 2rem auto;
+    padding: 0 2rem;
+  
     font-family: "Open Sans", sans-serif;
     font-size: 1rem;
     line-height: 1.75em;
@@ -1338,7 +1325,6 @@ body:not(.post-template) .post-title {
 @media only screen and (max-width: 900px) {
 
     .main-nav {
-        padding: 15px;
     }
 
     blockquote {
@@ -1349,10 +1335,7 @@ body:not(.post-template) .post-title {
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
         box-sizing: border-box;
-        height: auto;
-        min-height: 240px;
-        height: 60%;
-        padding: 15% 0;
+
     }
 
     .scroll-down,
@@ -1368,8 +1351,6 @@ body:not(.post-template) .post-title {
     }
 
     .page-title {
-        font-size: 4rem;
-        letter-spacing: -1px;
     }
 
     .page-description {
@@ -1382,7 +1363,7 @@ body:not(.post-template) .post-title {
     }
 
     body:not(.post-template) .post-title {
-        font-size: 3.2rem;
+
     }
 
     hr {
@@ -1391,30 +1372,6 @@ body:not(.post-template) .post-title {
 
     ol, ul {
         padding-left: 2em;
-    }
-
-    h1 {
-        font-size: 4.5rem;
-    }
-
-    h2 {
-        font-size: 3.6rem;
-    }
-
-    h3 {
-        font-size: 3.1rem;
-    }
-
-    h4 {
-        font-size: 2.5rem;
-    }
-
-    h5 {
-        font-size: 2.2rem;
-    }
-
-    h6 {
-        font-size: 1.8rem;
     }
 
     .author-profile {
@@ -1477,7 +1434,7 @@ body:not(.post-template) .post-title {
 
     .main-nav {
         padding: 0;
-        margin-bottom: 2rem;
+	margin: 1rem 2rem;
         border-bottom: #e0e4e7 1px solid;
     }
 
@@ -1545,8 +1502,6 @@ body:not(.post-template) .post-title {
         width: auto;
         margin-top: 2rem;
         margin-bottom: 2rem;
-        margin-left: 16px;
-        margin-right: 16px;
         padding-bottom: 2rem;
         line-height: 1.65em;
     }
@@ -1587,32 +1542,6 @@ body:not(.post-template) .post-title {
     h1, h2, h3,
     h4, h5, h6 {
         margin: 0 0 0.3em 0;
-    }
-
-    h1 {
-        font-size: 2.8rem;
-        letter-spacing: -1px;
-    }
-
-    h2 {
-        font-size: 2.4rem;
-        letter-spacing: 0;
-    }
-
-    h3 {
-        font-size: 2.1rem;
-    }
-
-    h4 {
-        font-size: 1.9rem;
-    }
-
-    h5 {
-        font-size: 1.8rem;
-    }
-
-    h6 {
-        font-size: 1.8rem;
     }
 
     body:not(.post-template) .post-title {
