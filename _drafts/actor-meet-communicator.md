@@ -1,4 +1,4 @@
----
+- -
 layout: post
 date: 2016-10-07
 title: "Communicators: Actors with purely functional state"
@@ -124,6 +124,16 @@ class Library(popReservation: String => Future[String]) extends Actor {
       reservation pipeTo sender
     }
   }
+}
+```
+
+Another option is to fix the reference of `sender`:
+
+```scala
+val s = sender()
+val reservation: Future[String] = popReservation(isbn) map { i =>
+  s ! s"Here you go: $i"
+  context.become(active(books - isbn)) // AAH!
 }
 ```
 
