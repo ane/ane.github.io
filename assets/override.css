@@ -11,6 +11,7 @@ code {
     font-size: 23px;
 }
 
+
 pre {
     padding: 10px;
     font-size: 14px;
@@ -26,10 +27,12 @@ nav,
 .content h4,
 .content h5,
 .content h6 {
+    font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 #topnav {
     margin-bottom: 2rem;
+    border-bottom: 1px solid #ccc;
 }
 
 .site-tag {
@@ -118,4 +121,19 @@ article.post + article.post {
 .center {
     margin: 0 auto;
     text-align: center;
+}
+
+.footnotes:before {
+    content: "Footnotes";
+    font-variant: small-caps;
+    color: #aaa;
+    border-bottom: 1px solid #aaa;
+    margin-bottom: 1em;
+    display: inline-block;
+}
+
+.footnotes {
+    padding-top: 1rem;
+    font-size: 90%;
+    border-top: 1px solid #ccc;
 }

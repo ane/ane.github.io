@@ -3,7 +3,7 @@ layout: page
 title: About
 ---
 
-I'm a Finnish&ndash;French software engineer living in Jyväskylä, Finland.
+I'm a Finnish&ndash;French software engineer living in Jyväskylä, Finland. I work at [Qvantel](http://www.qvantel.com).
 
 This blog is mainly about programming and software. For a bit of background, you can read a
 [a meta post of sorts]({% post_url 2016-01-01-before-we-begin %}) that describes the tone of the
@@ -19,9 +19,11 @@ Everything on this site unless otherwise explicitly stated is licensed under
 <h2 class="page-header">Blog posts</h2>
 <ul>
     {% for post in site.posts %}
+    <small>
     <li>
         <a href="{{ post.url }}">{{ post.title }}</a> &mdash; <date class="text-muted">{{ post.date | date: "%d %B, %Y" }}</date> 
     </li>
+    </small>
     {% endfor %}
 </ul>
 {% else %}
