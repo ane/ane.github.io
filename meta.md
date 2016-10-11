@@ -19,11 +19,9 @@ Everything on this site unless otherwise explicitly stated is licensed under
 <h2 class="page-header">Blog posts</h2>
 <ul>
     {% for post in site.posts %}
-    <small>
     <li>
         <a href="{{ post.url }}">{{ post.title }}</a> &mdash; <date class="text-muted">{{ post.date | date: "%d %B, %Y" }}</date> 
     </li>
-    </small>
     {% endfor %}
 </ul>
 {% else %}
