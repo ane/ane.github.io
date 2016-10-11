@@ -8,11 +8,11 @@ markdown: kramdown
 mathjax: true
 paginate: 3
 baseurl: ""
-domain_name: 'http://ane.iki.fi'
+domain_name: 'http://ane.github.io'
 highlighter: rouge
 
 # Details for the RSS feed generator
-url:            'http://ane.iki.fi'
+url:            'http://ane.github.io'
 author:         'Antoine Kalmbach'
 google_analytics: UA-58162697-1
 gems:
