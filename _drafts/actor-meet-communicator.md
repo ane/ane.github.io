@@ -1,4 +1,4 @@
-- -
+---
 layout: post
 date: 2016-10-07
 title: "Communicators: Actors with purely functional state"

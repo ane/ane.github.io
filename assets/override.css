@@ -114,10 +114,6 @@ article.post + article.post {
     font-size: 30px;
 }
 
-.container {
-    max-width: 50rem;
-}
-
 .center {
     margin: 0 auto;
     text-align: center;
