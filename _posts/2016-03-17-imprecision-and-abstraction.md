@@ -4,8 +4,8 @@ title: Imprecision and abstraction
 disqus: true
 date: 2016-03-17
 tags: 
-  - general
   - fp
+  - math
 ---
 
 What is the point of abstractions? 

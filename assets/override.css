@@ -36,8 +36,11 @@ nav,
 }
 
 .site-tag {
-    display: inline-block;
-    margin-right: 12px;
+    font-family: sans-serif;
+}
+
+dt {
+    font-family: sans-serif;
 }
 
 blockquote {

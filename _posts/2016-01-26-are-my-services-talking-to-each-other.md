@@ -5,8 +5,9 @@ disqus: true
 date: 2016-01-26
 tags: 
   - architecture
-  - software
+  - queues
   - frp
+  - distributed
 ---
 
 I am faced with an interesting thought experiment, which asks:
