@@ -25,6 +25,5 @@ kramdown:
   entity_output:  as_char
   toc_levels:     1..6
   input:          GFM
-  parse_block_html: true
   hard_wrap:      false
   footnote_nr:    1
