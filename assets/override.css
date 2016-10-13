@@ -136,3 +136,8 @@ article.post + article.post {
     font-size: 90%;
     border-top: 1px solid #ccc;
 }
+
+.small-caps {
+    font-variant: small-caps;
+    font-weight: bold;
+}
