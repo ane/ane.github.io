@@ -38,7 +38,7 @@ title: About
 <div class="card card-block">
 <h5 class="card-title">Tag Cloud</h5>
 {% assign tags = site.tags | sort %}
-{% for tag in tags %} <span class="site-tag"> <a href="/tags/{{ tag | first | slugify }}/" style="font-size: {{ tag | last | size | times: 32 | plus: 50  }}%">{{ tag[0] | replace:'-', ' ' }}{% unless forloop.last %}{% endunless %}</a> </span> {% endfor %}
+{% for tag in tags %} <span class="site-tag"> <a href="/tags.html#{{ tag | first | slugify }}" style="font-size: {{ tag | last | size | times: 32 | plus: 50  }}%">{{ tag[0] | replace:'-', ' ' }}{% unless forloop.last %}{% endunless %}</a> </span> {% endfor %}
 </div>
 </div>
 </div>

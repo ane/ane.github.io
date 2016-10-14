@@ -9,6 +9,22 @@ post_class: post-template
 <article>
     {{content}}
 </article>
+
+<hr/>
+
+<div class="clearfix">
+    <span class="pull-left">
+    {% if page.previous.url %}
+    Previous: <a class="prev" href="{{page.previous.url}}">{{page.previous.title}}</a>
+    {% endif %}
+    </span>
+    <span class="pull-right">
+    {% if page.next.url %}
+    Next: <a class="next" href="{{page.next.url}}">{{page.next.title}}</a>
+    {% endif %}
+    </span>
+</div>
+
 <hr/>
 
 <footer class="post-footer">
