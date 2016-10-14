@@ -5,7 +5,9 @@ title: Tags
 
 <div class="row">
 <div class="col-sm-9">
+<p>
 Here are all posts sorted by their tags.
+</p>
 
 <!-- Get the tag name for every tag on the site and set them
 to the `site_tags` variable. -->
