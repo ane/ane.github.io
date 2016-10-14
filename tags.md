@@ -3,6 +3,8 @@ layout: page
 title: Tags
 ---
 
+<div class="row">
+<div class="col-sm-9">
 Here are all posts sorted by their tags.
 
 <!-- Get the tag name for every tag on the site and set them
@@ -12,11 +14,9 @@ to the `site_tags` variable. -->
 <!-- `tag_words` is a sorted array of the tag names. -->
 {% assign tag_words = site_tags | split:',' | sort %}
 
-<div class="row">
-<div class="col-sm-9">
 {% for item in (0..site.tags.size) %}{% unless forloop.last %}
 {% capture this_word %}{{ tag_words[item] }}{% endcapture %}
-<h4 id="{{ this_word | cgi_escape }}">{{ this_word }} <small class="text-muted">{{ site.tags[this_word].size | pluralize: 'post' }} </small></h4>
+<h4 id="{{ this_word | cgi_escape }}">{{ this_word }} <small class="text-muted">{{ site.tags[this_word].size }} posts</small></h4>
 <ul>
 {% for post in site.tags[this_word] %}{% if post.title != null %}
 <li><a href="{{ post.url }}">{{ post.title }}</a> &mdash; <date class="text-muted">{{ post.date | date: "%-d %B, %Y" }}</date></li>
