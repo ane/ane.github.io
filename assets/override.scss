@@ -1,5 +1,9 @@
+---
+# Front matter comment to ensure Jekyll properly reads file.
+---
+
 body {
-    font-family: "Georgia", "Times New Roman", serif;
+    font-family: "PT Serif", "Georgia", "Times New Roman", serif;
 }
 
 code {
@@ -9,6 +13,12 @@ code {
 
 .content {
     font-size: 20px;
+    p {
+        text-align: justify;
+        -webkit-hyphens: manual;
+        -moz-hyphens: manual;
+        hyphens: manual;
+    }
 }
 
 
@@ -20,6 +30,16 @@ pre {
     border-radius: 5px;
 }
 
+.content .essay h1,
+.content .essay h2,
+.content .essay h3,
+.content .essay h4,
+.content .essay h5,
+.content .essay h6 {
+    font-family: "PT Serif", "Georgia", "Times New Roman", serif;
+}
+
+
 nav,
 .content h1,
 .content h2,
@@ -27,7 +47,7 @@ nav,
 .content h4,
 .content h5,
 .content h6 {
-    font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 #topnav {
@@ -51,10 +71,6 @@ blockquote {
 
 .share-icon {
     font-size: 30px;
-}
-
-p {
-    hyphens: auto;
 }
 
 #toc ul {
@@ -140,4 +156,31 @@ article.post + article.post {
 .small-caps {
     font-variant: small-caps;
     font-weight: bold;
+}
+
+.essay-meta {
+    margin-bottom: 2rem;
+}
+
+
+.essay {
+    p {
+        margin-bottom: 0em;
+        text-align: justify;
+        -webkit-hyphens: manual;
+        -moz-hyphens: manual;
+        hyphens: manual;
+
+        &:first-of-type:first-letter {
+            font-size: 5em;
+            float: left;
+            line-height: 0.5;
+            margin: 0.2em 0.07em 0em 0em;
+        }
+
+        & + p {
+            text-indent: 3em;
+        }
+    }
+
 }

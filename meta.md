@@ -9,8 +9,6 @@ title: About
 {% capture my-include %}{% include me.md %}{% endcapture %}
 {{ my-include | markdownify }}
 
-<hr/>
-
 <h3>Archive</h3>
 <p>Here's an archive of the site's contents.</p>
 
@@ -18,13 +16,15 @@ title: About
 <h5>Blog</h5>
 <ul>
     {% for post in site.posts %}
+    {% if post.category == nil %}
     <li><a href="{{ post.url }}">{{ post.title }}</a> &mdash; <date class="text-muted">{{ post.date | date: "%-d %B, %Y" }}</date></li>
+    {% endif %}
     {% endfor %}
 </ul>
-{% if site.categories['essay'].size > 0 %}
+{% if site.categories.essays.size > 0 %}
 <h5>Essays</h5>
 <ul>
-{% for post in site.categories['essay'] %}
+{% for post in site.categories.essays %}
     <li><a href="{{ post.url }}">{{ post.title }}</a></li>
 {% endfor %}
 </ul>

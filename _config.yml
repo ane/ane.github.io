@@ -18,7 +18,10 @@ google_analytics: UA-58162697-1
 gems:
   - jekyll-sitemap
   - jekyll-feed
-  - liquid_pluralize
+  - jekyll-seo-tag
+
+twitter:
+  username: anewtf
 
 kramdown:
   auto_ids:       true
