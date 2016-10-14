@@ -84,29 +84,17 @@
         
 <header>
     <h2 class="page-header">
-        <a class="post-title" href="/2016/10/14/communicator-functional-actors.html">Communicator Functional Actors</a>
+        <a class="post-title" href="/2016/10/14/communicator-functional-actors.html">Communicators: Actors with purely functional state</a>
     </h2>
     <p>
         <time class="text-muted post-meta" datetime="2016-10-14">
             October 14, 2016
-            
+             — Tagged as <a href="/tags/scala">scala</a>, <a href="/tags/akka">akka</a>, <a href="/tags/fp">fp</a>
         </time>
     </p>
 </header>
 
-        <p>http://localhost:4000/2016/10/14/communicator-functional-actors.html—
-layout: post
-date: 2016-10-14
-title: “Communicators: Actors with purely functional state”
-summary: “or, why mutable state is dangerous”
-disqus: true
-tags:
-  - scala
-  - akka
-  - fp
-—</p>
-
-<p>In Scala, Akka actors, as in the traditional <a href="http://en.wikipedia.org/wiki/Actor_model">Actor model</a>, may
+        <p>In Scala, Akka actors, as in the traditional <a href="http://en.wikipedia.org/wiki/Actor_model">Actor model</a>, may
 modify private state. The accepted convention is to have a mutable object (e.g. a
 <code class="highlighter-rouge">Map</code>), a <code class="highlighter-rouge">var</code>, and mutate it like so:</p>
 

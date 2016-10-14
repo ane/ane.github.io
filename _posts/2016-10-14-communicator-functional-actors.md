@@ -1,4 +1,4 @@
-http://localhost:4000/2016/10/14/communicator-functional-actors.html---
+---
 layout: post
 date: 2016-10-14
 title: "Communicators: Actors with purely functional state"
