@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
         <title>
             
@@ -11,27 +11,27 @@
         </title>
 
         
-        <meta name="description" content="The personal blog of Antoine Kalmbach, a Finnish-French software engineer." />
+        <meta name="description" content="The personal blog of Antoine Kalmbach, a Finnish-French software engineer.">
         
 
-        <link type="application/atom+xml" rel="alternate" href="http://ane.github.io/feed.xml" title="Antoine Kalmbach" />
+        <link type="application/atom+xml" rel="alternate" href="http://ane.github.io/feed.xml" title="Antoine Kalmbach">
         <meta charset="utf-8">
-        <meta name="HandheldFriendly" content="True" />
-        <meta name="MobileOptimized" content="320" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!-- Begin Jekyll SEO tag v2.0.0 -->
 <title>Home - Antoine Kalmbach</title>
-<meta property="og:title" content="Home" />
-<meta name="description" content="Antoine Kalmbach’s Blog" />
-<meta property="og:description" content="Antoine Kalmbach’s Blog" />
-<link rel="canonical" href="http://ane.github.io/" />
-<meta property="og:url" content="http://ane.github.io/" />
-<meta property="og:site_name" content="Antoine Kalmbach" />
+<meta property="og:title" content="Home">
+<meta name="description" content="Antoine Kalmbach’s Blog">
+<meta property="og:description" content="Antoine Kalmbach’s Blog">
+<link rel="canonical" href="http://ane.github.io/">
+<meta property="og:url" content="http://ane.github.io/">
+<meta property="og:site_name" content="Antoine Kalmbach">
 <link rel="next" href="http://ane.github.io/page2">
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:site" content="@anewtf" />
-<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@anewtf">
+<meta name="twitter:creator" content="@Antoine Kalmbach">
 <script type="application/ld+json">
   {
     "@context": "http://schema.org",
@@ -43,11 +43,11 @@
   }
 </script>
 <!-- End Jekyll SEO tag -->
-        <link href='https://fonts.googleapis.com/css?family=PT+Serif|Open+Sans' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=PT+Serif%7COpen+Sans" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
-        <link rel="stylesheet" href="/assets/override.css" />
-        <link rel="stylesheet" href="/assets/pygments.css" />
+        <link rel="stylesheet" href="/assets/override.css">
+        <link rel="stylesheet" href="/assets/pygments.css">
 
     </head>
     <body class="home-template">
@@ -57,7 +57,7 @@
         <div class="container">
             <a class="navbar-brand" href="http://ane.github.io">Antoine Kalmbach</a>
             <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#collapse-navbar">
-                &#9776;
+                ☰
             </button>
             <div class="collapse navbar-toggleable-xs pull-right" id="collapse-navbar">
                 <ul class="nav navbar-nav">
@@ -91,7 +91,7 @@
     <p>
         <time class="text-muted post-meta" datetime="2016-10-07">
             October 7, 2016
-             &mdash; Tagged as <a href="/tags/scala">scala</a>, <a href="/tags/akka">akka</a>, <a href="/tags/fp">fp</a>
+             — Tagged as <a href="/tags/scala">scala</a>, <a href="/tags/akka">akka</a>, <a href="/tags/fp">fp</a>
         </time>
     </p>
 </header>
@@ -100,7 +100,8 @@
 modify private state. The accepted convention is to have a mutable object (e.g. a
 <code class="highlighter-rouge">Map</code>), a <code class="highlighter-rouge">var</code>, and mutate it like so:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
   <span class="k">var</span> <span class="n">books</span> <span class="k">=</span> <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="nc">Map</span><span class="o">.</span><span class="n">empty</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">]</span>
   
   <span class="k">def</span> <span class="n">receive</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
@@ -125,7 +126,8 @@ possible lack of referential transparency, the code can become hard to reason ab
 the Actor change its state and communication model. Here’s the above implemented using this
 paradigm:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">receive</span> <span class="k">=</span> <span class="n">active</span><span class="o">(</span><span class="nc">Map</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
   
   <span class="k">def</span> <span class="n">active</span><span class="o">(</span><span class="n">books</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
@@ -141,7 +143,8 @@ paradigm:</p>
 <p>The <code class="highlighter-rouge">active</code> function returns a new <code class="highlighter-rouge">Receive</code>, receiving the current actor <em>state</em> as its
 parameter. Adding logic to it is now easy:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">receive</span> <span class="k">=</span> <span class="n">active</span><span class="o">(</span><span class="nc">Map</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
   
   <span class="k">def</span> <span class="n">active</span><span class="o">(</span><span class="n">books</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
@@ -165,7 +168,8 @@ receive case will be running in the same thread as the next! One could argue tha
 feature but a <em>flaw</em>, but I won’t go that far. Hence, code dealing with Futures in Akka actors needs to deal with the unforgiving reality that there is no
 guarantee of thread safety. Case in point:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span><span class="o">(</span><span class="n">popReservation</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span><span class="o">(</span><span class="n">popReservation</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">receive</span> <span class="k">=</span> <span class="n">active</span><span class="o">(</span><span class="nc">Map</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
   
   <span class="k">def</span> <span class="n">active</span><span class="o">(</span><span class="n">books</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
@@ -195,7 +199,8 @@ is the <code class="highlighter-rouge">ActorSystem</code>s dispatcher, we may or
 <p>To deal with this, Akka has introduced the <code class="highlighter-rouge">pipe</code> pattern, which is an implicit given to Futures
 which solves this:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span><span class="o">(</span><span class="n">popReservation</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span><span class="o">(</span><span class="n">popReservation</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">receive</span> <span class="k">=</span> <span class="n">active</span><span class="o">(</span><span class="nc">Map</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
   
   <span class="k">def</span> <span class="n">active</span><span class="o">(</span><span class="n">books</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
@@ -216,7 +221,8 @@ which solves this:</p>
 
 <p>Another option is to fix the reference of <code class="highlighter-rouge">sender</code>:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">s</span> <span class="k">=</span> <span class="n">sender</span><span class="o">()</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">val</span> <span class="n">s</span> <span class="k">=</span> <span class="n">sender</span><span class="o">()</span>
 <span class="k">val</span> <span class="n">reservation</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">popReservation</span><span class="o">(</span><span class="n">isbn</span><span class="o">)</span> <span class="n">map</span> <span class="o">{</span> <span class="n">i</span> <span class="k">=&gt;</span>
   <span class="n">s</span> <span class="o">!</span> <span class="n">s</span><span class="s">"Here you go: $i"</span>
   <span class="n">context</span><span class="o">.</span><span class="n">become</span><span class="o">(</span><span class="n">active</span><span class="o">(</span><span class="n">books</span> <span class="o">-</span> <span class="n">isbn</span><span class="o">))</span> <span class="c1">// AAH!
@@ -227,7 +233,8 @@ which solves this:</p>
 <p>Ok, now we’ve fixed <code class="highlighter-rouge">sender()</code>, but what about the <code class="highlighter-rouge">books</code> collection? Let’s add a <code class="highlighter-rouge">PopBook(isbn:
 String)</code> case class, and handle that for removals:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span><span class="o">(</span><span class="n">popReservation</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span><span class="o">(</span><span class="n">popReservation</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">receive</span> <span class="k">=</span> <span class="n">active</span><span class="o">(</span><span class="nc">Map</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
   
   <span class="k">def</span> <span class="n">active</span><span class="o">(</span><span class="n">books</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
@@ -283,7 +290,8 @@ need is a state machine that can produce <em>output</em>: a finite state <em>tra
 function has the signature <code class="highlighter-rouge">(Input, State) =&gt; (Output, State)</code> - every transition produces an
 output, and Scala can model this efficiently:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">FSA</span><span class="o">[</span><span class="kt">State</span>, <span class="kt">Input</span>, <span class="kt">Output</span><span class="o">]</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">trait</span> <span class="nc">FSA</span><span class="o">[</span><span class="kt">State</span>, <span class="kt">Input</span>, <span class="kt">Output</span><span class="o">]</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">transition</span><span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">State</span><span class="o">,</span> <span class="n">i</span><span class="k">:</span> <span class="kt">Input</span><span class="o">)</span><span class="k">:</span> <span class="o">(</span><span class="kt">Option</span><span class="o">[</span><span class="kt">Output</span><span class="o">],</span> <span class="nc">State</span><span class="o">)</span>
 <span class="o">}</span>
 </code></pre>
@@ -295,7 +303,8 @@ logic Akka FSM’s aren’t sufficient.</p>
 <p>Let’s envision a radical version of actors, accounting for all the flaws described above:</p>
 
 <ul>
-  <li>State transitions should be about producing a new state, i.e. <code class="highlighter-rouge">(Input, State) =&gt; (Output, State)</code></li>
+  <li>State transitions should be about producing a new state, i.e. <code class="highlighter-rouge">(Input, State) =&gt; (Output, State)</code>
+</li>
   <li>Actor computations will deal with asynchronous code, we must deal with this intelligently</li>
   <li>Keep I/O logic out of actors - the actor only communicates with the external world</li>
 </ul>
@@ -306,7 +315,8 @@ logic Akka FSM’s aren’t sufficient.</p>
 
 <p>Let’s define the <code class="highlighter-rouge">Communicator</code> trait first independently:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">Communicator</span><span class="o">[</span><span class="kt">State</span>, <span class="kt">Input</span>, <span class="kt">Output</span><span class="o">]</span> <span class="nc">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">trait</span> <span class="nc">Communicator</span><span class="o">[</span><span class="kt">State</span>, <span class="kt">Input</span>, <span class="kt">Output</span><span class="o">]</span> <span class="nc">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
   <span class="cm">/** This is the initial actor state */</span>
   <span class="k">def</span> <span class="n">initial</span><span class="k">:</span> <span class="kt">State</span>
 
@@ -325,7 +335,8 @@ producing content in another thread, we want to make sure the reference of <code
 using this with the <code class="highlighter-rouge">pipeTo</code> pattern, we get thread safety. Let’s extend the <code class="highlighter-rouge">Actor</code> trait to get
 <code class="highlighter-rouge">receive</code></p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">Communicator</span><span class="o">[</span><span class="kt">State</span>, <span class="kt">Input</span>, <span class="kt">Output</span><span class="o">]</span> <span class="nc">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">trait</span> <span class="nc">Communicator</span><span class="o">[</span><span class="kt">State</span>, <span class="kt">Input</span>, <span class="kt">Output</span><span class="o">]</span> <span class="nc">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
   <span class="cm">/** This is the initial actor state */</span>
   <span class="k">def</span> <span class="n">initial</span><span class="k">:</span> <span class="kt">State</span>
 
@@ -334,58 +345,43 @@ using this with the <code class="highlighter-rouge">pipeTo</code> pattern, we ge
 
   <span class="cm">/** The output processing function */</span>
   <span class="k">def</span> <span class="n">process</span><span class="o">(</span><span class="n">state</span><span class="k">:</span> <span class="kt">State</span><span class="o">,</span> <span class="n">input</span><span class="k">:</span> <span class="kt">Input</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[(</span><span class="kt">Option</span><span class="o">[</span><span class="kt">Output</span><span class="o">]</span>, <span class="kt">State</span><span class="o">)]</span>
-
-  <span class="k">import</span> <span class="nn">context.dispatcher</span>
-
-  <span class="k">def</span> <span class="n">discard</span> <span class="k">=</span> <span class="kc">true</span>
-
+  
   <span class="k">def</span> <span class="n">receive</span> <span class="k">=</span> <span class="n">active</span><span class="o">(</span><span class="n">initial</span><span class="o">)</span>
-
-  <span class="k">def</span> <span class="n">active</span><span class="o">[</span><span class="kt">S</span> <span class="k">&lt;:</span> <span class="kt">State:</span> <span class="kt">ClassTag</span>,
-             <span class="kt">O</span> <span class="k">&lt;:</span> <span class="kt">Output:</span> <span class="kt">ClassTag</span>,
-             <span class="kt">I</span> <span class="k">&lt;:</span> <span class="kt">Input:</span> <span class="kt">ClassTag</span><span class="o">](</span><span class="n">currentState</span><span class="k">:</span> <span class="kt">State</span><span class="o">)</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="k">case</span> <span class="n">state</span><span class="k">:</span> <span class="kt">S</span> <span class="o">=&gt;</span> <span class="n">context</span><span class="o">.</span><span class="n">become</span><span class="o">(</span><span class="n">active</span><span class="o">(</span><span class="n">state</span><span class="o">),</span> <span class="n">discard</span><span class="o">)</span>
-
-    <span class="k">case</span> <span class="o">(</span><span class="n">output</span><span class="k">:</span> <span class="kt">O</span><span class="o">,</span> <span class="n">origin</span><span class="k">:</span> <span class="kt">ActorRef</span><span class="o">)</span> <span class="k">=&gt;</span>
-      <span class="n">handle</span><span class="o">(</span><span class="n">currentState</span><span class="o">,</span> <span class="n">output</span><span class="o">,</span> <span class="n">origin</span><span class="o">)</span>
-
-    <span class="k">case</span> <span class="n">input</span><span class="k">:</span> <span class="kt">I</span> <span class="o">=&gt;</span> <span class="o">{</span>
-      <span class="k">val</span> <span class="n">origin</span> <span class="k">=</span> <span class="n">sender</span><span class="o">()</span>
-      <span class="n">process</span><span class="o">(</span><span class="n">currentState</span><span class="o">,</span> <span class="n">input</span><span class="o">)</span> <span class="n">map</span> <span class="o">{</span>
-        <span class="k">case</span> <span class="o">(</span><span class="n">output</span><span class="o">,</span> <span class="n">state</span><span class="o">)</span> <span class="k">=&gt;</span>
-          <span class="n">output</span> <span class="n">foreach</span> <span class="o">{</span> <span class="n">o</span> <span class="k">=&gt;</span> <span class="n">self</span> <span class="o">!</span> <span class="o">(</span><span class="n">o</span><span class="o">,</span> <span class="n">origin</span><span class="o">)</span> <span class="o">}</span>
-          <span class="n">self</span> <span class="o">!</span> <span class="n">state</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
+  
+  <span class="cm">/** I/O handling which the deriving class must implement */</span>
+  <span class="k">def</span> <span class="n">active</span><span class="o">(</span><span class="n">newState</span><span class="k">:</span> <span class="kt">State</span><span class="o">)</span><span class="k">:</span> <span class="kt">Receive</span>
 <span class="o">}</span>
 </code></pre>
 </div>
 
-<p>The <code class="highlighter-rouge">active</code> function is the actual output-producing function: it’s hidden from the actual
-implementation, as <code class="highlighter-rouge">Communicator</code> is simply a trait to be mixed in. The user is left to define three
+<p>The <code class="highlighter-rouge">active</code> function is the actual output-producing function. The user is left to define three
 things:</p>
 
 <ul>
-  <li>the initial actor state in <code class="highlighter-rouge">initial</code></li>
-  <li>the output dispatch function <code class="highlighter-rouge">handle</code></li>
-  <li>the state transition function <code class="highlighter-rouge">process</code></li>
+  <li>the initial actor state in <code class="highlighter-rouge">initial</code>
+</li>
+  <li>the output dispatch function <code class="highlighter-rouge">handle</code>
+</li>
+  <li>the state transition function <code class="highlighter-rouge">process</code>
+</li>
+  <li>the <code class="highlighter-rouge">active</code> function which handles input and output</li>
 </ul>
 
-<p>First, let’s define the application states.</p>
+<p>To see this in action, first, let’s define the application states.</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">object</span> <span class="nc">Library</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">object</span> <span class="nc">Library</span> <span class="o">{</span>
   <span class="c1">// Library state
-</span>  <span class="k">case</span> <span class="k">class</span> <span class="nc">State</span><span class="o">(</span><span class="n">open</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">,</span> <span class="n">books</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">])</span>
+</span>  <span class="k">case</span> <span class="k">class</span> <span class="nc">LibraryState</span><span class="o">(</span><span class="n">open</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">,</span> <span class="n">books</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">])</span>
 
   <span class="c1">// Input alphabet
-</span>  <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Input</span>
+</span>  <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">LibraryInput</span>
   <span class="k">case</span> <span class="k">class</span> <span class="nc">SetOpen</span><span class="o">(</span><span class="n">o</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">)</span>                  <span class="k">extends</span> <span class="nc">Input</span>
   <span class="k">case</span> <span class="k">class</span> <span class="nc">AddBook</span><span class="o">(</span><span class="n">isbn</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">title</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Input</span>
   <span class="k">case</span> <span class="k">class</span> <span class="nc">GetBook</span><span class="o">(</span><span class="n">isbn</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>                <span class="k">extends</span> <span class="nc">Input</span>
 
   <span class="c1">// Output alphabet
-</span>  <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Output</span>
+</span>  <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">LibraryOutput</span>
   <span class="k">case</span> <span class="k">object</span> <span class="nc">SorryWeAreClosed</span>                        <span class="k">extends</span> <span class="nc">Output</span>
   <span class="k">case</span> <span class="k">object</span> <span class="nc">DoNotHaveIt</span>                             <span class="k">extends</span> <span class="nc">Output</span>
   <span class="k">case</span> <span class="k">object</span> <span class="nc">SorryReserved</span>                           <span class="k">extends</span> <span class="nc">Output</span>
@@ -398,13 +394,28 @@ things:</p>
 <p>The actual state is just a case class: this gives us the nice <code class="highlighter-rouge">copy</code> function for easy updates. Then
 we use polymorphism to implement the input and output alphabets. Then we implement the actor itself:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span><span class="o">(</span><span class="n">getReservation</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">Boolean</span><span class="o">])</span>
-    <span class="k">extends</span> <span class="nc">Communicator</span><span class="o">[</span><span class="kt">Library.State</span>, <span class="kt">Library.Input</span>, <span class="kt">Library.Output</span><span class="o">]</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span><span class="o">(</span><span class="n">getReservation</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">Boolean</span><span class="o">])</span>
+    <span class="k">extends</span> <span class="nc">Communicator</span><span class="o">[</span><span class="kt">LibraryState</span>, <span class="kt">LibraryInput</span>, <span class="kt">LibraryOutput</span><span class="o">]</span> <span class="o">{</span>
 
   <span class="k">import</span> <span class="nn">Library._</span>
 
   <span class="k">def</span> <span class="n">initial</span> <span class="k">=</span> <span class="nc">State</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span> <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">immutable</span><span class="o">.</span><span class="nc">Map</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
 
+  <span class="k">override</span> <span class="k">def</span> <span class="n">active</span><span class="o">(</span><span class="n">newState</span><span class="k">:</span> <span class="kt">LibraryState</span><span class="o">)</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="o">(</span><span class="n">output</span><span class="k">:</span> <span class="kt">LibraryOutput</span><span class="o">,</span> <span class="n">origin</span><span class="k">:</span> <span class="kt">ActorRef</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">handle</span><span class="o">(</span><span class="n">output</span><span class="o">,</span> <span class="n">origin</span><span class="o">)</span>
+
+    <span class="k">case</span> <span class="n">input</span><span class="k">:</span> <span class="kt">LibraryInput</span> <span class="o">=&gt;</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="n">origin</span> <span class="k">=</span> <span class="n">sender</span><span class="o">()</span>
+      <span class="n">process</span><span class="o">(</span><span class="n">newState</span><span class="o">,</span> <span class="n">input</span><span class="o">)</span> <span class="n">map</span> <span class="o">{</span>
+        <span class="k">case</span> <span class="o">(</span><span class="n">output</span><span class="o">,</span> <span class="n">state</span><span class="o">)</span> <span class="k">=&gt;</span>
+          <span class="n">output</span> <span class="n">foreach</span> <span class="o">{</span> <span class="n">o</span> <span class="k">=&gt;</span>
+            <span class="n">self</span> <span class="o">!</span> <span class="o">(</span><span class="n">o</span><span class="o">,</span> <span class="n">origin</span><span class="o">)</span>
+          <span class="o">}</span>
+          <span class="n">self</span> <span class="o">!</span> <span class="n">state</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
 
   <span class="k">override</span> <span class="k">def</span> <span class="n">process</span><span class="o">(</span><span class="n">state</span><span class="k">:</span> <span class="kt">State</span><span class="o">,</span> <span class="n">input</span><span class="k">:</span> <span class="kt">Input</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[(</span><span class="kt">Option</span><span class="o">[</span><span class="kt">Output</span><span class="o">]</span>, <span class="kt">State</span><span class="o">)]</span> <span class="k">=</span>
     <span class="n">input</span> <span class="k">match</span> <span class="o">{</span>
@@ -449,7 +460,8 @@ we use polymorphism to implement the input and output alphabets. Then we impleme
 actor. Let’s decouple it entirely from actor semantics. First, we define a <code class="highlighter-rouge">StateMachine[I, O]</code>
 trait:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">StateMachine</span><span class="o">[</span><span class="kt">I</span>, <span class="kt">O</span><span class="o">]</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">trait</span> <span class="nc">StateMachine</span><span class="o">[</span><span class="kt">I</span>, <span class="kt">O</span><span class="o">]</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">process</span><span class="o">(</span><span class="n">input</span><span class="k">:</span> <span class="kt">I</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[(</span><span class="kt">Option</span><span class="o">[</span><span class="kt">O</span><span class="o">]</span>, <span class="kt">StateMachine</span><span class="o">[</span><span class="kt">I</span>, <span class="kt">O</span><span class="o">])]</span>
 <span class="o">}</span>
 </code></pre>
@@ -457,9 +469,11 @@ trait:</p>
 
 <p>And excise the state logic from the Communicator, moving it to the <code class="highlighter-rouge">State</code> case class:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">LibraryState</span><span class="o">(</span><span class="n">open</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">,</span> <span class="n">books</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">],</span> <span class="n">getReservation</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">Boolean</span><span class="o">])(</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">LibraryState</span><span class="o">(</span><span class="n">open</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">,</span> <span class="n">books</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">],</span> <span class="n">getReservation</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">Boolean</span><span class="o">])(</span>
     <span class="k">implicit</span> <span class="n">ec</span><span class="k">:</span> <span class="kt">ExecutionContext</span><span class="o">)</span>
     <span class="k">extends</span> <span class="nc">StateMachine</span><span class="o">[</span><span class="kt">LibraryInput</span>, <span class="kt">LibraryOutput</span><span class="o">]</span> <span class="o">{</span>
+    
   <span class="k">def</span> <span class="n">process</span><span class="o">(</span><span class="n">input</span><span class="k">:</span> <span class="kt">LibraryInput</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[(</span><span class="kt">Option</span><span class="o">[</span><span class="kt">LibraryOutput</span><span class="o">]</span>, <span class="kt">LibraryState</span><span class="o">)]</span> <span class="k">=</span> <span class="o">{</span>
     <span class="n">input</span> <span class="k">match</span> <span class="o">{</span>
       <span class="k">case</span> <span class="nc">SetOpen</span><span class="o">(</span><span class="n">o</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Future</span><span class="o">.</span><span class="n">successful</span><span class="o">((</span><span class="nc">None</span><span class="o">,</span> <span class="n">copy</span><span class="o">(</span><span class="n">open</span> <span class="k">=</span> <span class="n">o</span><span class="o">)))</span>
@@ -492,58 +506,41 @@ trait:</p>
 </code></pre>
 </div>
 
-<p>Lastly, here are our updated traits <code class="highlighter-rouge">Communicator</code> and the <code class="highlighter-rouge">Library</code> implementation for it:</p>
+<p>You may be wondering: wait, where’s the <code class="highlighter-rouge">handle</code> implementation? We kept that out from the state
+machine class since it’s not its responsibility - so we keep that in the Communicator:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">Communicator</span><span class="o">[</span><span class="kt">Input</span>, <span class="kt">Output</span>, <span class="kt">State</span> <span class="k">&lt;:</span> <span class="kt">StateMachine</span><span class="o">[</span><span class="kt">Input</span>, <span class="kt">Output</span><span class="o">]]</span> <span class="nc">extends</span> <span class="nc">Actor</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span><span class="o">(</span><span class="n">getReservation</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">Boolean</span><span class="o">])</span>
+    <span class="k">extends</span> <span class="nc">Communicator</span><span class="o">[</span><span class="kt">LibraryInput</span>, <span class="kt">LibraryOutput</span>, <span class="kt">LibraryState</span><span class="o">]</span> <span class="o">{</span>
   <span class="k">import</span> <span class="nn">context.dispatcher</span>
-  <span class="k">def</span> <span class="n">initial</span><span class="k">:</span> <span class="kt">State</span>
 
-  <span class="k">def</span> <span class="n">handle</span><span class="o">(</span><span class="n">output</span><span class="k">:</span> <span class="kt">Output</span><span class="o">,</span> <span class="n">origin</span><span class="k">:</span> <span class="kt">ActorRef</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span>
+  <span class="k">def</span> <span class="n">initial</span> <span class="k">=</span> <span class="nc">LibraryState</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span> <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">immutable</span><span class="o">.</span><span class="nc">Map</span><span class="o">.</span><span class="n">empty</span><span class="o">,</span> <span class="n">getReservation</span><span class="o">)</span>
 
-  <span class="k">def</span> <span class="n">discard</span> <span class="k">=</span> <span class="kc">true</span>
+  <span class="k">override</span> <span class="k">def</span> <span class="n">handle</span><span class="o">(</span><span class="n">output</span><span class="k">:</span> <span class="kt">LibraryOutput</span><span class="o">,</span> <span class="n">origin</span><span class="k">:</span> <span class="kt">ActorRef</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="n">origin</span> <span class="o">!</span> <span class="n">output</span>
 
-  <span class="k">def</span> <span class="n">receive</span> <span class="k">=</span> <span class="n">active</span><span class="o">(</span><span class="n">initial</span><span class="o">)</span>
+  <span class="k">override</span> <span class="k">def</span> <span class="n">active</span><span class="o">(</span><span class="n">newState</span><span class="k">:</span> <span class="kt">LibraryState</span><span class="o">)</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="o">(</span><span class="n">output</span><span class="k">:</span> <span class="kt">LibraryOutput</span><span class="o">,</span> <span class="n">origin</span><span class="k">:</span> <span class="kt">ActorRef</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">handle</span><span class="o">(</span><span class="n">output</span><span class="o">,</span> <span class="n">origin</span><span class="o">)</span>
 
-  <span class="k">def</span> <span class="n">active</span><span class="o">[</span><span class="kt">S</span> <span class="k">&lt;:</span> <span class="kt">State:</span> <span class="kt">ClassTag</span>, <span class="kt">O</span> <span class="k">&lt;:</span> <span class="kt">Output:</span> <span class="kt">ClassTag</span>, <span class="kt">I</span> <span class="k">&lt;:</span> <span class="kt">Input:</span> <span class="kt">ClassTag</span><span class="o">](</span><span class="n">currentState</span><span class="k">:</span> <span class="kt">State</span><span class="o">)</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="k">case</span> <span class="n">state</span><span class="k">:</span> <span class="kt">S</span> <span class="o">=&gt;</span> <span class="n">context</span><span class="o">.</span><span class="n">become</span><span class="o">(</span><span class="n">active</span><span class="o">(</span><span class="n">state</span><span class="o">),</span> <span class="n">discard</span><span class="o">)</span>
-
-    <span class="k">case</span> <span class="o">(</span><span class="n">output</span><span class="k">:</span> <span class="kt">O</span><span class="o">,</span> <span class="n">origin</span><span class="k">:</span> <span class="kt">ActorRef</span><span class="o">)</span> <span class="k">=&gt;</span>
-      <span class="n">handle</span><span class="o">(</span><span class="n">output</span><span class="o">,</span> <span class="n">origin</span><span class="o">)</span>
-
-    <span class="k">case</span> <span class="n">input</span><span class="k">:</span> <span class="kt">I</span> <span class="o">=&gt;</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="n">input</span><span class="k">:</span> <span class="kt">LibraryInput</span> <span class="o">=&gt;</span> <span class="o">{</span>
       <span class="k">val</span> <span class="n">origin</span> <span class="k">=</span> <span class="n">sender</span><span class="o">()</span>
-      <span class="n">currentState</span><span class="o">.</span><span class="n">process</span><span class="o">(</span><span class="n">input</span><span class="o">)</span> <span class="n">map</span> <span class="o">{</span>
-        <span class="k">case</span> <span class="o">(</span><span class="n">output</span><span class="o">,</span> <span class="n">state</span><span class="o">)</span> <span class="k">=&gt;</span>
-          <span class="n">output</span> <span class="n">foreach</span> <span class="o">{</span> <span class="n">o</span> <span class="k">=&gt;</span>
+      <span class="n">newState</span><span class="o">.</span><span class="n">process</span><span class="o">(</span><span class="n">input</span><span class="o">)</span> <span class="n">map</span> <span class="o">{</span>
+        <span class="k">case</span> <span class="o">(</span><span class="n">output</span><span class="o">,</span> <span class="n">state</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
+          <span class="n">output</span> <span class="n">foreach</span> <span class="o">{</span> <span class="n">o</span> <span class="k">=&gt;</span> 
             <span class="n">self</span> <span class="o">!</span> <span class="o">(</span><span class="n">o</span><span class="o">,</span> <span class="n">origin</span><span class="o">)</span>
           <span class="o">}</span>
           <span class="n">self</span> <span class="o">!</span> <span class="n">state</span>
+        <span class="o">}</span>
       <span class="o">}</span>
     <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
-</div>
 
-<p>You may be wondering: wait, where’s the <code class="highlighter-rouge">handle</code> implementation? We kept that out from the state
-machine class since it’s not its responsibility - so we keep that in the Communicator:</p>
-
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Library</span><span class="o">(</span><span class="n">getReservation</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">Boolean</span><span class="o">])</span>
-    <span class="k">extends</span> <span class="nc">Communicator</span><span class="o">[</span><span class="kt">LibraryInput</span>, <span class="kt">LibraryOutput</span>, <span class="kt">LibraryState</span><span class="o">]</span> <span class="o">{</span>
-  <span class="k">import</span> <span class="nn">context.dispatcher</span>
-
-  <span class="k">def</span> <span class="n">initial</span> <span class="k">=</span> 
-    <span class="nc">LibraryState</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span> <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">immutable</span><span class="o">.</span><span class="nc">Map</span><span class="o">.</span><span class="n">empty</span><span class="o">,</span> <span class="n">getReservation</span><span class="o">)</span>
-
-  <span class="k">override</span> <span class="k">def</span> <span class="n">handle</span><span class="o">(</span><span class="n">output</span><span class="k">:</span> <span class="kt">LibraryOutput</span><span class="o">,</span> <span class="n">origin</span><span class="k">:</span> <span class="kt">ActorRef</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> 
-    <span class="n">origin</span> <span class="o">!</span> <span class="n">output</span>
-<span class="o">}</span>
 </code></pre>
 </div>
 
 <p>So, all state is kept neatly in a separate entity that’s entirely unit testable in its own right
-without having to rely on Akka testkit or the like - while we handle output dispatch logic in the
-<code class="highlighter-rouge">handle</code> method of the communicator, since that’s its job, its <em>only</em> job.</p>
+without having to rely on Akka testkit or the like – input and output dispatch and state
+transitions are done in the <code class="highlighter-rouge">active</code> method.</p>
 
 <p>I know the state case class manipulation introduces more boilerplate, but as long as that
 boilerplate isn’t complicated, I think this is a fair compromise. Plus, one can
@@ -551,10 +548,12 @@ use <a href="https://github.com/julien-truffaut/Monocle">lenses</a> to remove so
 by defining handy update functions. One could cook up something doggedly interesting using <a href="http://typelevel.org/cats">Cats</a> and
 <code class="highlighter-rouge">StateT</code> - as long as you provide a function of the kind <code class="highlighter-rouge">(I, S) =&gt; (Option[O], S)</code>, the sky is the limit.</p>
 
+<p><em>Thanks to Jaakko Pallari (<a href="https://github.com/jkpl" class="user-mention">@jkpl</a>) for previewing this.</em></p>
+
 <div class="footnotes">
   <ol>
     <li id="fn:1">
-      <p>This is actually false, as Aaron Turon, a core Rust developer, proves in his article about <a href="demonstrates">getting lock-free structures without garbage collection</a>. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+      <p>This is actually false, as Aaron Turon, a core Rust developer, proves in his article about <a href="demonstrates">getting lock-free structures without garbage collection</a>. <a href="#fnref:1" class="reversefootnote">↩</a></p>
     </li>
   </ol>
 </div>
@@ -572,7 +571,7 @@ by defining handy update functions. One could cook up something doggedly interes
     <p>
         <time class="text-muted post-meta" datetime="2016-03-25">
             March 25, 2016
-             &mdash; Tagged as <a href="/tags/plt">plt</a>, <a href="/tags/go">go</a>, <a href="/tags/scala">scala</a>, <a href="/tags/haskell">haskell</a>, <a href="/tags/clojure">clojure</a>
+             — Tagged as <a href="/tags/plt">plt</a>, <a href="/tags/go">go</a>, <a href="/tags/scala">scala</a>, <a href="/tags/haskell">haskell</a>, <a href="/tags/clojure">clojure</a>
         </time>
     </p>
 </header>
@@ -687,7 +686,7 @@ way, and you’re no longer just using a tool. You’re using an <em>idea</em>.<
     
     <span class="page-number"> Page 1 of 3 </span>
      
-        <a class="older-posts" href="/page2/" title="Next Page">Older Posts &raquo;</a>
+        <a class="older-posts" href="/page2/" title="Next Page">Older Posts »</a>
      
 </nav>
     
@@ -698,7 +697,7 @@ way, and you’re no longer just using a tool. You’re using an <em>idea</em>.<
                 <footer>
                     <hr>
                     <address>
-                        Copyright &copy; 2016 <a href="">Antoine Kalmbach</a> under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
+                        Copyright © 2016 <a href="">Antoine Kalmbach</a> under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
                     </address>
                 </footer>
             </div>
@@ -707,8 +706,7 @@ way, and you’re no longer just using a tool. You’re using an <em>idea</em>.<
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
             <script type="text/javascript" src="/assets/toc.min.js"></script>
             <script src="/assets/hyphenator.js" type="text/javascript"></script>
-            <script type="text/javascript" async
-                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+            <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
             </script>
             <script src="https://use.fontawesome.com/2772baba9e.js"></script>
             <script src="/assets/hylo.js" type="text/javascript"></script>
@@ -727,7 +725,7 @@ way, and you’re no longer just using a tool. You’re using an <em>idea</em>.<
 
             </script>   
         </div>
-        </div>
-        </div>
+        
+        
     </body>
 </html>

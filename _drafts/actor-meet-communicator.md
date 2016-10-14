@@ -245,56 +245,37 @@ trait Communicator[State, Input, Output] extends Actor {
 
   /** The output processing function */
   def process(state: State, input: Input): Future[(Option[Output], State)]
-
-  import context.dispatcher
-
-  def discard = true
-
+  
   def receive = active(initial)
-
-  def active[S <: State: ClassTag,
-             O <: Output: ClassTag,
-             I <: Input: ClassTag](currentState: State): Receive = {
-    case state: S => context.become(active(state), discard)
-
-    case (output: O, origin: ActorRef) =>
-      handle(currentState, output, origin)
-
-    case input: I => {
-      val origin = sender()
-      process(currentState, input) map {
-        case (output, state) =>
-          output foreach { o => self ! (o, origin) }
-          self ! state
-      }
-    }
-  }
+  
+  /** I/O handling which the deriving class must implement */
+  def active(newState: State): Receive
 }
 ```
 
-The `active` function is the actual output-producing function: it's hidden from the actual
-implementation, as `Communicator` is simply a trait to be mixed in. The user is left to define three
+The `active` function is the actual output-producing function. The user is left to define three
 things:
 
 * the initial actor state in `initial`
 * the output dispatch function `handle`
 * the state transition function `process`
+* the `active` function which handles input and output
 
-First, let's define the application states.
+To see this in action, first, let's define the application states.
 
 ```scala
 object Library {
   // Library state
-  case class State(open: Boolean, books: Map[String, String])
+  case class LibraryState(open: Boolean, books: Map[String, String])
 
   // Input alphabet
-  sealed trait Input
+  sealed trait LibraryInput
   case class SetOpen(o: Boolean)                  extends Input
   case class AddBook(isbn: String, title: String) extends Input
   case class GetBook(isbn: String)                extends Input
 
   // Output alphabet
-  sealed trait Output
+  sealed trait LibraryOutput
   case object SorryWeAreClosed                        extends Output
   case object DoNotHaveIt                             extends Output
   case object SorryReserved                           extends Output
@@ -308,12 +289,26 @@ we use polymorphism to implement the input and output alphabets. Then we impleme
 
 ```scala
 class Library(getReservation: String => Future[Boolean])
-    extends Communicator[Library.State, Library.Input, Library.Output] {
+    extends Communicator[LibraryState, LibraryInput, LibraryOutput] {
 
   import Library._
 
   def initial = State(false, scala.collection.immutable.Map.empty)
 
+  override def active(newState: LibraryState): Receive = {
+    case (output: LibraryOutput, origin: ActorRef) => handle(output, origin)
+
+    case input: LibraryInput => {
+      val origin = sender()
+      process(newState, input) map {
+        case (output, state) =>
+          output foreach { o =>
+            self ! (o, origin)
+          }
+          self ! state
+      }
+    }
+  }
 
   override def process(state: State, input: Input): Future[(Option[Output], State)] =
     input match {
@@ -369,6 +364,7 @@ And excise the state logic from the Communicator, moving it to the `State` case 
 case class LibraryState(open: Boolean, books: Map[String, String], getReservation: String => Future[Boolean])(
     implicit ec: ExecutionContext)
     extends StateMachine[LibraryInput, LibraryOutput] {
+    
   def process(input: LibraryInput): Future[(Option[LibraryOutput], LibraryState)] = {
     input match {
       case SetOpen(o) => Future.successful((None, copy(open = o)))
@@ -400,40 +396,6 @@ case class LibraryState(open: Boolean, books: Map[String, String], getReservatio
 }
 ```
 
-Lastly, here are our updated traits `Communicator` and the `Library` implementation for it:
-
-```scala
-trait Communicator[Input, Output, State <: StateMachine[Input, Output]] extends Actor {
-  import context.dispatcher
-  def initial: State
-
-  def handle(output: Output, origin: ActorRef): Unit
-
-  def discard = true
-
-  def receive = active(initial)
-
-  def active[S <: State: ClassTag, O <: Output: ClassTag, I <: Input: ClassTag](currentState: State): Receive = {
-    case state: S => context.become(active(state), discard)
-
-    case (output: O, origin: ActorRef) =>
-      handle(output, origin)
-
-    case input: I => {
-      val origin = sender()
-      currentState.process(input) map {
-        case (output, state) =>
-          output foreach { o =>
-            self ! (o, origin)
-          }
-          self ! state
-      }
-    }
-  }
-}
-```
-
-
 You may be wondering: wait, where's the `handle` implementation? We kept that out from the state
 machine class since it's not its responsibility - so we keep that in the Communicator:
 
@@ -442,22 +404,39 @@ class Library(getReservation: String => Future[Boolean])
     extends Communicator[LibraryInput, LibraryOutput, LibraryState] {
   import context.dispatcher
 
-  def initial = 
-    LibraryState(false, scala.collection.immutable.Map.empty, getReservation)
+  def initial = LibraryState(false, scala.collection.immutable.Map.empty, getReservation)
 
-  override def handle(output: LibraryOutput, origin: ActorRef): Unit = 
-    origin ! output
+  override def handle(output: LibraryOutput, origin: ActorRef): Unit = origin ! output
+
+  override def active(newState: LibraryState): Receive = {
+    case (output: LibraryOutput, origin: ActorRef) => handle(output, origin)
+
+    case input: LibraryInput => {
+      val origin = sender()
+      newState.process(input) map {
+        case (output, state) => {
+          output foreach { o => 
+            self ! (o, origin)
+          }
+          self ! state
+        }
+      }
+    }
+  }
 }
+
 ```
 
 So, all state is kept neatly in a separate entity that's entirely unit testable in its own right
-without having to rely on Akka testkit or the like - while we handle output dispatch logic in the
-`handle` method of the communicator, since that's its job, its *only* job.
+without having to rely on Akka testkit or the like -- input and output dispatch and state
+transitions are done in the `active` method.
 
 I know the state case class manipulation introduces more boilerplate, but as long as that
 boilerplate isn't complicated, I think this is a fair compromise. Plus, one can
 use [lenses](https://github.com/julien-truffaut/Monocle) to remove some of the boilerplate, e.g., 
 by defining handy update functions. One could cook up something doggedly interesting using [Cats](http://typelevel.org/cats) and
 `StateT` - as long as you provide a function of the kind `(I, S) => (Option[O], S)`, the sky is the limit.
+
+*Thanks to Jaakko Pallari (@jkpl) for previewing this.*
 
 [^1]: This is actually false, as Aaron Turon, a core Rust developer, proves in his article about [getting lock-free structures without garbage collection](demonstrates).
