@@ -8,6 +8,7 @@ tags:
   - scala
   - akka
   - fp
+  - erlang
 ---
 
 In Scala, Akka actors, as in the traditional [Actor model](http://en.wikipedia.org/wiki/Actor_model), may
@@ -209,6 +210,30 @@ Let's envision a radical version of actors, accounting for all the flaws describ
 * State transitions should be about producing a new state, i.e. `(Input, State) => (Output, State)`
 * Actor computations will deal with asynchronous code, we must deal with this intelligently
 * Keep I/O logic out of actors - the actor only communicates with the external world
+* Actors should only mutate their state with with `context.become`
+
+The last bullet point is especially important, as it constrains state changes
+to be entirely functional, as you can simply make a function `def foo(state:
+State): Receive`, and keep calling it recursively, by transitioning states
+thusly:
+
+```scala
+def active(state: State): Receive = {
+  case someInput: Input => context become active(state)
+}
+```
+
+This idea is not new. Erlang actors have worked like this for actual decades,
+and arguments for using this method in Scala can be found left and right, summarized particularly well in
+Alexandru Nedelcu's [Scala best practices](https://github.com/alexandru/scala-best-practices/blob/master/sections/5-actors.md#52-should-mutate-state-in-actors-only-with-contextbecome). 
+
+```erlang
+active(Sum) ->
+  receive 
+    {From, GetValue} -> From ! Sum;
+    {n} -> active(Sum + n)
+  end.
+```
 
 Putting emphasis on the last point, I've come up with a moniker called *communicators*.
 
