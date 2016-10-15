@@ -159,15 +159,7 @@ opposed to anything modern and advanced, and *sometimes* justifiably so. In this
 regard Gocode is a rare gem among the Go tooling ecosystem.
 
 
-[^1]: To a degree, anyway. Massive datasets are hard to fit in memory, but I
-    wouldn't be surprised if it comes with the benefit of more speed, it may be
-    a good idea even for large datasets (e.g. half a terabyte in size).
-[^2]: Facebook uses the term "online" when describing Flow
-[^3]: Yes, I know REPLs have been around since the eighties, but this isn't
-    exactly the same thing.
-[^4]: They aren't *exactly* the same thing. Since I'm talking about computer
-    programs performing some kind of data analysis, and mentioning the Chinese
-    room experiment, I realize that I'm opening a massive can of worms; the
-    comparison is a mere *simile* here. The users of continuous
-    (i.e. inotify-based) batch analysis tools are on the observing end of the
-    Chinese room experiment.
+[^1]: To a degree, anyway. Massive datasets are hard to fit in memory, but I wouldn't be surprised if it comes with the benefit of more speed, it may be a good idea even for large datasets (e.g. half a terabyte in size).
+[^2]: Facebook uses the term "online" when describing Flow 
+[^3]: Yes, I know REPLs have been around since the eighties, but this isn't exactly the same thing.
+[^4]: They aren't *exactly* the same thing. Since I'm talking about computer programs performing some kind of data analysis, and mentioning the Chinese room experiment, I realize that I'm opening a massive can of worms; the comparison is a mere *simile* here. The users of continuous (i.e. inotify-based) batch analysis tools are on the observing end of the Chinese room experiment.
