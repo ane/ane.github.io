@@ -3,8 +3,8 @@ at [Qvantel](http://www.qvantel.com).
 
 This is my website. There's a blog, which is mainly about programming and software. For a bit of
 background, you can read a [a meta post of sorts]({% post_url 2016-01-01-before-we-begin %}) that
-describes the tone of the writings you will find on this site. Longer, non-programming related
-essays are in the 'essay' category.
+describes the tone of the writings you will find on this site. Longer, non-programming related stuff
+is filed under other categories, present below.
 
 You can drop me an [email](mailto:ane@iki.fi) or find me on [Github](https://github.com/ane).
 

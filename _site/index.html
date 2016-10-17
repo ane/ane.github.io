@@ -13,6 +13,7 @@
         
         <meta name="description" content="The personal blog of Antoine Kalmbach, a Finnish-French software engineer.">
         
+        <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
 
         <link type="application/atom+xml" rel="alternate" href="http://ane.github.io/feed.xml" title="Antoine Kalmbach">
         <meta charset="utf-8">
@@ -84,12 +85,162 @@
         
 <header>
     <h2 class="page-header">
+        <a class="post-title" href="/2016/10/17/streaming-http-requests.html">Streaming HTTP requests in akka-http</a>
+    </h2>
+    <p>
+        <time class="text-muted post-meta" datetime="2016-10-17">
+            October 17, 2016
+             — Tagged as <a href="/tags/scala">scala</a>, <a href="/tags/akka">akka</a>, <a href="/tags/reactive-streams">reactive-streams</a>
+        </time>
+    </p>
+</header>
+
+        <figure class="figure pull-md-right m-l-2">
+<img src="/images/streaming-http/first.png" class="figure-img img-fluid">
+<figcaption class="figure-caption">Figure 1. Input sources to an application</figcaption>
+</figure>
+
+<p><a href="http://doc.akka.io/docs/akka/2.4/scala/stream/index.html">Akka streams</a> is the
+<a href="http://doc.akka.io/docs/akka/2.4/scala/stream/index.html">reactive streams</a> implementation of the
+<a href="http://akka.io">Akka toolkit</a>. It lets you model computations as data flows while abstracting away
+the underlying concurrency and parallelism. That is to say, the developer is free to model the data
+in a computation as a <em>flow</em> of data from one place to another. Now, while this is an exciting
+subject by itself, this post isn’t about reactive programming, but a particular use case for it. I
+assume some familiarity with <code class="highlighter-rouge">akka-streams</code>, so if you find some of the terms confusing, refer to
+the Akka documentation for more information.</p>
+
+<h2 id="problem-description">Problem description</h2>
+
+<p>Our particular quandary is that we want to build an application (see Figure 1) which consists of a
+unidirectional datastream from a set of input sources (files, a message queue, a HTTP interface),
+propagating them from <code class="highlighter-rouge">A</code> to <code class="highlighter-rouge">C</code>, and so on.</p>
+
+<p>If we build this as a Akka Strems flow, conceptually, it could look like this:</p>
+
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="c1">// the sink
+</span><span class="k">val</span> <span class="n">sink</span><span class="k">:</span> <span class="kt">Sink</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">Future</span><span class="o">[</span><span class="kt">Done</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Sink</span><span class="o">.</span><span class="n">foreach</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="n">x</span><span class="o">))</span>
+
+<span class="c1">// a silly flow
+</span><span class="k">val</span> <span class="n">flow</span><span class="k">:</span> <span class="kt">Flow</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span>, <span class="kt">NotUsed</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Flow</span><span class="o">[</span><span class="kt">String</span><span class="o">].</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="s">"!"</span><span class="o">)</span>
+
+<span class="c1">// our sources
+</span><span class="k">val</span> <span class="n">mq</span> <span class="k">=</span> <span class="nc">Source</span><span class="o">.</span><span class="n">single</span><span class="o">(</span><span class="s">"hi from mq"</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">rest</span> <span class="k">=</span> <span class="nc">Source</span><span class="o">.</span><span class="n">single</span><span class="o">(</span><span class="s">"hi from rest api"</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">file</span> <span class="k">=</span> <span class="nc">Source</span><span class="o">.</span><span class="n">single</span><span class="o">(</span><span class="s">"hi from a file"</span><span class="o">)</span>
+
+<span class="c1">// run sources to the sink
+</span><span class="n">mq</span><span class="o">.</span><span class="n">via</span><span class="o">(</span><span class="n">flow</span><span class="o">).</span><span class="n">runWith</span><span class="o">(</span><span class="n">sink</span><span class="o">)</span>
+<span class="n">rest</span><span class="o">.</span><span class="n">via</span><span class="o">(</span><span class="n">flow</span><span class="o">).</span><span class="n">runWith</span><span class="o">(</span><span class="n">sink</span><span class="o">)</span>
+<span class="n">file</span><span class="o">.</span><span class="n">via</span><span class="o">(</span><span class="n">flow</span><span class="o">).</span><span class="n">runWith</span><span class="o">(</span><span class="n">sink</span><span class="o">)</span>
+
+</code></pre>
+</div>
+
+<p>The thing to remember is that internally this code does <strong>not</strong> look like the things in Figure 1, at
+all. This is because these flow stages are blueprints: they describe how inputs are connected to
+outputs, but it is not as if the <code class="highlighter-rouge">sink</code> is concretely targeted as a value. It is simply a building
+block that is used in an actual flow. It is the actual call to <code class="highlighter-rouge">runWith</code> that produces a computation
+– materializing a value – but not the actual <code class="highlighter-rouge">Sink</code> itself.</p>
+
+<p>It is particularly easy to construct a <code class="highlighter-rouge">Source[T, ...]</code> from a message queue and a file, but the
+HTTP part is tricky. The thing to remember is that the <em>above code does not do anything</em>: it is
+simply a <em>blueprint</em> of a reactive program. It says “wire these sources together, merge their
+outputs, send them to A, and from there finally to C”, but it doesn’t do anything until we
+<em>materialize</em> it.</p>
+
+<figure class="figure pull-md-right m-l-2">
+<img src="/images/streaming-http/second.png" class="figure-img img-fluid">
+<figcaption class="figure-caption">Figure 2. Hooking our flow to the HTTP server flow.</figcaption>
+</figure>
+
+<p>This is where akka-http jumps in. In akka-http, a web server consists, at a low level, from
+a <code class="highlighter-rouge">Flow[HttpRequest, HttpResponse, NotUsed]</code>. We are interested in getting our <code class="highlighter-rouge">Message</code> elements
+out of the <code class="highlighter-rouge">HttpRequest</code> and propagating them further downstream, and not particularly interested in
+giving the HTTP client anything more descriptive than a <code class="highlighter-rouge">HTTP 201 Created</code>.</p>
+
+<p>If we wire our flow as a part of this flow, still, <em>nothing happens</em>, because it’s a blueprint. The
+blueprint gets materialized into a flow when a HTTP connection comes, and once the connection dies,
+the flow dies. So even if we manage to hook our flow as a part of the HTTP server flow like in
+Figure 2, we end up destroying every the main flow once every HTTP request ends. This demonstrated
+by the following snippet:</p>
+
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">import</span> <span class="nn">akka.actor.ActorSystem</span>
+<span class="k">import</span> <span class="nn">akka.http.scaladsl.Http</span>
+<span class="k">import</span> <span class="nn">akka.http.scaladsl.model.</span><span class="o">{</span><span class="nc">HttpRequest</span><span class="o">,</span> <span class="nc">HttpResponse</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">akka.stream.ActorMaterializer</span>
+<span class="k">import</span> <span class="nn">akka.stream.scaladsl.</span><span class="o">{</span><span class="nc">Flow</span><span class="o">,</span> <span class="nc">Sink</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">akka.util.ByteString</span>
+<span class="k">import</span> <span class="nn">akka.</span><span class="o">{</span><span class="nc">Done</span><span class="o">,</span> <span class="nc">NotUsed</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">com.typesafe.scalalogging.StrictLogging</span>
+
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">system</span>       <span class="k">=</span> <span class="nc">ActorSystem</span><span class="o">()</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">materializer</span> <span class="k">=</span> <span class="nc">ActorMaterializer</span><span class="o">()</span>
+
+<span class="k">import</span> <span class="nn">system.dispatcher</span>
+
+<span class="c1">// the sink
+</span><span class="k">val</span> <span class="n">sink</span><span class="k">:</span> <span class="kt">Sink</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">Future</span><span class="o">[</span><span class="kt">Done</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Sink</span><span class="o">.</span><span class="n">foreach</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span><span class="n">msg</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span>
+
+<span class="c1">// the processing Flow in the middle
+</span><span class="k">val</span> <span class="n">flow</span><span class="k">:</span> <span class="kt">Flow</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span>, <span class="kt">NotUsed</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Flow</span><span class="o">[</span><span class="kt">String</span><span class="o">].</span><span class="n">map</span><span class="o">(</span><span class="n">s</span> <span class="k">=&gt;</span> <span class="n">s</span> <span class="o">+</span> <span class="s">"!"</span><span class="o">).</span><span class="n">log</span><span class="o">(</span><span class="s">"middle-flow"</span><span class="o">)</span>
+
+<span class="c1">// turn requests into messages
+</span><span class="k">val</span> <span class="n">toMsg</span><span class="k">:</span> <span class="kt">Flow</span><span class="o">[</span><span class="kt">HttpRequest</span>, <span class="kt">String</span>, <span class="kt">NotUsed</span><span class="o">]</span> <span class="k">=</span>
+    <span class="nc">Flow</span><span class="o">[</span><span class="kt">HttpRequest</span><span class="o">]</span>
+    <span class="o">.</span><span class="n">mapAsync</span><span class="o">(</span><span class="mi">1</span><span class="o">)(</span><span class="n">req</span> <span class="k">=&gt;</span> <span class="o">{</span>
+        <span class="k">val</span> <span class="n">content</span> <span class="k">=</span> <span class="n">req</span><span class="o">.</span><span class="n">entity</span><span class="o">.</span><span class="n">dataBytes</span><span class="o">.</span><span class="n">runFold</span><span class="o">(</span><span class="nc">ByteString</span><span class="o">.</span><span class="n">empty</span><span class="o">)(</span><span class="k">_</span> <span class="o">++</span> <span class="k">_</span><span class="o">)</span>
+
+        <span class="n">content</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">decodeString</span><span class="o">(</span><span class="s">"UTF-8"</span><span class="o">))</span>
+    <span class="o">})</span>
+    <span class="o">.</span><span class="n">log</span><span class="o">(</span><span class="s">"to-msg"</span><span class="o">)</span>
+
+<span class="c1">// hook flows together
+</span><span class="k">val</span> <span class="n">msgsToFlow</span> <span class="k">=</span> <span class="n">toMsg</span><span class="o">.</span><span class="n">via</span><span class="o">(</span><span class="n">flow</span><span class="o">).</span><span class="n">to</span><span class="o">(</span><span class="n">sink</span><span class="o">)</span>
+
+<span class="c1">// the request flow, sending also to toMsg
+</span><span class="k">val</span> <span class="n">route</span><span class="k">:</span> <span class="kt">Flow</span><span class="o">[</span><span class="kt">HttpRequest</span>, <span class="kt">HttpResponse</span>, <span class="kt">NotUsed</span><span class="o">]</span> <span class="k">=</span>
+    <span class="nc">Flow</span><span class="o">[</span><span class="kt">HttpRequest</span><span class="o">].</span><span class="n">alsoTo</span><span class="o">(</span><span class="n">msgsToFlow</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span> <span class="k">=&gt;</span> <span class="nc">HttpResponse</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span> <span class="n">entity</span> <span class="k">=</span> <span class="s">"Thanks!"</span><span class="o">))</span>
+                      <span class="c1">// ^ yoink!
+</span>
+<span class="c1">// run server
+</span><span class="nc">Http</span><span class="o">().</span><span class="n">bindAndHandle</span><span class="o">(</span><span class="n">route</span><span class="o">,</span> <span class="s">"localhost"</span><span class="o">,</span> <span class="mi">8080</span><span class="o">)</span>
+</code></pre>
+</div>
+
+<p>Running the snippet yields the following:</p>
+
+<div class="language-bash highlighter-rouge">
+<pre class="highlight"><code><span class="gp">$ </span>curl -X POST -d<span class="s1">'hello'</span> localhost:8080
+Thanks!
+
+... <span class="k">in </span>our application ...
+DEBUG akka.io.TcpListener - New connection accepted
+DEBUG akka.stream.Materializer - <span class="o">[</span>rest] Element: HttpResponse<span class="o">(</span>200 OK,List<span class="o">()</span>, ...<span class="o">)</span>
+DEBUG akka.stream.Materializer - <span class="o">[</span>to-msg] Element: hello
+DEBUG akka.stream.Materializer - <span class="o">[</span>middle-flow] Element: hello!
+hello!
+DEBUG akka.stream.Materializer - <span class="o">[</span>rest] Downstream finished.
+DEBUG akka.stream.Materializer - <span class="o">[</span>to-msg] Upstream finished.
+DEBUG akka.stream.Materializer - <span class="o">[</span>middle-flow] Upstream finished.
+</code></pre>
+</div>
+
+    </article>
+    
+    
+    
+    <article class="post">
+        
+<header>
+    <h2 class="page-header">
         <a class="post-title" href="/2016/10/14/communicator-functional-actors.html">Communicators: Actors with purely functional state</a>
     </h2>
     <p>
         <time class="text-muted post-meta" datetime="2016-10-14">
             October 14, 2016
-             — Tagged as <a href="/tags/scala">scala</a>, <a href="/tags/akka">akka</a>, <a href="/tags/fp">fp</a>
+             — Tagged as <a href="/tags/scala">scala</a>, <a href="/tags/akka">akka</a>, <a href="/tags/fp">fp</a>, <a href="/tags/erlang">erlang</a>
         </time>
     </p>
 </header>
@@ -305,7 +456,34 @@ logic Akka FSM’s aren’t sufficient.</p>
 </li>
   <li>Actor computations will deal with asynchronous code, we must deal with this intelligently</li>
   <li>Keep I/O logic out of actors - the actor only communicates with the external world</li>
+  <li>Actors should only mutate their state with with <code class="highlighter-rouge">context.become</code>
+</li>
 </ul>
+
+<p>The last bullet point is especially important, as it constrains state changes
+to be entirely functional, as you can simply make a function <code class="highlighter-rouge">def foo(state:
+State): Receive</code>, and keep calling it recursively, by transitioning states
+thusly:</p>
+
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="k">def</span> <span class="n">active</span><span class="o">(</span><span class="n">state</span><span class="k">:</span> <span class="kt">State</span><span class="o">)</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="k">case</span> <span class="n">someInput</span><span class="k">:</span> <span class="kt">Input</span> <span class="o">=&gt;</span> <span class="n">context</span> <span class="n">become</span> <span class="n">active</span><span class="o">(</span><span class="n">state</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>This idea is not new. Erlang actors have worked like this for actual decades,
+and arguments for using this method in Scala can be found left and right, summarized particularly well in
+Alexandru Nedelcu’s <a href="https://github.com/alexandru/scala-best-practices/blob/master/sections/5-actors.md#52-should-mutate-state-in-actors-only-with-contextbecome">Scala best practices</a>.</p>
+
+<div class="language-erlang highlighter-rouge">
+<pre class="highlight"><code><span class="nf">active</span><span class="p">(</span><span class="nv">Sum</span><span class="p">)</span> <span class="o">-&gt;</span>
+  <span class="k">receive</span> 
+    <span class="p">{</span><span class="nv">From</span><span class="p">,</span> <span class="nv">GetValue</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="nv">From</span> <span class="o">!</span> <span class="nv">Sum</span><span class="p">;</span>
+    <span class="p">{</span><span class="n">n</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="nf">active</span><span class="p">(</span><span class="nv">Sum</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span>
+  <span class="k">end</span><span class="p">.</span>
+</code></pre>
+</div>
 
 <p>Putting emphasis on the last point, I’ve come up with a moniker called <em>communicators</em>.</p>
 
@@ -561,130 +739,11 @@ by defining handy update functions. One could cook up something doggedly interes
     
     
     
-    
-    <article class="post">
-        
-<header>
-    <h2 class="page-header">
-        <a class="post-title" href="/2016/03/25/focus.html">Focus</a>
-    </h2>
-    <p>
-        <time class="text-muted post-meta" datetime="2016-03-25">
-            March 25, 2016
-             — Tagged as <a href="/tags/plt">plt</a>, <a href="/tags/go">go</a>, <a href="/tags/scala">scala</a>, <a href="/tags/haskell">haskell</a>, <a href="/tags/clojure">clojure</a>
-        </time>
-    </p>
-</header>
-
-        <p>Focus is a design element in programming languages that I think deserves more attention than it
-gets.</p>
-
-<p>A focused language puts emphasis on a set of coherent idioms. Multi-paradigm languages like C++ or
-C# are unfocused because they lack a certain principle.</p>
-
-<p>Take C, for instance. You <em>can</em> do OOP in C, but it’s awkward. You need structures full of function
-pointers and the language wasn’t designed for it: it’s not a good idea to do it. The point is that
-you <em>can</em> but you shouldn’t.</p>
-
-<p>Focus is not so much of what a language <em>has</em> but something that it <em>embodies</em>. A single-paradigm
-language can still be unfocused, because there can be several ways to wield the singular paradigm. A
-multi-paradigm language can be focused if the multi-paradigm languages connect at a higher
-level. Focus can be implemented as a coding standard or it can be something that everybody
-understands as the idiomatic way of doing things.</p>
-
-<p>Focus is not always a positive trait but it rarely is a negative trait. On the other hand, a lack of
-focus is more often negative than positive.</p>
-
-<p>Take Haskell, a pure functional language, effectively single-paradigm; it is a very special
-case. The language itself is absolutely focused to the point of extreme autism, but its flexible
-type system and vibrant community, there are many ways to program Haskell. Do you absolutely need
-state? Use state, but be careful. Do you want IO without monads? Well, sure, but be careful.</p>
-
-<p>At a high level, Haskell code is <em>pure</em>. It permits some inconsistencies with its principal paradigm
-but it eschews them and this is the key difference.</p>
-
-<p>A bigger problem with focus is that it often is intangible. It’s easier to point out languages that
-are unfocused than those that are. Focus is about philosophy. Some language are very
-philosophical. For instance, Clojure is just as much about its particular approach to concurrency,
-state and identity, that is a language implementing those ideas. The language caught on because
-Rich Hickey, the author, did not market it as the tool that would have solved everybody’s problems,
-but because he marketed the <em>ideas</em> that Clojure represented as a solution to common programming problems.</p>
-
-<blockquote>
-  <p>“If you want to build a ship, don’t drum up the men to gather wood, divide the work and give
-orders. Instead, teach them to yearn for the vast and endless sea.”</p>
-
-  <footer class="blockquote-footer">Antoine de Saint-Exupéry</footer>
-</blockquote>
-
-<p>In this context, Clojure can be seen as a focused language. These core philosophies are what
-constitute the language, the fact that Clojure happens to be a Lisp dialect implementing the
-philosophies is secondary in my mind. With that in mind, I acknowledge being a Lisp is also a core
-part of Clojure, but its principles about state and identity can be implemented in any
-language. Clojure does <em>let</em> you do OOP but it feels awkward. When you grok Clojure you understand
-what that means: the language can be bent for that purpose, but it doesn’t want to be. Its
-philosophy is like a memory-foam, if you tamper with it, it will coalesce back into its original
-form. When you see <em>that</em>, it’s the moment you understand what Clojure—or any other language—is
-about.</p>
-
-<p>Some languages double down on philosophy by making it a part of a coding standard and enforcing it:
-Go. Go embodies simplicity and intuition, intentionally eschewing things that are not modern, but
-complex, opting to keep the core language simple. Some chalk this down as a negative trait, others
-love it; I find it to be both good and bad. Good, because I can jump into any Go codebase and get
-its purpose in minutes; bad, because sometimes I want to use abstractions for which Go is
-unsuitable. I respect its design philosophy, because it has one, and absolutely flaunts it. It’s not
-just a structural type system, it’s an <em>idea</em>.</p>
-
-<p>Scala is another beast. It began as an experiment, trying to augment and fix the deficiencies of
-Java. It was designed by brilliant PLT theorists and the language is a beautiful and magnanimous
-behemoth. Scala has so many features that it eschews focus either intentionally or
-unintentionally. On the other hand, Scala is capable of many great things. But if you ask two Scala
-programmers what Scala represents to them, you may get different answers.</p>
-
-<p>It can be a technical aspect. To some, it might be about Shapeless or all the cool things that go
-with it. Macros. DSLs. Code generation. Or it could be how Akka or Spark are amazing tools.  It
-could also be a philosophical difference. Some people want an advanced type system and don’t want to
-be constrained by the laziness and purity of Haskell. Others want the JVM. Some just want a better
-Java. Some just happen to use it for Spark.</p>
-
-<p>I would choose the simpler Scala, the better Java. Trait-based generics, sum types, implicits, and
-functional programming, to name a few. This is not just because it’s less complicated, from a
-business perspective, it makes it easier to hire new programmers.</p>
-
-<p>As a professional Scala developer and a long-time functional programming enthusiast, I fear that I
-may never comfortably jump to another company, confident that since I’ve written Scala, I can
-understand their Scala. That, or years of experience, but who knows what’s enough? Their, whoever
-they may be, Scala might not be the simple Scala I and my colleagues prefer.</p>
-
-<p>This is scary. For the future of the language, this is an untenable position. While I absolutely
-enjoy working with the language, I’m afraid that it is fated to be like Macbeth from Shakespeare:
-“thou shalt get kings, though thou be none”. Thus, Scala will inspire a great language and then
-die. Maybe it already did, and the clock is ticking. Some purport Kotlin as the successor, but I
-wouldn’t bet on it just yet.</p>
-
-<blockquote>
-  <p>“Ah, but a man’s reach should exceed his grasp, or what’s a heaven for?”</p>
-
-  <footer class="blockquote-footer">Robert Browning</footer>
-</blockquote>
-
-<p>The thing about Scala is that this is a conscious design decision. The language is <em>meant</em> to have
-everything and the kitchen sink. Programming languages don’t have to be simple. Powerful languages
-are powerful tools. Use them well, you can achieve greatness. You have to <em>choose</em> your tool set and
-hone it.</p>
-
-<p>But for Haskell, Go, and Clojure, you’re using them, and you’re thinking, what is the natural way to
-do this? Once you find it, you find yourself implementing ideas using that philosophy, that natural
-way, and you’re no longer just using a tool. You’re using an <em>idea</em>.</p>
-
-    </article>
-    
-    
 
 
     <nav class="pagination" role="pagination">
     
-    <span class="page-number"> Page 1 of 3 </span>
+    <span class="page-number"> Page 1 of 4 </span>
      
         <a class="older-posts" href="/page2/" title="Next Page">Older Posts »</a>
      
@@ -704,7 +763,6 @@ way, and you’re no longer just using a tool. You’re using an <em>idea</em>.<
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js" integrity="sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY" crossorigin="anonymous"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js" integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
-            <script type="text/javascript" src="/assets/toc.min.js"></script>
             <script src="/assets/hyphenator.js" type="text/javascript"></script>
             <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
             </script>

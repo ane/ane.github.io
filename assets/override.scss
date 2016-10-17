@@ -11,6 +11,10 @@ code {
     padding: .1rem .2rem;
 }
 
+pre, code, tt {
+    font-family: "Monaco", "Consolas", "Droid Sans Mono", monospace;
+}
+
 .content {
     font-size: 20px;
     p {
@@ -26,7 +30,6 @@ pre {
     padding: 10px;
     font-size: 14px;
     background: #f8f8f8;
-    border: 1px solid #ccc;
     border-radius: 5px;
 }
 

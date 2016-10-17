@@ -16,6 +16,7 @@ url:            'http://ane.github.io'
 author:         'Antoine Kalmbach'
 google_analytics: UA-58162697-1
 gems:
+  - jekyll-redirect-from
   - jekyll-sitemap
   - jekyll-feed
   - jekyll-seo-tag
