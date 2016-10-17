@@ -436,6 +436,8 @@ class Library(getReservation: String => Future[Boolean])
   override def active(newState: LibraryState): Receive = {
     case (output: LibraryOutput, origin: ActorRef) => handle(output, origin)
 
+    case state: LibraryState => context become active(state)
+
     case input: LibraryInput => {
       val origin = sender()
       newState.process(input) map {
