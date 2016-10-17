@@ -19,8 +19,9 @@ tags:
 the underlying concurrency and parallelism. That is to say, the developer is free to model the data
 in a computation as a *flow* of data from one place to another. Now, while this is an exciting
 subject by itself, this post isn't about reactive programming, but a particular use case for it. I
-assume some familiarity with `akka-streams`, so if you find some of the terms confusing, refer to
-the Akka documentation for more information.
+assume some familiarity with reactive programming and the terms Akka Streams uses, so if you find
+some of the terms confusing, refer to the Akka documentation for more information. To those familiar
+with the former but not with the latter, a Flow is a Processor.
 
 ## Problem description
 
@@ -91,13 +92,27 @@ implicit val system       = ActorSystem()
 implicit val materializer = ActorMaterializer()
 
 import system.dispatcher
+```
+This brings us the necessary elements into view. First, we need the final stage of the flow,
+the sink. It materializes into a `Future[Done]` which will complete when the stream completes.
 
+```scala
 // the sink
 val sink: Sink[String, Future[Done]] = Sink.foreach[String](msg => println(msg))
+```
 
+Next, a simple appender processing stage.
+
+```scala
 // the processing Flow in the middle
 val flow: Flow[String, String, NotUsed] = Flow[String].map(s => s + "!").log("middle-flow")
+```
 
+Here's the funny part: we need to extract the data inside the `HttpEntity`, but as that is a
+`Source[ByteString, ...]` we complete that source by folding its contents into a string. Looks more
+complicated than it is in reality. Actual unmarshalling is a lot simpler than this.
+
+```scala
 // turn requests into messages
 val toMsg: Flow[HttpRequest, String, NotUsed] =
     Flow[HttpRequest]
@@ -107,10 +122,19 @@ val toMsg: Flow[HttpRequest, String, NotUsed] =
         content.map(_.decodeString("UTF-8"))
     })
     .log("to-msg")
+```
 
+Hooking the flows together couldn't be simpler: this plugs the `Sink` end of the `Flow`, creating a `Sink`.
+
+```scala
 // hook flows together
 val msgsToFlow = toMsg.via(flow).to(sink)
+```
 
+Now we create the request flow. the `.alsoTo` method sends the flow elements to a `Sink`, and then
+returns the stream, effectively broadcasting the flow to two places. That is the *yoink* part above.
+
+```scala
 // the request flow, sending also to toMsg
 val route: Flow[HttpRequest, HttpResponse, NotUsed] =
     Flow[HttpRequest].alsoTo(msgsToFlow).map(_ => HttpResponse(200, entity = "Thanks!"))
@@ -136,3 +160,4 @@ DEBUG akka.stream.Materializer - [rest] Downstream finished.
 DEBUG akka.stream.Materializer - [to-msg] Upstream finished.
 DEBUG akka.stream.Materializer - [middle-flow] Upstream finished.
 ```
+
