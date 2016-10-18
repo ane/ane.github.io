@@ -29,11 +29,15 @@ object Library {
 }
 ```
 
-This is a *bad idea*. There are several reasons for this. First, Scala eschews `var`s, they should
-only be used when absolutely necessary (read: never). Second, the underlying collection needs to be
-thread-safe and account for concurrency, which puts strain on the garbage collector, in fact, it
-often necessitates the existence of a garbage collector.[^1] Lastly, as with any mutable state and
-possible lack of referential transparency, the code can become hard to reason about.
+This is a bad idea. There are several reasons for this. First, Scala eschews `var`s, they should
+only be used when absolutely necessary (read: never). There is also an additional need for
+thread-safety for the collection, not because of the `receive` method itself. The `receive` method
+is
+[guaranteed to run inside a single thread](http://doc.akka.io/docs/akka/2.4.11/general/jmm.html). However,
+an unsuspecting user might still launch a `Future` and modify the collection, leading to
+unpredictable behaviour. Such concurrent mutations on a `var` put strain on the garbage collector,
+in fact, it often necessitates the existence of a garbage collector.[^1] Lastly, as with any mutable
+state and possible lack of referential transparency, the code can become hard to reason about.
 
 Thankfully, Akka actors offer a possibility to do this completely functionally. The function
 `context.become` allows an Actor to change its `receive` method on-the-fly. In other words, it lets
