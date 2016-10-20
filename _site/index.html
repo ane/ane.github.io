@@ -60,7 +60,7 @@
             <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#collapse-navbar">
                 ☰
             </button>
-            <div class="collapse navbar-toggleable-xs pull-right" id="collapse-navbar">
+            <div class="collapse navbar-toggleable-xs" id="collapse-navbar">
                 <ul class="nav navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="/meta.html">Meta</a>
@@ -79,6 +79,8 @@
                 <div class="content">
                     <div>
     
+    <div class="row">
+        <div class="col-sm-9">
     
     
     <article class="post">
@@ -106,8 +108,9 @@
 the underlying concurrency and parallelism. That is to say, the developer is free to model the data
 in a computation as a <em>flow</em> of data from one place to another. Now, while this is an exciting
 subject by itself, this post isn’t about reactive programming, but a particular use case for it. I
-assume some familiarity with <code class="highlighter-rouge">akka-streams</code>, so if you find some of the terms confusing, refer to
-the Akka documentation for more information.</p>
+assume some familiarity with reactive programming and the terms Akka Streams uses, so if you find
+some of the terms confusing, refer to the Akka documentation for more information. To those familiar
+with the former but not with the latter, a Flow is a Processor.</p>
 
 <h2 id="problem-description">Problem description</h2>
 
@@ -133,7 +136,6 @@ propagating them from <code class="highlighter-rouge">A</code> to <code class="h
 </span><span class="n">mq</span><span class="o">.</span><span class="n">via</span><span class="o">(</span><span class="n">flow</span><span class="o">).</span><span class="n">runWith</span><span class="o">(</span><span class="n">sink</span><span class="o">)</span>
 <span class="n">rest</span><span class="o">.</span><span class="n">via</span><span class="o">(</span><span class="n">flow</span><span class="o">).</span><span class="n">runWith</span><span class="o">(</span><span class="n">sink</span><span class="o">)</span>
 <span class="n">file</span><span class="o">.</span><span class="n">via</span><span class="o">(</span><span class="n">flow</span><span class="o">).</span><span class="n">runWith</span><span class="o">(</span><span class="n">sink</span><span class="o">)</span>
-
 </code></pre>
 </div>
 
@@ -179,14 +181,31 @@ by the following snippet:</p>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">materializer</span> <span class="k">=</span> <span class="nc">ActorMaterializer</span><span class="o">()</span>
 
 <span class="k">import</span> <span class="nn">system.dispatcher</span>
+</code></pre>
+</div>
+<p>This brings us the necessary elements into view. First, we need the final stage of the flow,
+the sink. It materializes into a <code class="highlighter-rouge">Future[Done]</code> which will complete when the stream completes.</p>
 
-<span class="c1">// the sink
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="c1">// the sink
 </span><span class="k">val</span> <span class="n">sink</span><span class="k">:</span> <span class="kt">Sink</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">Future</span><span class="o">[</span><span class="kt">Done</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Sink</span><span class="o">.</span><span class="n">foreach</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span><span class="n">msg</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span>
+</code></pre>
+</div>
 
-<span class="c1">// the processing Flow in the middle
+<p>Next, a simple appender processing stage.</p>
+
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="c1">// the processing Flow in the middle
 </span><span class="k">val</span> <span class="n">flow</span><span class="k">:</span> <span class="kt">Flow</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span>, <span class="kt">NotUsed</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Flow</span><span class="o">[</span><span class="kt">String</span><span class="o">].</span><span class="n">map</span><span class="o">(</span><span class="n">s</span> <span class="k">=&gt;</span> <span class="n">s</span> <span class="o">+</span> <span class="s">"!"</span><span class="o">).</span><span class="n">log</span><span class="o">(</span><span class="s">"middle-flow"</span><span class="o">)</span>
+</code></pre>
+</div>
 
-<span class="c1">// turn requests into messages
+<p>Here’s the funny part: we need to extract the data inside the <code class="highlighter-rouge">HttpEntity</code>, but as that is a
+<code class="highlighter-rouge">Source[ByteString, ...]</code> we complete that source by folding its contents into a string. Looks more
+complicated than it is in reality. Actual unmarshalling is a lot simpler than this.</p>
+
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="c1">// turn requests into messages
 </span><span class="k">val</span> <span class="n">toMsg</span><span class="k">:</span> <span class="kt">Flow</span><span class="o">[</span><span class="kt">HttpRequest</span>, <span class="kt">String</span>, <span class="kt">NotUsed</span><span class="o">]</span> <span class="k">=</span>
     <span class="nc">Flow</span><span class="o">[</span><span class="kt">HttpRequest</span><span class="o">]</span>
     <span class="o">.</span><span class="n">mapAsync</span><span class="o">(</span><span class="mi">1</span><span class="o">)(</span><span class="n">req</span> <span class="k">=&gt;</span> <span class="o">{</span>
@@ -195,11 +214,22 @@ by the following snippet:</p>
         <span class="n">content</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">decodeString</span><span class="o">(</span><span class="s">"UTF-8"</span><span class="o">))</span>
     <span class="o">})</span>
     <span class="o">.</span><span class="n">log</span><span class="o">(</span><span class="s">"to-msg"</span><span class="o">)</span>
+</code></pre>
+</div>
 
-<span class="c1">// hook flows together
+<p>Hooking the flows together couldn’t be simpler: this plugs the <code class="highlighter-rouge">Sink</code> end of the <code class="highlighter-rouge">Flow</code>, creating a <code class="highlighter-rouge">Sink</code>.</p>
+
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="c1">// hook flows together
 </span><span class="k">val</span> <span class="n">msgsToFlow</span> <span class="k">=</span> <span class="n">toMsg</span><span class="o">.</span><span class="n">via</span><span class="o">(</span><span class="n">flow</span><span class="o">).</span><span class="n">to</span><span class="o">(</span><span class="n">sink</span><span class="o">)</span>
+</code></pre>
+</div>
 
-<span class="c1">// the request flow, sending also to toMsg
+<p>Now we create the request flow. the <code class="highlighter-rouge">.alsoTo</code> method sends the flow elements to a <code class="highlighter-rouge">Sink</code>, and then
+returns the stream, effectively broadcasting the flow to two places. That is the <em>yoink</em> part above.</p>
+
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="c1">// the request flow, sending also to toMsg
 </span><span class="k">val</span> <span class="n">route</span><span class="k">:</span> <span class="kt">Flow</span><span class="o">[</span><span class="kt">HttpRequest</span>, <span class="kt">HttpResponse</span>, <span class="kt">NotUsed</span><span class="o">]</span> <span class="k">=</span>
     <span class="nc">Flow</span><span class="o">[</span><span class="kt">HttpRequest</span><span class="o">].</span><span class="n">alsoTo</span><span class="o">(</span><span class="n">msgsToFlow</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span> <span class="k">=&gt;</span> <span class="nc">HttpResponse</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span> <span class="n">entity</span> <span class="k">=</span> <span class="s">"Thanks!"</span><span class="o">))</span>
                       <span class="c1">// ^ yoink!
@@ -227,6 +257,8 @@ DEBUG akka.stream.Materializer - <span class="o">[</span>middle-flow] Upstream f
 </code></pre>
 </div>
 
+
+         <hr> 
     </article>
     
     
@@ -264,11 +296,15 @@ modify private state. The accepted convention is to have a mutable object (e.g. 
 </code></pre>
 </div>
 
-<p>This is a <em>bad idea</em>. There are several reasons for this. First, Scala eschews <code class="highlighter-rouge">var</code>s, they should
-only be used when absolutely necessary (read: never). Second, the underlying collection needs to be
-thread-safe and account for concurrency, which puts strain on the garbage collector, in fact, it
-often necessitates the existence of a garbage collector.<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup> Lastly, as with any mutable state and
-possible lack of referential transparency, the code can become hard to reason about.</p>
+<p>This is a bad idea. There are several reasons for this. First, Scala eschews <code class="highlighter-rouge">var</code>s, they should
+only be used when absolutely necessary (read: never). There is also an additional need for
+thread-safety for the collection, not because of the <code class="highlighter-rouge">receive</code> method itself. The <code class="highlighter-rouge">receive</code> method
+is
+<a href="http://doc.akka.io/docs/akka/2.4.11/general/jmm.html">guaranteed to run inside a single thread</a>. However,
+an unsuspecting user might still launch a <code class="highlighter-rouge">Future</code> and modify the collection, leading to
+unpredictable behaviour. Such concurrent mutations on a <code class="highlighter-rouge">var</code> put strain on the garbage collector,
+in fact, it often necessitates the existence of a garbage collector.<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup> Lastly, as with any mutable
+state and possible lack of referential transparency, the code can become hard to reason about.</p>
 
 <p>Thankfully, Akka actors offer a possibility to do this completely functionally. The function
 <code class="highlighter-rouge">context.become</code> allows an Actor to change its <code class="highlighter-rouge">receive</code> method on-the-fly. In other words, it lets
@@ -697,6 +733,8 @@ machine class since it’s not its responsibility - so we keep that in the Commu
   <span class="k">override</span> <span class="k">def</span> <span class="n">active</span><span class="o">(</span><span class="n">newState</span><span class="k">:</span> <span class="kt">LibraryState</span><span class="o">)</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
     <span class="k">case</span> <span class="o">(</span><span class="n">output</span><span class="k">:</span> <span class="kt">LibraryOutput</span><span class="o">,</span> <span class="n">origin</span><span class="k">:</span> <span class="kt">ActorRef</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">handle</span><span class="o">(</span><span class="n">output</span><span class="o">,</span> <span class="n">origin</span><span class="o">)</span>
 
+    <span class="k">case</span> <span class="n">state</span><span class="k">:</span> <span class="kt">LibraryState</span> <span class="o">=&gt;</span> <span class="n">context</span> <span class="n">become</span> <span class="n">active</span><span class="o">(</span><span class="n">state</span><span class="o">)</span>
+
     <span class="k">case</span> <span class="n">input</span><span class="k">:</span> <span class="kt">LibraryInput</span> <span class="o">=&gt;</span> <span class="o">{</span>
       <span class="k">val</span> <span class="n">origin</span> <span class="k">=</span> <span class="n">sender</span><span class="o">()</span>
       <span class="n">newState</span><span class="o">.</span><span class="n">process</span><span class="o">(</span><span class="n">input</span><span class="o">)</span> <span class="n">map</span> <span class="o">{</span>
@@ -734,6 +772,7 @@ by defining handy update functions. One could cook up something doggedly interes
   </ol>
 </div>
 
+         <hr> 
     </article>
     
     
@@ -748,6 +787,183 @@ by defining handy update functions. One could cook up something doggedly interes
         <a class="older-posts" href="/page2/" title="Next Page">Older Posts »</a>
      
 </nav>
+        </div>
+        <div class="col-sm-3">
+            <div class="card" style="border-color: transparent; background-color: #f8f8f8;">
+    <img class="card-img-top" style="width: 100%" src="/images/me.jpg">
+    <div class="card-block">
+        <h4 class="card-title">Antoine Kalmbach</h4>
+        <h6 class="card-subtitle"><a class="text-muted" href="https://github.com/ane">@ane g</a></h6>
+        <p class="m-t-1 card-text">I'm a software engineer. This is a blog. It's about software, life, and other silly things.</p>
+    </div>
+</div>
+<div class="card card-block m-b-0" style="border-color: transparent;">
+    <h3 class="card-title">Find me</h3>
+    <h5>
+        <a class="card-link" href="https://github.com/ane"><i class="fa fa-github"></i> Github</a>
+    </h5>
+    <h5>
+        <a class="card-link" href="https://twitter.com/anewtf"><i class="fa fa-twitter-square"></i> Twitter</a>
+    </h5>
+    <h5>
+        <a class="card-link" href="https://twitter.com/anewtf"><i class="fa fa-linkedin-square"></i> LinkedIn</a>
+    </h5>
+</div>
+<div class="card card-block p-t-0" style="border-color: transparent;">
+    <h3 class="card-title">Archives</h3>
+    <ul class="list-unstyled m-b-0">
+
+    
+    
+    
+    
+
+    
+    <li>
+        <a href="/archive.html#2016-October-ref">October 2016</a>
+    </li>
+    
+
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+
+    
+        
+    
+    <li>
+        <a href="/archive.html#2016-October-ref">March 2016</a>
+    </li>
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+
+    
+        
+    
+    <li>
+        <a href="/archive.html#2016-March-ref">January 2016</a>
+    </li>
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+
+    
+    
+    <li>
+        <a href="/archive.html#2016-January-ref">December 2015</a>
+    </li>
+    
+    
+
+    
+    
+    
+    
+
+    
+
+    
+        
+    
+    <li>
+        <a href="/archive.html#2015-December-ref">January 2015</a>
+    </li>
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+
+    
+    
+
+</ul>
+
+</div>
+
+        </div>
+    </div>
     
 </div>
 

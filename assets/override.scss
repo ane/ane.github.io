@@ -12,13 +12,12 @@ code {
 }
 
 pre, code, tt {
-    font-family: "Monaco", "Consolas", "Droid Sans Mono", monospace;
+    font-family: "Menlo", "Consolas", "Monaco", "Droid Sans Mono", monospace;
 }
 
 .content {
     font-size: 20px;
     p {
-        text-align: justify;
         -webkit-hyphens: manual;
         -moz-hyphens: manual;
         hyphens: manual;
@@ -26,11 +25,10 @@ pre, code, tt {
 }
 
 
-pre {
-    padding: 10px;
-    font-size: 14px;
+pre.highlight {
+    font-size: 80%;
+    padding: 1.5rem;
     background: #f8f8f8;
-    border-radius: 5px;
 }
 
 .content .essay h1,
@@ -106,9 +104,6 @@ blockquote {
     border-left: 2px solid #337AB7;
 }
 
-article.post + article.post {
-    margin-top: 5em;
-}
 
 .full-size {
     min-height: 100vh;
@@ -169,7 +164,6 @@ article.post + article.post {
 .essay {
     p {
         margin-bottom: 0em;
-        text-align: justify;
         -webkit-hyphens: manual;
         -moz-hyphens: manual;
         hyphens: manual;
