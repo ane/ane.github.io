@@ -1,29 +1,34 @@
-<ul class="list-unstyled m-b-0">
-{% for post in site.posts  %}
-    {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
-    {% capture this_month %}{{ post.date | date: "%B" }}{% endcapture %}
-    {% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
-    {% capture next_month %}{{ post.previous.date | date: "%B" }}{% endcapture %}
+{% assign collection = include.collection %}
+{% for post in collection %}
+{% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
+{% capture this_month %}{{ post.date | date: "%B" }}{% endcapture %}
+{% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
+{% capture next_month %}{{ post.previous.date | date: "%B" }}{% endcapture %}
 
-    {% if forloop.first %}
-    <li>
-        <a href="/archive.html#{{ this_year }}-{{ this_month }}-ref">{{ this_month }} {{ this_year }}</a>
-    </li>
-    {% endif %}
+{% if forloop.first %}
+<h5 id="{{ this_year }}-ref">{{this_year}}</h5>
+<ul>
+    <li id="{{ this_year }}-{{ this_month }}-ref" class="hilink">{{ this_month }}
+        <ul>
+            {% endif %}
 
-    {% if forloop.last %}
-    {% else %}
-    {% if this_year != next_year %}
-    <li>
-        <a href="/archive.html#{{ this_year }}-{{ this_month }}-ref">{{ next_month }} {{ next_year }}</a>
-    </li>
-    {% else %}    
-    {% if this_month != next_month %}
-    <li>
-        <a href="/archive.html#{{ this_year }}-{{ this_month }}-ref">{{ next_month }} {{ next_year }}</a>
-    </li>
-    {% endif %}
-    {% endif %}
-    {% endif %}
+            <li><a href="{{ post.url }}">{{ post.title }} <span class="text-muted">&mdash; {{ post.date | date: "%-d %B" }}</span></a></li>
+
+            {% if forloop.last %}
+        </ul></li></ul>
+{% else %}
+{% if this_year != next_year %}
+</ul></li></ul>
+<h5 id="{{ next_year }}-ref">{{next_year}}</h5>
+<ul>
+    <li id="{{ next_year }}-{{ next_month }}-ref" class="hilink">{{ next_month }}
+        <ul>
+            {% else %}    
+            {% if this_month != next_month %}
+        </ul>
+        <li id="{{ next_year }}-{{ next_month }}-ref" class="hilink">{{ next_month }}
+            <ul>
+{% endif %}
+{% endif %}
+{% endif %}
 {% endfor %}
-</ul>

@@ -6,6 +6,10 @@ body {
     font-family: "PT Serif", "Georgia", "Times New Roman", serif;
 }
 
+.jumbotron {
+    padding: 2rem 2rem;
+}
+
 code {
     font-size: 80%;
     padding: .1rem .2rem;
@@ -22,6 +26,10 @@ pre, code, tt {
         -moz-hyphens: manual;
         hyphens: manual;
     }
+}
+
+.hilink:target {
+    background-color: #ffa;
 }
 
 

@@ -1,38 +1,54 @@
 ---
-layout: default
-title: Home
-cover: false
-about: 'about.html'
+layout: page
+title: 'Archive'
 ---
 
-{% for post in site.posts  %}
-    {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
-    {% capture this_month %}{{ post.date | date: "%B" }}{% endcapture %}
-    {% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
-    {% capture next_month %}{{ post.previous.date | date: "%B" }}{% endcapture %}
+<div class="row">
+    <div class="col-sm-9">
+        <h2>Archive</h2>
+        <hr>
+        <div class="row">
+            <div class="col-sm-4 m-t-1">
+                <h4 class="card-title"><a href="#">Programming</a></h4>
+                <p class="card-text text-small">
+                    <a class="card-link" href="#">Architecture</a> <a class="card-link" href="#">Tools</a> <a class="card-link" href="#">Languages</a>
+                </p>
+            </div>
+            <div class="col-sm-4 m-t-1">
+                <h4 class="card-title"><a href="#">Software</a></h4>
+                    <a class="card-link" href="#">Programs</a> <a class="card-link" href="#">Libraries</a> <a class="card-link" href="#">Reviews</a>
+                </p>
+            </div>
+            <div class="col-sm-4 m-t-1">
+                <h4 class="card-title"><a href="#">Sports</a></h4>
+                <p class="card-text text-small">
+                    <a class="card-link" href="#">Cycling</a> <a class="card-link" href="#"></a> <a class="card-link" href="#">Languages</a>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4 m-t-1">
+                <h4 class="card-title"><a href="#">Writings</a></h4>
+                <p class="card-text text-small">
+                    <a class="card-link" href="#">Fiction</a> <a class="card-link" href="#">Essays</a>
+                </p>
+            </div>
+            <div class="col-sm-4 m-t-1">
+                <h4 class="card-title"><a href="#">Programming</a></h4>
+                <p class="card-text text-small">
+                    <a class="card-link" href="#">Architecture</a> <a class="card-link" href="#">Tools</a> <a class="card-link" href="#">Languages</a>
+                </p>
+            </div>
+        </div>
 
-    {% if forloop.first %}
-    <h2 id="{{ this_year }}-ref">{{this_year}}</h2>
-    <h4 id="{{ this_year }}-{{ this_month }}-ref">{{ this_month }}</h4>
-    <ul>
-    {% endif %}
-
-        <li><a href="{{ post.url }}">{{ post.title }} <span class="text-muted">&mdash; {{ post.date | date: "%-d %B, %Y" }}</span></a></li>
-
-    {% if forloop.last %}
-    </ul>
-    {% else %}
-        {% if this_year != next_year %}
-        </ul>
-        <h2 id="{{ next_year }}-ref">{{next_year}}</h2>
-        <h4 id="{{ next_year }}-{{ next_month }}-ref">{{ next_month }}</h4>
-        <ul>
-        {% else %}    
-            {% if this_month != next_month %}
-            </ul>
-            <h4 id="{{ this_year }}-{{ next_month }}-ref">{{ next_month }}</h4>
-            <ul>
-            {% endif %}
-        {% endif %}
-    {% endif %}
-{% endfor %}
+        <hr>
+        <h5 class="text-muted text-uppercase">By year</h5>
+        {% include year-archive.html collection=site.posts %}
+        <hr>
+        <h5 class="text-muted text-uppercase">By category</h5>
+        {% include category-archive.html collection=site.posts %}
+    </div>
+    <div class="col-sm-3">
+        {% include tagcloud.html %}
+    </div>
+</div>
