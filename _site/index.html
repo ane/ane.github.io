@@ -85,7 +85,7 @@
         
 <header>
     <h2 class="page-header">
-        <a class="post-title" href="/2016/10/17/streaming-http-requests.html">Streaming HTTP requests in akka-http</a>
+        <a class="post-title" href="/2016/10/17/streaming-http-requests.html">Reactive HTTP requests</a>
     </h2>
     <p>
         <time class="text-muted post-meta" datetime="2016-10-17">
@@ -106,8 +106,16 @@
 the underlying concurrency and parallelism. That is to say, the developer is free to model the data
 in a computation as a <em>flow</em> of data from one place to another. Now, while this is an exciting
 subject by itself, this post isn’t about reactive programming, but a particular use case for it. I
-assume some familiarity with <code class="highlighter-rouge">akka-streams</code>, so if you find some of the terms confusing, refer to
-the Akka documentation for more information.</p>
+assume some familiarity with reactive programming and the terms Akka Streams uses, so if you find
+some of the terms confusing, refer to the Akka documentation for more information. To those familiar
+with the former but not with the latter, a Flow is a Processor.</p>
+
+<p>To summarize, this post is about how a HTTP interface can be modelled using Akka Streams. I
+encountered this problem recently while building a system using Akka Streams. While the final
+solution is simple, the journey to it is interesting, because it uncovers some of the less intuitive
+parts of stream-based programming. The tl;dr is to use
+<a href="http://doc.akka.io/docs/akka/2.4/scala/http/routing-dsl/source-streaming-support.html">source streaming</a>
+and <a href="http://doc.akka.io/docs/akka/2.4/scala/stream/stream-dynamic.html#Using_the_MergeHub">MergeHub</a>s.</p>
 
 <h2 id="problem-description">Problem description</h2>
 
@@ -179,14 +187,31 @@ by the following snippet:</p>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">materializer</span> <span class="k">=</span> <span class="nc">ActorMaterializer</span><span class="o">()</span>
 
 <span class="k">import</span> <span class="nn">system.dispatcher</span>
+</code></pre>
+</div>
+<p>This brings us the necessary elements into view. First, we need the final stage of the flow,
+the sink. It materializes into a <code class="highlighter-rouge">Future[Done]</code> which will complete when the stream completes.</p>
 
-<span class="c1">// the sink
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="c1">// the sink
 </span><span class="k">val</span> <span class="n">sink</span><span class="k">:</span> <span class="kt">Sink</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">Future</span><span class="o">[</span><span class="kt">Done</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Sink</span><span class="o">.</span><span class="n">foreach</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span><span class="n">msg</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span>
+</code></pre>
+</div>
 
-<span class="c1">// the processing Flow in the middle
+<p>Next, a simple appender processing stage.</p>
+
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="c1">// the processing Flow in the middle
 </span><span class="k">val</span> <span class="n">flow</span><span class="k">:</span> <span class="kt">Flow</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span>, <span class="kt">NotUsed</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Flow</span><span class="o">[</span><span class="kt">String</span><span class="o">].</span><span class="n">map</span><span class="o">(</span><span class="n">s</span> <span class="k">=&gt;</span> <span class="n">s</span> <span class="o">+</span> <span class="s">"!"</span><span class="o">).</span><span class="n">log</span><span class="o">(</span><span class="s">"middle-flow"</span><span class="o">)</span>
+</code></pre>
+</div>
 
-<span class="c1">// turn requests into messages
+<p>Here’s the funny part: we need to extract the data inside the <code class="highlighter-rouge">HttpEntity</code>, but as that is a
+<code class="highlighter-rouge">Source[ByteString, ...]</code> we complete that source by folding its contents into a string. Looks more
+complicated than it is in reality. Actual unmarshalling is a lot simpler than this.</p>
+
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="c1">// turn requests into messages
 </span><span class="k">val</span> <span class="n">toMsg</span><span class="k">:</span> <span class="kt">Flow</span><span class="o">[</span><span class="kt">HttpRequest</span>, <span class="kt">String</span>, <span class="kt">NotUsed</span><span class="o">]</span> <span class="k">=</span>
     <span class="nc">Flow</span><span class="o">[</span><span class="kt">HttpRequest</span><span class="o">]</span>
     <span class="o">.</span><span class="n">mapAsync</span><span class="o">(</span><span class="mi">1</span><span class="o">)(</span><span class="n">req</span> <span class="k">=&gt;</span> <span class="o">{</span>
@@ -195,11 +220,22 @@ by the following snippet:</p>
         <span class="n">content</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">decodeString</span><span class="o">(</span><span class="s">"UTF-8"</span><span class="o">))</span>
     <span class="o">})</span>
     <span class="o">.</span><span class="n">log</span><span class="o">(</span><span class="s">"to-msg"</span><span class="o">)</span>
+</code></pre>
+</div>
 
-<span class="c1">// hook flows together
+<p>Hooking the flows together couldn’t be simpler: this plugs the <code class="highlighter-rouge">Sink</code> end of the <code class="highlighter-rouge">Flow</code>, creating a <code class="highlighter-rouge">Sink</code>.</p>
+
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="c1">// hook flows together
 </span><span class="k">val</span> <span class="n">msgsToFlow</span> <span class="k">=</span> <span class="n">toMsg</span><span class="o">.</span><span class="n">via</span><span class="o">(</span><span class="n">flow</span><span class="o">).</span><span class="n">to</span><span class="o">(</span><span class="n">sink</span><span class="o">)</span>
+</code></pre>
+</div>
 
-<span class="c1">// the request flow, sending also to toMsg
+<p>Now we create the request flow. the <code class="highlighter-rouge">.alsoTo</code> method sends the flow elements to a <code class="highlighter-rouge">Sink</code>, and then
+returns the stream, effectively broadcasting the flow to two places. That is the <em>yoink</em> part above.</p>
+
+<div class="language-scala highlighter-rouge">
+<pre class="highlight"><code><span class="c1">// the request flow, sending also to toMsg
 </span><span class="k">val</span> <span class="n">route</span><span class="k">:</span> <span class="kt">Flow</span><span class="o">[</span><span class="kt">HttpRequest</span>, <span class="kt">HttpResponse</span>, <span class="kt">NotUsed</span><span class="o">]</span> <span class="k">=</span>
     <span class="nc">Flow</span><span class="o">[</span><span class="kt">HttpRequest</span><span class="o">].</span><span class="n">alsoTo</span><span class="o">(</span><span class="n">msgsToFlow</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span> <span class="k">=&gt;</span> <span class="nc">HttpResponse</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span> <span class="n">entity</span> <span class="k">=</span> <span class="s">"Thanks!"</span><span class="o">))</span>
                       <span class="c1">// ^ yoink!
@@ -226,6 +262,15 @@ DEBUG akka.stream.Materializer - <span class="o">[</span>to-msg] Upstream finish
 DEBUG akka.stream.Materializer - <span class="o">[</span>middle-flow] Upstream finished.
 </code></pre>
 </div>
+
+<p>Each of those “finished” log messages tells us that the current stream they were a part of was
+completed – in other words, died. For every HTTP connection there is one materialized flow, and
+since the other elements of the stream were hooked to this stream, the whole these elements formed a
+part of was completed.</p>
+
+<p>The problem here is that when a stream like this is materialized once per request, it means its
+backpressure information also dies. Since the stream is born and killed every time a single-element
+request is made, the stream cannot keep track of its speed, making backpressure awereness impossible.</p>
 
     </article>
     
@@ -696,6 +741,8 @@ machine class since it’s not its responsibility - so we keep that in the Commu
 
   <span class="k">override</span> <span class="k">def</span> <span class="n">active</span><span class="o">(</span><span class="n">newState</span><span class="k">:</span> <span class="kt">LibraryState</span><span class="o">)</span><span class="k">:</span> <span class="kt">Receive</span> <span class="o">=</span> <span class="o">{</span>
     <span class="k">case</span> <span class="o">(</span><span class="n">output</span><span class="k">:</span> <span class="kt">LibraryOutput</span><span class="o">,</span> <span class="n">origin</span><span class="k">:</span> <span class="kt">ActorRef</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">handle</span><span class="o">(</span><span class="n">output</span><span class="o">,</span> <span class="n">origin</span><span class="o">)</span>
+
+    <span class="k">case</span> <span class="n">state</span><span class="k">:</span> <span class="kt">LibraryState</span> <span class="o">=&gt;</span> <span class="n">context</span> <span class="n">become</span> <span class="n">active</span><span class="o">(</span><span class="n">state</span><span class="o">)</span>
 
     <span class="k">case</span> <span class="n">input</span><span class="k">:</span> <span class="kt">LibraryInput</span> <span class="o">=&gt;</span> <span class="o">{</span>
       <span class="k">val</span> <span class="n">origin</span> <span class="k">=</span> <span class="n">sender</span><span class="o">()</span>
