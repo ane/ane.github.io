@@ -5,25 +5,34 @@ cover: false
 about: 'about.html'
 ---
 
-<section>
-    {% if site.posts.size > 0 %}
-    <h2 class="page-header">Blog posts</h2>
+{% for post in site.posts  %}
+    {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
+    {% capture this_month %}{{ post.date | date: "%B" }}{% endcapture %}
+    {% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
+    {% capture next_month %}{{ post.previous.date | date: "%B" }}{% endcapture %}
+
+    {% if forloop.first %}
+    <h2 id="{{ this_year }}-ref">{{this_year}}</h2>
+    <h4 id="{{ this_year }}-{{ this_month }}-ref">{{ this_month }}</h4>
     <ul>
-        {% for post in site.posts %}
-        <li>
-            <a href="{{ post.url }}">{{ post.title }}</a> &mdash; <date class="text-muted">{{ post.date | date: "%d %B, %Y" }}</date> 
-        </li>
-        {% endfor %}
+    {% endif %}
+
+        <li><a href="{{ post.url }}">{{ post.title }} <span class="text-muted">&mdash; {{ post.date | date: "%-d %B, %Y" }}</span></a></li>
+
+    {% if forloop.last %}
     </ul>
     {% else %}
-    <h3>:-(</h3>
-    <p>I'm sorry, but there are no posts.</p>
+        {% if this_year != next_year %}
+        </ul>
+        <h2 id="{{ next_year }}-ref">{{next_year}}</h2>
+        <h4 id="{{ next_year }}-{{ next_month }}-ref">{{ next_month }}</h4>
+        <ul>
+        {% else %}    
+            {% if this_month != next_month %}
+            </ul>
+            <h4 id="{{ this_year }}-{{ next_month }}-ref">{{ next_month }}</h4>
+            <ul>
+            {% endif %}
+        {% endif %}
     {% endif %}
-    <h3>Tags</h3>
-    {% assign tags = site.tags | sort %}
-    {% for tag in tags %}
-    <span class="site-tag">
-        <a href="/tags/{{ tag | first | slugify }}/" style="font-size: {{ tag | last | size  |  times: 4 | plus: 80  }}%">{{ tag[0] | replace:'-', ' ' }} ({{ tag | last | size }}){% unless forloop.last %},{% endunless %}</a>
-    </span>
-    {% endfor %}
-</section>
+{% endfor %}

@@ -54,7 +54,6 @@ val file = Source.single("hi from a file")
 mq.via(flow).runWith(sink)
 rest.via(flow).runWith(sink)
 file.via(flow).runWith(sink)
-
 ```
 
 The thing to remember is that internally this code does **not** look like the things in Figure 1, at
