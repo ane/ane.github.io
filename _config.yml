@@ -33,7 +33,3 @@ kramdown:
   input:          GFM
   hard_wrap:      false
   footnote_nr:    1
-
-collections:
-  programming:
-    output: true
