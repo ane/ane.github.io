@@ -1,0 +1,17 @@
+{{ define "main-width" }} col-sm-9 {{ end }}
+{{ define "sidebar-width" }} col-sm-3 {{ end }}
+{{ define "main" }}
+
+<h2>{{ .Title }}</h2>
+
+<div class="p-l-2 p-t-2">
+
+<ul>
+    {{ range .Data.Pages.ByDate.Reverse }}
+    <li> {{ .Render "post-li" }}</li>
+    {{ end }}
+</ul>
+
+</div>
+
+{{ end }}

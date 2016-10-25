@@ -1,0 +1,57 @@
+{{ define "main-width" }} col-sm-12 {{ end }}
+{{ define "sidebar-width" }} col-sm-0 {{ end }}
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+<article>
+    {{ .Content }}
+</article>
+<hr>
+
+<h5 class="text-uppercase text-muted">INDEX</h5>
+
+<div class="row">
+{{ range $name, $t := .Site.Taxonomies }}
+    {{ if ne $name "tags" }}
+        {{ $len := (len $t) }}
+        {{ if gt $len 0 }}
+        <div class="col-sm-6 m-t-1">
+        <h4><a href="/{{ $name }}">{{ $name | humanize }}</a></h4>
+        {{ $.Scratch.Set "i" 0 }}
+        {{ range $k, $v := $t }}
+        {{ $.Scratch.Set "i" (add ($.Scratch.Get "i") 1) }}
+        {{ $idx := $.Scratch.Get "i" }}
+        {{ if ne $k "" }}
+        <a href="/{{ $name }}/{{ $k }}">{{ $k | humanize }}</a>{{ if lt $idx $len }},{{ end }}
+        {{ end  }}
+        {{ end  }}
+        </div>
+        {{ end  }}
+    {{ end }}
+
+{{ end }}
+</div>
+
+<hr>
+<h5 class="text-uppercase text-muted">By date</h5>
+
+{{ $data := (where .Site.Pages "Params.render" "!=" "no") }}
+
+{{ range $data.GroupByDate "2006" }}
+{{ $parent := .Key }}
+<h4 id="{{ .Key | urlize }}">{{ .Key }}</h4>
+
+<ul>
+    {{ range .Pages.GroupByDate "January" }}
+    <li id="{{ delimit (slice (.Key | urlize) $parent) "-"}}">
+        {{ .Key }}
+        <ul>
+            {{ range .Pages }}
+            <li>{{ .Render "post-li" }}</li>
+            {{ end }}
+        </ul>
+    </li>
+    {{ end }}
+</ul>
+{{ end }}
+
+{{ end }}

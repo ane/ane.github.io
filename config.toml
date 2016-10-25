@@ -1,0 +1,20 @@
+baseurl = "https://ane.github.io/"
+title = "Antoine Kalmbach"
+languageCode = "en-GB"
+copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
+PygmentsCodeFences = true
+theme = "typographical"
+googleAnalytics = "UA-58162697-1"
+pygmentsuseclasses = true
+
+[taxonomies]
+tag = "tags"
+software = "software"
+writing = "writings"
+languages = "languages"
+essay = "essays"
+programming = "programming"
+blog = "blog"
+
+[params]
+authortwitter = "anewtf"

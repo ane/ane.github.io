@@ -1,0 +1,29 @@
+{{ define "main-width" }} col-sm-9 {{ end }}
+{{ define "sidebar-width" }} col-sm-3 {{ end }}
+{{ define "main" }}
+
+{{ $paginator := .Paginate (where .Data.Pages "Params.render" "!=" "no") 3 }}
+
+{{ range $paginator.Pages }}
+  {{ .Render "post" }}
+<hr>
+{{ end }}
+
+{{ with $paginator }}
+{{ if .HasPrev }}
+<a href="{{ $paginator.Prev.URL }}">&larr; Newer posts</a>
+{{ end }}
+
+Page {{ .PageNumber }} of {{ .TotalPages }}
+
+{{ if .HasNext }}
+<a href="{{ .Next.URL }}">Older posts &rarr;</a>
+{{ end }}
+
+{{ end }}
+{{ end }}
+
+{{ define "sidebar" }}
+
+
+{{ end }}

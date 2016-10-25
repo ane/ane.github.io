@@ -1,0 +1,20 @@
+{{ define "main-width" }} col-sm-9 {{ end }}
+{{ define "sidebar-width" }} col-sm-3 {{ end }}
+
+{{ define "main" }}
+<h2>{{ .Title }}</h2>
+<article>
+    {{ .Content }}
+</article>
+{{ end }}
+
+{{ define "sidebar" }}
+<div class="card bg-faded" style="border-color: white">
+    <img class="card-img-top" src="/images/me.jpg" style="width: 100%">
+    <div class="card-block">
+        <a class="h1 card-link" href="https://github.com/ane">    <i class="fa fa-fw fa-github-square"></i></a>
+        <a class="h1 card-link" href="https://twitter.com/anewtf"><i class="fa fa-fw fa-twitter-square"></i></a>
+        <a class="h1 card-link" href="https://twitter.com/anewtf"><i class="fa fa-fw fa-linkedin-square"></i></a>
+    </div>
+</div>
+{{ end }}

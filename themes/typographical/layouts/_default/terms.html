@@ -1,0 +1,24 @@
+{{ define "main-width" }} col-sm-9 {{ end }}
+{{ define "sidebar-width" }} col-sm-3 {{ end }}
+{{ define "main" }}
+
+<h2>{{ .Data.Plural | humanize }}</h2>
+
+<div class="p-l-2 p-t-2">
+
+{{ $data := .Data }}
+{{ range $k, $v := .Data.Terms }}
+
+<h4 id="{{ $k }}"><a href="/{{ $data.Plural }}/{{ $k | urlize }}">{{ $k | humanize }}</a></h4>
+
+<ul>
+    {{ range $v.Pages.ByDate.Reverse }}
+    <li> {{ .Render "post-li" }}</li>
+    {{ end }}
+</ul>
+
+{{ end }}
+
+</div>
+
+{{ end }}

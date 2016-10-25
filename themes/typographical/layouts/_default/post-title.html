@@ -1,0 +1,19 @@
+<header>
+    <h1 class="page-header">
+        <a class="post-title" href="{{ .URL }}">{{ .Title }}</a>
+    </h1>
+    <p>
+        <time class="text-muted post-meta" datetime="{{ .Date.Format "Jan 2, 2006" }}">
+            {{ .Date.Format "January 2, 2006 "}}
+            {{ if .Params.tags }}
+            &mdash; Tagged as 
+                {{ with .Params.tags }}
+                    {{ $sort := sort . }}
+                    {{ $links := apply $sort "partial" "post/tag/link" "." }}
+                    {{ $clean := apply $links "chomp" "." }}
+                    {{ delimit $clean ", " }}
+                {{ end }}
+            {{ end }}
+        </time>
+    </p>
+</header>

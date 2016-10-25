@@ -1,0 +1,17 @@
+{{ define "main-width" }} col-sm-9 {{ end }}
+{{ define "sidebar-width" }} col-sm-3 {{ end }}
+
+{{ define "main" }}
+
+<h2><a href="/{{ .Data.Plural | urlize }}">{{ .Data.Plural | humanize }}</a></h2>
+
+<div class="p-t-2 p-l-2">
+    <h4><a href="/{{ .Data.Plural }}/{{ .Title | urlize }}">{{ .Title }}</h4>
+<ul>
+    {{ range .Data.Pages }}
+    <li>{{ .Render "post-li" }}</li>
+    {{ end }}
+</ul>
+</div>
+
+{{ end }}

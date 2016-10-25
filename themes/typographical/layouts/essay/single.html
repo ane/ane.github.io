@@ -1,0 +1,12 @@
+{{ define "main-width" }} col-sm-12 {{ end }}
+
+{{ define "main" }}
+
+<article class="essay">
+<h1 class=" text-xs-center m-t-2">{{ .Title }}</h1>
+<h4 class="text-xs-center m-b-2 text-muted">{{ .Date.Format "January 2006" }}</h4>
+
+{{ .Content }}
+</article>
+
+{{ end }}
