@@ -7,48 +7,7 @@ title: 'Archive'
     <div class="col-sm-9">
         <h2>Archive</h2>
         <hr>
-        <div class="row">
-            <div class="col-sm-4 m-t-1">
-                <h4 class="card-title"><a href="#">Programming</a></h4>
-                <p class="card-text text-small">
-                    <a class="card-link" href="#">Architecture</a> <a class="card-link" href="#">Tools</a> <a class="card-link" href="#">Languages</a>
-                </p>
-            </div>
-            <div class="col-sm-4 m-t-1">
-                <h4 class="card-title"><a href="#">Software</a></h4>
-                    <a class="card-link" href="#">Programs</a> <a class="card-link" href="#">Libraries</a> <a class="card-link" href="#">Reviews</a>
-                </p>
-            </div>
-            <div class="col-sm-4 m-t-1">
-                <h4 class="card-title"><a href="#">Sports</a></h4>
-                <p class="card-text text-small">
-                    <a class="card-link" href="#">Cycling</a> <a class="card-link" href="#"></a> <a class="card-link" href="#">Languages</a>
-                </p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4 m-t-1">
-                <h4 class="card-title"><a href="#">Writings</a></h4>
-                <p class="card-text text-small">
-                    <a class="card-link" href="#">Fiction</a> <a class="card-link" href="#">Essays</a>
-                </p>
-            </div>
-            <div class="col-sm-4 m-t-1">
-                <h4 class="card-title"><a href="#">Programming</a></h4>
-                <p class="card-text text-small">
-                    <a class="card-link" href="#">Architecture</a> <a class="card-link" href="#">Tools</a> <a class="card-link" href="#">Languages</a>
-                </p>
-            </div>
-        </div>
-
-        <hr>
         <h5 class="text-muted text-uppercase">By year</h5>
         {% include year-archive.html collection=site.posts %}
-        <hr>
-        <h5 class="text-muted text-uppercase">By category</h5>
-        {% include category-archive.html collection=site.posts %}
-    </div>
-    <div class="col-sm-3">
-        {% include tagcloud.html %}
     </div>
 </div>

@@ -1,4 +1,4 @@
-I'm a Finnish&ndash;French software engineer living in Jyväskylä, Finland. I work
+I'm a software engineer living in Jyväskylä, Finland. I work
 at [Qvantel](http://www.qvantel.com).
 
 This is my website. There's a blog, which is mainly about programming and software. For a bit of

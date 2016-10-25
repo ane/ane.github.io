@@ -59,6 +59,15 @@ nav,
     font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6 {
+    font-weight: 700;
+}
+
 #topnav {
     margin-bottom: 2rem;
     border-bottom: 1px solid #ccc;
