@@ -18,7 +18,7 @@ to the `site_tags` variable. -->
 
 {% for item in (0..site.tags.size) %}{% unless forloop.last %}
 {% capture this_word %}{{ tag_words[item] }}{% endcapture %}
-<h4 id="{{ this_word | cgi_escape }}">{{ this_word }} <small class="text-muted">{{ site.tags[this_word].size }} posts</small></h4>
+<h4 class="hilink" id="{{ this_word | cgi_escape }}">{{ this_word }} <small class="text-muted">{{ site.tags[this_word].size }} posts</small></h4>
 <ul>
 {% for post in site.tags[this_word] %}{% if post.title != null %}
 <li><a href="{{ post.url }}">{{ post.title }}</a> &mdash; <date class="text-muted">{{ post.date | date: "%-d %B, %Y" }}</date></li>
@@ -27,11 +27,8 @@ to the `site_tags` variable. -->
 {% endunless %}{% endfor %}
 </div>
 <div class="col-sm-3">
-<div class="card card-block">
-<h5 class="card-title">Tag Cloud</h5>
-{% assign tags = site.tags | sort %}
-{% for tag in tags %} <span class="site-tag"> <a href="/tags.html#{{ tag | first | slugify }}" style="font-size: {{ tag | last | size | times: 32 | plus: 50  }}%">{{ tag[0] | replace:'-', ' ' }}{% unless forloop.last %}{% endunless %}</a> </span> {% endfor %}
+{% include tagcloud.html %}
 </div>
 </div>
-</div>
+
 
