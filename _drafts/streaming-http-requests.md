@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Streaming HTTP requests in akka-http"
+title: "Reactive HTTP requests"
 date: 2016-10-17
 tags:
   - scala
@@ -22,6 +22,13 @@ subject by itself, this post isn't about reactive programming, but a particular 
 assume some familiarity with reactive programming and the terms Akka Streams uses, so if you find
 some of the terms confusing, refer to the Akka documentation for more information. To those familiar
 with the former but not with the latter, a Flow is a Processor.
+
+To summarize, this post is about how a HTTP interface can be modelled using Akka Streams. I
+encountered this problem recently while building a system using Akka Streams. While the final
+solution is simple, the journey to it is interesting, because it uncovers some of the less intuitive
+parts of stream-based programming. The tl;dr is to use
+[source streaming](http://doc.akka.io/docs/akka/2.4/scala/http/routing-dsl/source-streaming-support.html)
+and [MergeHub](http://doc.akka.io/docs/akka/2.4/scala/stream/stream-dynamic.html#Using_the_MergeHub)s.
 
 ## Problem description
 
@@ -160,3 +167,11 @@ DEBUG akka.stream.Materializer - [to-msg] Upstream finished.
 DEBUG akka.stream.Materializer - [middle-flow] Upstream finished.
 ```
 
+Each of those "finished" log messages tells us that the current stream they were a part of was
+completed -- in other words, died. For every HTTP connection there is one materialized flow, and
+since the other elements of the stream were hooked to this stream, the whole these elements formed a
+part of was completed. 
+
+The problem here is that when a stream like this is materialized once per request, it means its
+backpressure information also dies. Since the stream is born and killed every time a single-element
+request is made, the stream cannot keep track of its speed, making backpressure awereness impossible.

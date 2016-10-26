@@ -1,7 +1,8 @@
 ---
 layout: essay
 title: The pursuit of purpose
-category: essays
+categories: 
+  - life
 date: 2016-10-14
 ---
 

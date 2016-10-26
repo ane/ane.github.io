@@ -6,6 +6,10 @@ body {
     font-family: "PT Serif", "Georgia", "Times New Roman", serif;
 }
 
+.jumbotron {
+    padding: 2rem 2rem;
+}
+
 code {
     font-size: 80%;
     padding: .1rem .2rem;
@@ -22,6 +26,10 @@ pre, code, tt {
         -moz-hyphens: manual;
         hyphens: manual;
     }
+}
+
+.hilink:target {
+    background-color: #ffa;
 }
 
 
@@ -41,14 +49,17 @@ pre.highlight {
 }
 
 
-nav,
+nav, .post-meta h2 {
+    font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+
 .content h1,
 .content h2,
 .content h3,
 .content h4,
 .content h5,
 .content h6 {
-    font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    font-weight: 700;
 }
 
 #topnav {

@@ -4,40 +4,39 @@ archive: false
 post_class: post-template
 ---
 
-<div class="row">
-    <div class="col-sm-9">
-        {% include post-title.html post=page bip=page.title %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+            {% include post-title.html post=page bip=page.title %}
 
-        <article>
-            {{content}}
-        </article>
+            <article>
+                {{content}}
+            </article>
 
-        <hr/>
+            <hr/>
 
-        <div class="clearfix">
-            <span class="pull-left">
-                {% if page.previous.url %}
-                Previous: <a class="prev" href="{{page.previous.url}}">{{page.previous.title}}</a>
+            <div class="clearfix">
+                <span class="pull-left">
+                    {% if page.previous.url %}
+                    Previous: <a class="prev" href="{{page.previous.url}}">{{page.previous.title}}</a>
+                    {% endif %}
+                </span>
+                <span class="pull-right">
+                    {% if page.next.url %}
+                    Next: <a class="next" href="{{page.next.url}}">{{page.next.title}}</a>
+                    {% endif %}
+                </span>
+            </div>
+
+            <hr/>
+
+            <footer class="post-footer">
+                {% if page.disqus %}
+                {% include disqus.html %}
                 {% endif %}
-            </span>
-            <span class="pull-right">
-                {% if page.next.url %}
-                Next: <a class="next" href="{{page.next.url}}">{{page.next.title}}</a>
-                {% endif %}
-            </span>
+
+                {% include share.html %}
+            </footer>
         </div>
-
-        <hr/>
-
-        <footer class="post-footer">
-            {% if page.disqus %}
-            {% include disqus.html %}
-            {% endif %}
-
-            {% include share.html %}
-        </footer>
-    </div>
-    <div class="col-sm-3">
-        {% include sidebar.html %}
     </div>
 </div>
