@@ -6,19 +6,17 @@ tags:
   - web
 ---
 
-Call me old-fashioned, call me a curmudgeon, but I think modern web development has become stupid
-and superficial. The unending quest towards single-page apps (SPAs) has made web development 
-extremely painful and the current trend is diverging towards seven different directions at once. On
-one end, we have rich SPAs that can be built as native applications, or we have something
-[completely orthogonal](https://github.com/ampproject/amphtml), of which a
-[schism](https://timkadlec.com/2016/02/a-standardized-alternative-to-amp/) is beginning to form.
+Call me old-fashioned, call me a curmudgeon, but I think web development has become stupid and
+superficial. The unending quest towards single-page apps (SPAs) has made web development extremely
+painful and the current trend is diverging towards seven different directions at once. On one end,
+we have rich SPAs that can be built as native applications, on the other we have
+something [completely orthogonal](https://github.com/ampproject/amphtml), of which
+a [schism](https://timkadlec.com/2016/02/a-standardized-alternative-to-amp/) is beginning to form.
 
 The underlying problem is unfortunately that the web is being misused as an application container
 instead of the original text transport protocol it was made to be. It's no use crying over spilled
 milk; the web has been subverted, transformed, improved upon, so much so we don't know what the
-original even [might have looked like](we've subverted it, transformed it, no, *hijacked* and
-improved it). I'm not complaining, the idea of the web of being "just" a
-[Wikipedia](http://wikipedia.org) sounds *so* boring.
+original even [looked like](http://wiki.c2.com/). 
 
 ## How it was
 
@@ -34,7 +32,7 @@ Of course, the web was slower back then. Chrome wasn't around, so JavaScript usa
 limited. Google began prototyping under-the-hood requests in Gmail around 2006, but before that
 nobody had heard of AJAX. The concept of doing more than one page request per page load was
 completely unheard of. The users liked faster page loads, so when Chrome came around with V8,
-customers did suddenly give a shit about what browser they used.
+customers started suddenly giving a shit about what browser they used.
 
 ## Where it all began
 
@@ -46,25 +44,25 @@ experience *was*.
 
 The problem was that it wasn't enough, you needed a *backend*. Before, when there was one
 application, now there were *two*, and they usually were completely different from each other. The
-backend--frontend split was fuzzy to begin with, this introduced an uncertainty and a possibly
-pointless abstraction. Put the "slow" and "heavy" things to the backend, let the frontend handle
+backend--front-end split was fuzzy to begin with, this introduced an uncertainty and a possibly
+pointless abstraction. Put the "slow" and "heavy" things to the backend, let the front-end handle
 rendering and the user interface, all the backend had to do was supply serialized data. Even back then, people started asking
 questions about the SEO effects of rendering a page entirely in JavaScript. No solution was given,
 although one solution [existed, but was weird](https://www.meteor.com/).
 
 So while the backend folks built eleventy versions of [Sinatra](http://www.sinatrarb.com/), the
-frontend folks got busy. In a short time we had Backbone, Angular, and Knockout, then we got
+front-end folks got busy. In a short time we had Backbone, Angular, and Knockout, then we got
 frameworks like Durandal and Meteor.js. Finally, Facebook looked at the performance of desktop applications, then looked
 at the performance of web applications, thought, "holy shit", and
 [did something about it](https://facebook.github.io/react/). 
 
 People got scared. It was mixing business and presentation logic, they said. It was mixing JavaScript
 with something eerily like XML, and everyone said XML sucked. Then people got over their
-usual trepidations towards $newTechnologyOfTheYear and got on with their lives. Now React is being
+usual trepidation towards $newTechnologyOfTheYear and got on with their lives. Now React is being
 used [left](http://www.facebook.com) and [right](https://www.reddit.com/r/reactjs/comments/4iei7s/twitters_new_mobile_site_is_using_react_redux_and/).
 
 The only problem was, React was a templating engine at heart. Facebook did not build a bridge for
-existing frontend frameworks, so that people could have just dropped in React instead of say,
+existing front-end frameworks, so that people could have just dropped in React instead of say,
 Handlebars or even ERB. Facebook did not do this because they already had their
 [own way of rendering content](http://hacklang.org/). They didn't need one. Build your own, they
 said.
@@ -75,7 +73,7 @@ asked. So we built [routing engines](https://github.com/ReactTraining/react-rout
 someone understood
 [React ran quite fine on a Node.js server](http://jamesknelson.com/universal-react-youre-doing-it-wrong/),
 and people started
-[rendering pages in two places: the backend *and* the frontend](https://scotch.io/tutorials/react-on-the-server-for-beginners-build-a-universal-react-and-node-app).
+[rendering pages in two places: the backend *and* the front-end](https://scotch.io/tutorials/react-on-the-server-for-beginners-build-a-universal-react-and-node-app).
 
 Now, people are using React -- a JavaScript library to be run inside a browser -- to create
 [native mobile applications](https://facebook.github.io/react-native/). Meanwhile, other folks think
@@ -99,25 +97,89 @@ tilt your tablet sideways, that big fat menu disappears. Huh.
 
 That's what they call the churn.
 
-New technologies come and they kill the old technologies, but in the midst of it all, stand you and
-I, wondering what the hell to do with this mess. From the other side of it all, from the ivory tower
-of the real world, the business analysts cast their shadow and remind us these technologies are
-tools, they're meant to be replaced, they're *disposable*. So are you, if you can't learn new ones.
+The churn. New technologies come and they kill the old technologies, but in the midst of it all,
+stand you and I, wondering what the hell to do with this mess. From the other side of it all, from
+the ivory tower of the real world, the business analysts cast their shadow and remind us these
+technologies are tools, they're meant to be replaced, they're *disposable*. So are we, if we can't
+learn new ones, they remind keep reminding us.
 
-It's not as bad as it sounds. We're learning, we're doing some
+## So?
+
+I make it sound as if web development is impossible, but that couldn't be further from the
+truth. Browsers are getting better and faster. Our applications are prettier, faster, more
+accessible, more usable. The web is replacing desktop applications and this trend is accelerating --
+whether this is a good or bad thing, I don't know.
+
+The only problem is that the development experience keeps reinventing itself at such a pace you may
+as well put yourself into stasis and wait for things to settle. Wait for front-end development to
+become *boring*. Odds are you can sleep for quite a bit until that happens. The second option is
+just to pick whatever that works right now and use it.
+
+The optimistic part is that we, as web developers, are learning, we're doing some
 [cool things](https://clojurescript.org/) and [unifying](http://udash.io/) two halves of the same
 thing. The backend guys are [innovating](http://mbrace.io/) and tooling progress is
 [insane](http://mesos.apache.org/) and [exciting](http://kubernetes.io/). So I cannot state that we
 haven't gotten anywhere, we *have* innovated, learned, and improved the Web. But by how much? Are
 our end users happier?
 
-Given the task of implementing a web application, what would I do, given the state of the art in
-2016? Probably not much. Build a business logic API that can be used via REST or some other
-RPC protocol. Use a [batteries-included](http://rubyonrails.org/) web framework to render the
-frontend, but keep the frontend away from dealing with the database content. Build many frontends,
-not just for the web, but for mobile and perhaps even desktop, and keep them thin. The web frontend
-can be spiced up (but not replaced) using JavaScript. Come to think of it, I would have done the
-same thing in 2006. 
+# A concrete solution
 
-In the end, I bet, with the exception of a few informed users, our end users still don't give a
-shit. Oh well.
+Given the task of implementing a web application, what would I do, given the state of the art in
+2016? I spent about four years developing SPAs with many frameworks. I hate them all. Given that
+sentiment, this is what I would do:
+
+1. Using a language of your choice, build a business logic API that can be used via REST or some
+   other RPC protocol. The language and its associated tooling should be performant and support
+   rapid iteration.
+2. Use a [batteries-included](http://rubyonrails.org/) web framework, spiced with
+a [rendering framework](https://github.com/reactjs/react-rails) of your choice, to create front-end.
+3. Build many front-ends, not just for the web, but for mobile and perhaps even desktop, and keep
+them thin.
+4. The web front-end can be spiced up (but not replaced) using JavaScript. Come to think of it, I
+would have done the same thing in 2006.
+
+Point 4. originates from my experiences of creating and maintaining SPA applications. I think the
+SPAs are, by and large, a crock of shit. It's a bogus concept. A web application loading another
+page isn't intrinsically a bad idea, if your application is fast enough. Conversely, if your SPA is
+slow, you're doing it wrong. SPAs were invented for speed because conventional web frameworks were
+slow. This is not the case anymore. Sure, you won't see Rails, Django or Play beat the TechEmpower
+benchmarks, but we've come a long way from five years ago, which is when people started to play
+around with SPAs.
+
+Why not go full-stack? Why a front-end and a back-end?
+
+The answer for this is not simple. It is because we're dealing with two incompatible abstractions:
+
+1. Building your application as an API means you need a client application to provide the user
+   interface.
+2. To build such an interface, your application has to deal with the fact that HTTP, and thus REST,
+is stateless.
+3. Web applications are usually stateful.
+4. This leads inevitably to the requirement of building an abstraction in the middle that handles
+   client state, which your API does not support.
+5. Building such an abstraction -- the front-end -- requires a lot of work, e.g. by using a MVC (or
+   MVVM whatever) model. Double the work, half the fun.
+   
+So, the back-end abstraction is incompatible with client state, but the front-end application
+requires client state.
+   
+To this end, I offer the following synthesis: build your front-end with a boring framework like
+Rails, Django or Pyramid; let it fetch its data from the REST API, i.e., treat the API as the data
+source. Let the front-end handle client state on its own. What you get in return:
+
+1. The ease of use of said framework. These frameworks were invented for a reason. You get routing,
+   templating, asset pipelines etc. out-of-the-box.
+2. You can still do AJAX
+   requests [easily](http://guides.rubyonrails.org/working_with_javascript_in_rails.html) to build
+   rich user interfaces.
+3. A reusable API in the backend you can use in other applications, keep your web front-end an equal
+   citizen.
+   
+If you don't want to deal with framework bloat, or if you're scared of non-JavaScript applications,
+be my guest, build your own front-end using the essentials. Splurge in Gulp, ES6, React, and
+Redux. Or use TypeScript. But I dare say, after having worked with both full-stack frameworks
+(e.g. Rails) and SPA+REST frameworks, the compromise above is much more pleasant.
+
+In the end though, it doesn't really matter: with the exceptions of a few, our end users couldn't
+care less. They really don't give a shit. So, pick whatever technology works for you and your
+users. The above is just one option.
