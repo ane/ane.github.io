@@ -180,6 +180,6 @@ be my guest, build your own front-end using the essentials. Splurge in Gulp, ES6
 Redux. Or use TypeScript. But I dare say, after having worked with both full-stack frameworks
 (e.g. Rails) and SPA+REST frameworks, the compromise above is much more pleasant.
 
-In the end though, it doesn't really matter: with the exceptions of a few, our end users couldn't
+In the end though, it doesn't really matter: with the exception of a few, our end users couldn't
 care less. They really don't give a shit. So, pick whatever technology works for you and your
 users. The above is just one option.
