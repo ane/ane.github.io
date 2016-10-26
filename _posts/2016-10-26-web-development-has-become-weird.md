@@ -13,6 +13,8 @@ we have rich SPAs that can be built as native applications, on the other we have
 something [completely orthogonal](https://github.com/ampproject/amphtml), of which
 a [schism](https://timkadlec.com/2016/02/a-standardized-alternative-to-amp/) is beginning to form.
 
+<!--break-->
+
 The underlying problem is unfortunately that the web is being misused as an application container
 instead of the original text transport protocol it was made to be. It's no use crying over spilled
 milk; the web has been subverted, transformed, improved upon, so much so we don't know what the
