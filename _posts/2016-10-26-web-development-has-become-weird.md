@@ -113,7 +113,7 @@ whether this is a good or bad thing, I don't know.
 The only problem is that the development experience keeps reinventing itself at such a pace you may
 as well put yourself into stasis and wait for things to settle. Wait for front-end development to
 become *boring*. Odds are you can sleep for quite a bit until that happens. The second option is
-just to pick whatever that works right now and use it.
+just to pick whatever works *right now* and use it.
 
 The optimistic part is that we, as web developers, are learning, we're doing some
 [cool things](https://clojurescript.org/) and [unifying](http://udash.io/) two halves of the same
