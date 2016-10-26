@@ -15,8 +15,8 @@ title: About
 <img class="card-img-top" src="/images/me.jpg" style="width: 100%">
 <div class="card-block">
 <a class="h1 card-link" href="http://github.com/ane"><i class="fa fa-fw fa-github-square"></i></a>
-<a class="h1 card-link" href="http://twitter.com/anewt"><i class="fa fa-fw fa-linkedin-square"></i></a>
-<a class="h1 card-link" href="http://twitter.com/anewt"><i class="fa fa-fw fa-twitter-square"></i></a>
+<a class="h1 card-link" href="http://twitter.com/anewtf"><i class="fa fa-fw fa-linkedin-square"></i></a>
+<a class="h1 card-link" href="http://twitter.com/anewtf"><i class="fa fa-fw fa-twitter-square"></i></a>
 </div>
 </div>
 </div>
