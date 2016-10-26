@@ -8,7 +8,7 @@ title: About
         <h2>About</h2>
         {% capture my-include %}{% include me.md %}{% endcapture %}
         {{ my-include | markdownify }}
-    </div
+    </div>
 
     <div class="col-sm-3">
         <div class="card bg-faded">
