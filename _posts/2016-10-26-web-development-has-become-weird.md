@@ -25,8 +25,8 @@ were using PHP or ASP.NET. Most intranet software ran on SharePoint or, I kid yo
 WordPress. Users didn't really care either way.
 
 People liked Rails and Django because they made web development stupidly simple. No more SQL, just
-create your models and migrations. An architecture that made sense, MVC, was applied and web apps
-became a little bit better and the overall development experience improved about ten times as much.
+create your models and migrations. An architecture that made sense, MVC, was applied, and web apps
+became a little bit better. Meanwhile, the overall web development experience got a *lot* better.
 
 Of course, the web was slower back then. Chrome wasn't around, so JavaScript usage was very
 limited. Google began prototyping under-the-hood requests in Gmail around 2006, but before that
@@ -76,8 +76,8 @@ and people started
 [rendering pages in two places: the backend *and* the front-end](https://scotch.io/tutorials/react-on-the-server-for-beginners-build-a-universal-react-and-node-app).
 
 Now, people are using React -- a JavaScript library to be run inside a browser -- to create
-[native mobile applications](https://facebook.github.io/react-native/). Meanwhile, other folks think
-all of this, this excession, is simply too much, and want [pages to load fast](https://www.ampproject.org/).
+[native mobile applications](https://facebook.github.io/react-native/). Meanwhile, other folks
+think, all of this, this excession, is simply too much, and want [pages to load quickly](https://www.ampproject.org/).
 
 Couple this with the at least
 [bizarre](https://medium.com/@kitze/how-it-actually-feels-to-write-javascript-in-2016-46b5dda17bb5#.jnsf71d1l)
@@ -138,15 +138,14 @@ them thin.
 4. The web front-end can be spiced up (but not replaced) using JavaScript. Come to think of it, I
 would have done the same thing in 2006.
 
-Point 4. originates from my experiences of creating and maintaining SPA applications. I think the
-SPAs are, by and large, a crock of shit. It's a bogus concept. A web application loading another
-page isn't intrinsically a bad idea, if your application is fast enough. Conversely, if your SPA is
-slow, you're doing it wrong. SPAs were invented for speed because conventional web frameworks were
-slow. This is not the case anymore. Sure, you won't see Rails, Django or Play beat the TechEmpower
-benchmarks, but we've come a long way from five years ago, which is when people started to play
-around with SPAs.
+Point 4. originates from my experiences of creating and maintaining SPA applications. I think SPAs
+are, by and large, a bogus concept. A web application loading another page isn't intrinsically a bad
+idea, if your application is fast enough. Conversely, if your SPA is slow, you're doing it
+wrong. SPAs were invented for speed, because conventional web frameworks were slow. This is not the
+case anymore. Sure, you won't see Rails, Django or Play beat the TechEmpower benchmarks, but we've
+come a long way from five years ago, which is when people started to play around with SPAs.
 
-Why not go full-stack? Why a front-end and a back-end?
+Given the speed improvvements, why not go full-stack? Why a front-end and a back-end?
 
 The answer for this is not simple. It is because we're dealing with two incompatible abstractions:
 
@@ -161,11 +160,16 @@ is stateless.
    MVVM whatever) model. Double the work, half the fun.
    
 So, the back-end abstraction is incompatible with client state, but the front-end application
-requires client state.
-   
-To this end, I offer the following synthesis: build your front-end with a boring framework like
-Rails, Django or Pyramid; let it fetch its data from the REST API, i.e., treat the API as the data
-source. Let the front-end handle client state on its own. What you get in return:
+requires client state. Conversely, a full-stack application is often a heavy monolith: it needs to
+handle data access, its modification and its presentation in the same package. Here, as they say, be
+dragons. We want to keep business logic and presentation logic separate, hence, a full-stack
+framework does not work on its own.
+
+As a solution, I offer a synthesis. It's mixing a REST back-end with a full-stack frontend. The
+back-end can be built using whatever language is performant and maintainable. Build your front-end
+with a boring framework like Rails, Django or Pyramid; let it fetch its data from the REST API,
+i.e., treat the API as the data source. Let the front-end handle client state on its own. What you
+get in return:
 
 1. The ease of use of said framework. These frameworks were invented for a reason. You get routing,
    templating, asset pipelines etc. out-of-the-box.
