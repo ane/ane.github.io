@@ -145,7 +145,7 @@ wrong. SPAs were invented for speed, because conventional web frameworks were sl
 case anymore. Sure, you won't see Rails, Django or Play beat the TechEmpower benchmarks, but we've
 come a long way from five years ago, which is when people started to play around with SPAs.
 
-Given the speed improvvements, why not go full-stack? Why a front-end and a back-end?
+Given the speed improvements, why not go full-stack? Why a front-end and a back-end?
 
 The answer for this is not simple. It is because we're dealing with two incompatible abstractions:
 
