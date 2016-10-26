@@ -2,8 +2,12 @@
 # Front matter comment to ensure Jekyll properly reads file.
 ---
 
+$headerFont: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+$bodyFont: "PT Serif", "Georgia", "Times New Roman", serif;
+$preFont: "Menlo", "Consolas", "Monaco", "Droid Sans Mono", monospace;
+
 body {
-    font-family: "PT Serif", "Georgia", "Times New Roman", serif;
+    font-family: $bodyFont;
 }
 
 .jumbotron {
@@ -16,7 +20,7 @@ code {
 }
 
 pre, code, tt {
-    font-family: "Menlo", "Consolas", "Monaco", "Droid Sans Mono", monospace;
+    font-family: $preFont;
 }
 
 .content {
@@ -39,21 +43,15 @@ pre.highlight {
     background: #f8f8f8;
 }
 
-.content .essay h1,
-.content .essay h2,
-.content .essay h3,
-.content .essay h4,
-.content .essay h5,
-.content .essay h6 {
-    font-family: "PT Serif", "Georgia", "Times New Roman", serif;
-}
-
-
-nav, .post-meta {
+.post-meta {
     h1, h2, h3, h4, h5, h6 {
-        font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+        font-family: $headerFont;
         font-weight: 700;
     }
+}
+
+nav {
+    font-family: $headerFont;
 }
 
 #topnav {
