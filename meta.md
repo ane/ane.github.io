@@ -5,7 +5,6 @@ title: About
 
 <div class="row">
 <div class="col-sm-9">
-
 {% capture my-include %}{% include me.md %}{% endcapture %}
 {{ my-include | markdownify }}
 
