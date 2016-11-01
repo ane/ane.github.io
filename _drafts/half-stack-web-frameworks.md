@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Half stack web frameworks
+title: Half stack frameworks
 date: 2016-10-30
 tags:
   - web
@@ -11,22 +11,23 @@ tags:
 
 In my previous post, I discussed [how web development had become weird]({% post_url
 2016-10-26-web-development-has-become-weird %}). In this post, I will discuss what exactly is it
-that makes it so weird, and I will also a present an alternative to JavaScript SPAs that completely
-avoids the JavaScript tooling ecosystem. Such an application is much nicer to develop in, and is
-still able to leverage modern technologies like React. This is achieved by using a combination of an
-old but stable framework combined with some modern plugins.
+that makes it so weird. I will also present an alternative to JavaScript-based SPAs that look and
+behave like them, yet at the base are built using standard full-stack frameworks. They can leverage
+modern JavaScript libraries like React and compilers like Babel while simultaneously avoiding the
+confusing tooling ecosystem and providing a rich and responsive user experience, all the
+while retaining an pleasant developer experience.
 
-## What's wrong with the tooling ecosystem?
+## What exactly is wrong with the tooling ecosystem?
 
-I think, largely, the reason why web development has become weird was that frontend development
+I think, largely, the reason why web development has become weird was that front-end development
 cannot figure itself out. We are wasting effort and time by building more and more elaborate
 abstractions that fundamentally exist only because of an unhappy accident: the web is the *only*
 cross-platform application container. It is also a very accessible medium. To create a web
-application, fundamentally, one needs to present the right kind of markup to a browser that renders
+application, fundamentally, one needs to present the right kind of mark-up to a browser that renders
 it.
 
 Let's stop here. Just because the web became what it is by accident, doesn't make it a bad thing in
-itself. Everybody *loves* platform independency. Everybody loves accessiblity. The web is easy to
+itself. Everybody *loves* platform independence. Everybody loves accessibility. The web is easy to
 develop for and it can reach almost everybody. This is a reality we have to deal with, a reality in
 which web development is (a) popular, (b) ubiquitous and (c) easy.
 
@@ -42,18 +43,22 @@ half-functioning solution into the bin and rewrite it, rather than taking it apa
 better version. This leads to programs getting rewritten and rewritten, sometimes doing things
 differently but most of the time it's just the same thing under a different layer of paint.
 
-This isn't an ethical argument: competition is absolutely necessary, to supplant you sometimes need
-to kill, to compete you sometimes need to copy.
+But I digress. That is more of a problem with software development in general. We can review a more
+concrete example: the JavaScript tooling ecosystem. To develop front-end in JS, you need three
+different tools;
 
-Case in point? JavaScript tooling ecosysetm. Fundamentally, Gulp, Grunt, and Brunch all do the same
-thing. Just a bit differently, and which technology eventually wins is *still* unclear. Browserify
-and Webpack. Bower, npm and now yarn.
+* A package manager - npm, bower or yarn
+* A module bundler - webpack, rollup or browserify
+* A task runner - gulp, grunt, brunch
 
-Seriously, what the fuck?
+Each of these segments work completely differently. So to get started with, that's three different
+tooling systems you have to learn. Better yet, each individual tool inside each system is unique in
+its configuration syntax. So if you learn how to configure Grunt you will have to learn Gulp and
+Brunch from scratch. Joy.
 
-I get it. Bower built flattened trees when npm didn't. Gulp had a nicer configuration syntax. Brunch
-was fast to get started with. Yarn is more secure and more reliable. Webpack can inline your CSS and
-is more configurable.
+Yeah, yeah, I get it. Bower was cool because it built flattened trees when npm didn't. Gulp had a
+nicer configuration syntax, and Brunch was easy to get started with. Yarn is more secure and more
+reliable than npm. Webpack can inline your CSS and images and is more configurable than Browserify.
 
 ## Not about killing innovation
 
@@ -68,13 +73,13 @@ or library for one thing is stupid, but the sweet spot does definitely not lie a
 
 So if the answer is no, does that mean JavaScript developers are so strange that they cannot get
 their heads together and agree on something? Do they really think people enjoy keeping up with the
-joneses all the time and learning a new tool every year?
+Joneses all the time and learning a new tool every year?
 
 When it comes to the first question, remember Joyent and the io.js schism. *Oops*. As to the second,
 I doubt it. Still, this is what we have to live with. A
-[guide](https://github.com/verekia/js-stack-from-scratch) for building a modern JS frontend app
-consits of *twelve* distinct steps, all of them quite elaborate. I applaud the author for the
-gargantuan effor in that tutorial: it's the best I've seen so far. But seriously, take a look at
+[guide](https://github.com/verekia/js-stack-from-scratch) for building a modern JS front-end app
+consists of *twelve* distinct steps, all of them quite elaborate. I applaud the author for the
+gargantuan effort in that tutorial: it's the best I've seen so far. But seriously, take a look at
 it! What the fuck?! I could have just rewritten my previous post with a link to that guide and
 rested my case!
 
@@ -82,47 +87,72 @@ I remember a [book](http://www.charlespetzold.com/pw5/) about Windows programmin
 of this guide are arcane enough to evoke memories of *that*. I think one can enumerate the type
 system of Scala using less. Or how to write a Scheme interpreter. 
 
+The usability of the tooling ecosystem is absolutely disgraceful. No other developer segment has
+this many hoops to jump through and nobody else has to learn so many different tools just to get a
+simple web application running.
+
 Why do we put up with this? Why isn't any effort being put into simplifying the tooling stack,
-instead of making it more elaborate, powerful, and verbose?
+instead of making it more elaborate, powerful, and verbose? Consider webpack. It is a powerful
+utility that is supposed to combine all your assets --- that is, code, CSS, images --- into a single
+module that is used in your application. This is a powerful thing. The only problem is that its
+configuration is *hell*. I work with SBT every day, and my goodness, even SBT is easier to
+configure than Webpack. Ask any Scala developer what it means to say that. You will get funny looks.
+
+## SPA development is more than just tools
+
+The problems don't stop here. A SPA must effectively handle client state *entirely* in the browser,
+though in ~~isomor~~universal SPA apps part of the rendering and client state is processed on the
+server. This requires the use of architectural patterns
+like [Redux](https://github.com/reactjs/react-redux)
+and [React Router](https://github.com/ReactTraining/react-router). 
+
+These libraries are nice and intelligent, but I feel they are a wasted abstraction. Using the trick
+below I can create React apps that match closely the performance of a real SPA app, without having
+to rely on these libraries.
+
+**Caveat lector**. This is largely a matter of taste. If you really like Redux and React Router, by
+all means use them, but I find their usability to be sub-par to the MVC architecture of any
+full-stack framework. The architectural pattern --- Flux --- is a message-based event loop. The
+views generate user actions (button clicks) that are dispatched to stores (state containers) which
+update themselves (increment a number) then deliver state changes (an incremented number) to the
+views which re-render themselves. If a request is sent to the server, it must be split into two
+parts: first, a button click is registered, and its effect is rendered; second, a request is sent to
+the backend and when it completes, an action describing a completed request is sent to the message
+dispatcher. So any interaction with the backend requires two actions. Sounds complicated? Yeah, this
+is why I prefer a dumb MVC architecture.
 
 ## In summary
 
-My misgivings with the current state of JavaScript development can be summarized as
-follows.
+So, to put this argument into a more cogent form, I'll summarize them below.
 
-#### An aversion towards monolithic tooling is good for the tools but bad for the programmers
- 
-Why doesn't anyone integrate dependency management, module bundling and task running under the
-same program? Why do we have to use three different programs that are getting replaced every year?
-SBT may be ugly in parts, but it does do package management, compilation, debugging, testing --
-even if it's DSL is garish and confusing, still, once you're familiar with it, you don't have to
-master six other horrifying DSLs. Just one.
+**Not enough emphasis is placed in making the tooling stack usable.** Why doesn't anyone integrate
+dependency management, module bundling and task running under the same program? Why do we have to
+use three different programs that are getting replaced every year? Tool "monoliths" like SBT may be
+ugly in parts, but they can do package management, compilation, debugging, testing -- even if it's
+DSL is garish and confusing, still, once you're familiar with it, you don't have to master six other
+horrifying DSLs. Just one.
 
-#### A carefree attitude towards standardization
-
-Babel lets us write JS in eleventy different dialects. While that is a cool thing in itself, it a
-horror show for developers. You ask, who wouldn't want to use `await`, or ES6 classes? Well, how
-about the person who doesn't want to *learn how to use Babel*?
+**People chase innovations in the stack with little care about their impact on maintainability.** Babel lets us
+write JS in eleventy different dialects. While that is a cool thing in itself, it a horror show for
+developers. You ask, who wouldn't want to use `await`, or ES6 classes? Well, how about the person
+who doesn't want to *learn how to use Babel*?
 
 With Babel, you can write in any version of JavaScript you want,
 since it all gets compiled down to ES5 anyway. This is great for building your
-flavour-of-the-month hack, but it's also a terrific way of building unmaintainable software. For
+flavor-of-the-month hack, but it's also a terrific way of building unmaintainable software. For
 this zany *hack* to work, you need ~~tra~~compilers that translate your modern code to old code. The
 requirement of that tool is too high a price to pay for some fancy language features.
 
-#### Monoliths are boring but they are usable
-
-Clojure developers have found a way of eschewing frameworks over composable libraries. For some
-reason, everybody else is really bad at this, so we build frameworks, i.e., sets of libraries that
-govern the design of your program in a certain way. Monolithic frameworks like Rails or Django are
-fundamentally dated --- though this is easily fixed --- but they are usable. Setting up a
-functional application takes a few minutes, and it just works. But it's not as cool since you
-can't use fancy things like React or JSX. And your application doesn't do seamless page
-transitions!
+**Monolithic full-stack frameworks may be dated in parts but they generally possessively exemplary
+usability**. Clojure developers have found a way of eschewing frameworks over composable
+libraries. For some reason, everybody else is really bad at this, so we build frameworks, i.e., sets
+of libraries that govern the design of your program in a certain way. Monolithic frameworks like
+Rails or Django are fundamentally dated --- though this is easily fixed --- but they are
+usable. Setting up a functional application with these takes a few minutes, and it just works.
 
 ## A solution: renovation instead of rebuilding
 
-In my opinion, frontend development can be done in an alternate, saner way. It doesn't mean going
+In my opinion, front-end development can be done in an alternate, saner way. It doesn't mean going
 back to the stone age of Apache or Rails with ActiveRecord. Rather, it means refurbishing these old,
 battle-tested technologies with modern components without tossing the whole chassis into the
 bin. 
@@ -134,19 +164,19 @@ A REST API built in a scalable and performant language
 :  *Examples: Scala, Go, Clojure, Java, Rust, OCaml, Elixir*
   
    This gives us a clear advantage when scaling and deploying our application. Data access is made
-   opaque and is in no way tied to the frontend - which is ultimately just presentation and some
+   opaque and is in no way tied to the front-end - which is ultimately just presentation and some
    client state. The language needs the following:
    
    * A stable library ecosystem, especially for data access, e.g., database drivers
    * A functioning web server and associated libraries
-   * Speed, multithreading, performance
+   * Speed, multi-threading, performance
    
-   With these properties, you should be quite comfortable in your backend development.
+   With these properties, you should be quite comfortable in your back-end development.
   
 Client state, presentation and back-end communication handled using a monolithic framework
 :  *Examples: Ruby on Rails, Django, Pyramid, MeteorJS, Udash*
 
-   Rails may be dated in some parts --- coupling your frontend with data access is one thing --- but
+   Rails may be dated in some parts --- coupling your front-end with data access is one thing --- but
    as an infrastructure it is functional, mature, easy to understand and *stable*. The Ruby ecosystem
    is large and is well documented, even the secondary documentation (StackOverflow etc.) is abundant.
 
@@ -180,12 +210,12 @@ The controller lives in `app/controllers/foos_controller.rb`:
 
 ```ruby
 class FoosController < ApplicationController
-  # maps to GET /foos
+  # maps to GET /foos (on the front-end)
   def index
     @foos = Foo.all.to_json
   end 
   
-  # maps to POST /foos
+  # maps to POST /foos (on the front-end)
   def create
     Foo.create(:bar => params['bar'])
 
@@ -204,33 +234,45 @@ class Foo < Her::Model
 end
 ```
 
-Now `Foo.find(1)` maps to `GET /foos/1` in the backend.
+Now `Foo.find(1)` maps to `GET /foos/1` in the back-end.
 
-The view is generated by `app/views/foos/index.html`
+The view is generated by `app/views/foos/index.html.erb`
 
-<pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">react_component</span><span class="p">(</span><span class="s1">'Foos'</span><span class="p">,</span> <span class="p">{</span> <span class="ss">foos: </span><span class="vi">@foos</span> <span class="p">},</span> <span class="p">{</span> <span class="ss">prerender: </span><span class="kp">true</span> <span class="p">})</span> <span class="cp">%&gt;</span></code></pre>
+```erb
+<%= 
+react_component(
+  'Foos', 
+  { foos: @foos, token: form_activity_token, action: url_for(action: 'create') }, 
+  { prerender: true }
+) 
+%>
+```
 
-Which is actually a React component `app/assets/javascripts/components/foos.es6.jsx`:
+This maps to a React component `app/assets/javascripts/components/foos.es6.jsx`:
 
-<pre class="highlight"><code><span class="kr">class</span> <span class="nx">Foos</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
-  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
-    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
-      <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
-        <span class="si">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">foos</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">foo</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span><span class="si">{</span><span class="nx">foo</span><span class="p">.</span><span class="nx">bar</span><span class="si">}</span><span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;;</span>
-        <span class="p">})</span><span class="si">}</span>
-      <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>                              // makes the request asynchronous
-      <span class="p">&lt;</span><span class="nt">form</span> <span class="na">action=</span><span class="s2">"/foos"</span> <span class="na">method=</span><span class="s2">"POST"</span> <span class="na">dataRemote=</span><span class="s2">"true"</span><span class="p">&gt;</span>
-        <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type=</span><span class="s2">"text"</span> <span class="na">name=</span><span class="s2">"bar"</span> <span class="na">value=</span><span class="s2">"Blah blah"</span> <span class="p">/&gt;</span>
-        <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type=</span><span class="s2">"submit"</span> <span class="na">value=</span><span class="s2">"Add!"</span> <span class="p">/&gt;</span>
-      <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
-    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre>
+```javascript
+class Foos extends React.Component {
+  render() {
+    <div>
+      <ul>
+        {this.props.foos.map((foo) => {
+           return <li>{foo.bar}</li>
+        })}
+      </ul>
+      // dataRemote is a Rails trick that makes the form make an XHR
+      <form action={this.props.action} method="POST" dataRemote="true">
+        <input type="hidden" name="authenticity_token" value={this.props.token} />
+        <input type="text" name="bar" value="Blah blah" />
+        <input type="submit" value="Add!" />
+      </form>
+    </div>
+  }
+}
+```
 
-This looks like any standard Rails controller. In fact, it is exactly like one, yet the magic of
-React & Turbolinks lets us wrap this into a SPA-like experience.
+Try doing that with less code in any JS app! The controller looks like any standard Rails
+controller. In fact, it is exactly like one, yet the magic of React & Turbolinks lets us wrap this
+into a SPA-like experience.
 
 Combining these elements, we get **an application that can reach nine-tenths of the performance and
 responsiveness of a 100% JavaScript SPA, while simultaneously avoiding the messy tooling ecosystem**.
@@ -243,30 +285,60 @@ responsiveness of a 100% JavaScript SPA, while simultaneously avoiding the messy
   another Rails
 
 * Responsiveness close enough to that of a real SPA. It will never match a real SPA in speed, since
-  the requests map to Rails controllers, but it will be extremely pleastant to develop in.
+  the requests map to Rails controllers, but it will be extremely pleasant to develop in.
   
-* A scalable backend without any data access logic in the front-end (the usual front-end back-end
+* A scalable back-end without any data access logic in the front-end (the usual front-end back-end
   split), the framework handles only UI state and presentation logic. 
   
 ### A functioning example
 
 I've created a functioning example and put it into two repositories:
 
-* `rails-backend` - https://github.com/ane/rails-backend
+* Front-end -- Rails 5 & react-rails & Her -- <https://github.com/ane/rails-react-frontend>
+
+  A Rails 5 app combining react-rails and Her to talk to the back-end.
+  
+  To install, clone the repo, run `bundle install`, run `foreman start`. This will start the Rails
+  server and the live reloader.
+
+* Back-end -- <https://github.com/ane/rails-react-backend>
 
   It's a dead simple Sinatra REST API that uses Sqlite3. This is obviously not suitable for
   production.
   
   To install, clone the repo, run `bundle install`, run `rackup`.
   
-* `rails-frontend` - https://github.com/ane/rails-frontend
-
-  A Rails 5 app combining react-rails and Her to create the above app.
-  
-  To install, clone the repo, run `bundle install`, run `foreman start`. This will start the Rails
-  server and the live reloader.
+This application will *never* match a real SPA. A part of the front-end is not in the browser, so we
+will rely on a second web-server to run it. So it is an *illusion*, but as an illusion it is close
+enough, and it is *easy to use*.
   
 ## Conclusion
-  
 
-  
+JavaScript front-end development, as it currently stands, is painful to develop in. One has to
+master many command line tools that instead of being unified as a single tool, each continue to
+diverge and grow larger and more powerful. The result is a confusing developer experience.
+
+In this post, I showed that we can scrape the good parts of modern JS developments and use them to
+modernize an older application stack that mimics the user experience of a SPA, but is not one. The
+application uses a clever library --- Turbolinks --- to convert page requests into XHRs, creating an
+illusion of a single-page application. By combining this with React we get smooth and rapid page
+reloads, since React can diff the DOM changes incoming in the XHRs and update the page quickly. 
+
+The end result is a *half-stack framework*: we yank data access from a monolithic full-stack
+framework (Rails) and make it use a REST API and we replace its presentation logic (ERB) with
+React. The framework is left to handle client state, routing and asset pipelining, which are the
+painful parts of SPA development, and the UI is rendered using React. So the Model--View--Controller
+is distributed into three places: Rails for UI state, React for UI rendering, and the REST API is
+the actual business logic. Effectively, this reduces Rails to a thin SPA-like front-end over a REST API!
+
+Where to go from here? Here are some interesting things that could be explored:
+
+* **GraphQL**. Although Her is nice, we could use [GraphQL](http://graphql.org/) when communicating
+  with the backend. Not sure how compatible with Rails this is. 
+* **TypeScript**. I like static typing, but currently react-rails doesn't really work that well with TypeScript.
+* **React On Rails**. A
+  different [kind of React & Rails integration](https://github.com/shakacode/react_on_rails), which
+  lets you use Webpack. React On Rails is more flexible than react-rails: you get the full power of
+  Webpack and NPM here, so this is both good and bad.
+
+The future is going to be interesting!
