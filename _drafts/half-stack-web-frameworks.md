@@ -109,8 +109,8 @@ like [Redux](https://github.com/reactjs/react-redux)
 and [React Router](https://github.com/ReactTraining/react-router). 
 
 These libraries are nice and intelligent, but I feel they are a wasted abstraction. Using the trick
-below I can create React apps that match closely the performance of a real SPA app, without having
-to rely on these libraries.
+below I can create React apps that can approximate the performance of a real SPA app, without having
+to rely on these complicated architectural patterns.
 
 **Caveat lector**. This is largely a matter of taste. If you really like Redux and React Router, by
 all means use them, but I find their usability to be sub-par to the MVC architecture of any
@@ -152,7 +152,7 @@ of libraries that govern the design of your program in a certain way. Monolithic
 Rails or Django are fundamentally dated --- though this is easily fixed --- but they are
 usable. Setting up a functional application with these takes a few minutes, and it just works.
 
-## A new directon: renovate, not rewrite
+## A new direction: renovate, not rewrite
 
 In my opinion, front-end development can be done in an alternate, saner way. It doesn't mean going
 back to the stone age of Apache or Rails with ActiveRecord. Rather, it means refurbishing these old,
@@ -195,8 +195,24 @@ form submissions) as XHRs and then from the new page, it __merges__ the `<head>`
 the `<body>` element. By using a gem like `react-rails` you can combine this with react, however, it
 does **not** use React's virtual DOM when redrawing the `body` content. It only mounts and unmounts the
 components when the page swaps, retaining the actual DOM bindings. 
+
+## What?! Your answer is *Rails*? *In 2016*?
+
+Just because these frameworks aren't making headlines doesn't mean they are stuck in the stone
+age. These monolithic frameworks still, after years of maturation, possess novelty value in one,
+unparalleled aspect: usability. These frameworks may not lend themselves to universal applications,
+but they're still capable of absorbing new technologies like
+[websockets](http://edgeguides.rubyonrails.org/action_cable_overview.html) and
+[GraphQL](https://github.com/rmosolgo/graphql-ruby).
+
+Some parts of them are stuck in the past, of which the most striking one is combining data access
+with data control and presentation in the same program. This is easily fixed: make your Rails
+controllers call an external, opaque service to render is data. The job of the full-stack framework
+is reduced to managing client state and data presentation, which go together.
+
+So, what can be done? Here's an example.
    
-## An example: react-rails
+## A REST-backed Rails app with React as the templating engine
 
 [react-rails](https://github.com/reactjs/react-rails) is a Rails gem that gives us React components
 in the asset pipeline, supporting server-side rendering and Turbolinks (caveat: see above)
@@ -402,7 +418,7 @@ All in all, this solution is a compromise.
 Compared to a full-stack Rails app, we have to do extra work in creating a REST API backend, but the
 result is an app that's easier to manage due to the separation of concerns. With a separate data
 access layer --- the REST API --- complex business logic is contained in a single place. It is easy
-to couple several clients to such a frontend, and our Rails app is just one of these.
+to couple several clients to such a front-end, and our Rails app is just one of these.
 
 But, compared to a full-fledged SPA, this app will never be as quick, it will never be as fluid, and
 it may not be what cutting-edge front-end development this day represents, but it is is *simple*,
