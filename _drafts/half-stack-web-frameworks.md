@@ -37,11 +37,11 @@ evolves blindly. Web development doesn't evolve blindly, rather, it is myopic.
 
 ## Progress, progress, progress!
 
-To put this into context, we must understand that currently, most software is disposable. This does
-not have to be the case but it is. Because software is disposable, we eagerly toss a
-half-functioning solution into the bin and rewrite it, rather than taking it apart and rebuilding a
-better version. This leads to programs getting rewritten and rewritten, sometimes doing things
-differently but most of the time it's just the same thing under a different layer of paint.
+To put this into context, we must understand that currently, most software is disposable. Because
+software is disposable, we eagerly toss a half-functioning solution into the bin and rewrite it,
+rather than taking it apart and rebuilding a better version. This leads to programs getting
+rewritten and rewritten, sometimes doing things differently but most of the time it's just the same
+thing under a different layer of paint.
 
 But I digress. That is more of a problem with software development in general. We can review a more
 concrete example: the JavaScript tooling ecosystem. To develop front-end in JS, you need three
@@ -95,8 +95,10 @@ Why do we put up with this? Why isn't any effort being put into simplifying the 
 instead of making it more elaborate, powerful, and verbose? Consider webpack. It is a powerful
 utility that is supposed to combine all your assets --- that is, code, CSS, images --- into a single
 module that is used in your application. This is a powerful thing. The only problem is that its
-configuration is *hell*. I work with SBT every day, and my goodness, even SBT is easier to
-configure than Webpack. Ask any Scala developer what it means to say that. You will get funny looks.
+configuration is *hell*. I work with SBT every day, and my goodness, even SBT is easier to configure
+than Webpack. Ask any Scala developer what it means to say that. You will get funny looks. Even Java
+folks will consider this crazy, although, in fairness, they've
+[moved into the post-framework age](http://microprofile.io/), and consider us mortals rather quaint.
 
 ## SPA development is more than just tools
 
@@ -125,14 +127,14 @@ is why I prefer a dumb MVC architecture (or Relay).
 
 So, to put this argument into a more cogent form, I'll summarize them below.
 
-**Not enough emphasis is placed in making the tooling stack usable.** Why doesn't anyone integrate
+**Lack of emphasis on usability, a myopic focus on adding features.** Why doesn't anyone integrate
 dependency management, module bundling and task running under the same program? Why do we have to
 use three different programs that are getting replaced every year? Tool "monoliths" like SBT may be
 ugly in parts, but they can do package management, compilation, debugging, testing -- even if it's
 DSL is garish and confusing, still, once you're familiar with it, you don't have to master six other
 horrifying DSLs. Just one.
 
-**People chase innovations in the stack with little care about their impact on maintainability.** Babel lets us
+**Chasing novelty with little care about its impact on maintainability.** Babel lets us
 write JS in eleventy different dialects. While that is a cool thing in itself, it a horror show for
 developers. You ask, who wouldn't want to use `await`, or ES6 classes? Well, how about the person
 who doesn't want to *learn how to use Babel*?
@@ -143,14 +145,14 @@ flavor-of-the-month hack, but it's also a terrific way of building unmaintainabl
 this zany *hack* to work, you need ~~tra~~compilers that translate your modern code to old code. The
 requirement of that tool is too high a price to pay for some fancy language features.
 
-**Monolithic full-stack frameworks may be dated in parts but they generally possessively exemplary
+**Snubbing full-stack frameworks for their want novelty, although they generally feature exemplary
 usability**. Clojure developers have found a way of eschewing frameworks over composable
 libraries. For some reason, everybody else is really bad at this, so we build frameworks, i.e., sets
 of libraries that govern the design of your program in a certain way. Monolithic frameworks like
 Rails or Django are fundamentally dated --- though this is easily fixed --- but they are
 usable. Setting up a functional application with these takes a few minutes, and it just works.
 
-## A solution: renovation instead of rebuilding
+## A new directon: renovate, not rewrite
 
 In my opinion, front-end development can be done in an alternate, saner way. It doesn't mean going
 back to the stone age of Apache or Rails with ActiveRecord. Rather, it means refurbishing these old,
@@ -161,7 +163,7 @@ In other words, there is an alternative to the current JavaScript SPA horror sho
 following technologies, as an example:
 
 A REST API built in a scalable and performant language
-:  *Examples: Scala, Go, Clojure, Java, Rust, OCaml, Elixir*
+:  *Examples: Scala, Haskell, Go, Clojure, Java, Rust, OCaml, Elixir*
   
    This gives us a clear advantage when scaling and deploying our application. Data access is made
    opaque and is in no way tied to the front-end - which is ultimately just presentation and some
@@ -174,7 +176,7 @@ A REST API built in a scalable and performant language
    With these properties, you should be quite comfortable in your back-end development.
   
 Client state, presentation and back-end communication handled using a monolithic framework
-:  *Examples: Ruby on Rails, Django, Pyramid, MeteorJS, Udash*
+:  *Examples: Ruby on Rails, Django, Pyramid, MeteorJS, Udash, Play*
 
    Rails may be dated in some parts --- coupling your front-end with data access is one thing --- but
    as an infrastructure it is functional, mature, easy to understand and *stable*. The Ruby ecosystem
@@ -388,14 +390,23 @@ Where to go from here? Here are some interesting things that could be explored:
 * **Turbolinks with React**. Use React to parse the HTML returned by Turbolinks (if rendered on the
   server) and use the React virtual DOM to update the DOM, instead of blindly swapping the `body` element.
 * **GraphQL**. Although Her is nice, we could use [GraphQL](http://graphql.org/) when communicating
-  with the backend. Not sure how compatible with Rails this is. 
+  with the backend **and** also use it as a communication method between Rails and React.
 * **TypeScript**. I like static typing, but currently react-rails doesn't really work that well with TypeScript.
 * **React On Rails**. A
   different [kind of React & Rails integration](https://github.com/shakacode/react_on_rails), which
   lets you use Webpack. React On Rails is more flexible than react-rails: you get the full power of
   Webpack and NPM here, so this is both good and bad.
   
-All in all, this solution is a compromise. Compared to a full-stack Rails app, we have to do extra
-work in creating a REST API backend, but the result is an app that's easier to manage due to the
-separation of concerns. Compared to a full-fledged SPA, this app will never be as quick, but it is
-certainly much easier to set up and to develop.
+All in all, this solution is a compromise. 
+
+Compared to a full-stack Rails app, we have to do extra work in creating a REST API backend, but the
+result is an app that's easier to manage due to the separation of concerns. With a separate data
+access layer --- the REST API --- complex business logic is contained in a single place. It is easy
+to couple several clients to such a frontend, and our Rails app is just one of these.
+
+But, compared to a full-fledged SPA, this app will never be as quick, it will never be as fluid, and
+it may not be what cutting-edge front-end development this day represents, but it is is *simple*,
+there is *one* build tool (bundler), and it is *fun* to develop in. 
+
+I might miss fancy things like state hydration and Redux, but the insanity of Webpack, Gulp, Babel
+and NPM, I will **not** miss.
