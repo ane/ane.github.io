@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Half stack frameworks
-date: 2016-10-30
+title: Half stack web frameworks
+date: 2016-11-02
 tags:
   - web
   - ruby
@@ -37,11 +37,11 @@ evolves blindly. Web development doesn't evolve blindly, rather, it is myopic.
 
 ## Progress, progress, progress!
 
-To put this into context, we must understand that currently, most software is disposable. This does
-not have to be the case but it is. Because software is disposable, we eagerly toss a
-half-functioning solution into the bin and rewrite it, rather than taking it apart and rebuilding a
-better version. This leads to programs getting rewritten and rewritten, sometimes doing things
-differently but most of the time it's just the same thing under a different layer of paint.
+To put this into context, we must understand that currently, most software is disposable. Because
+software is disposable, we eagerly toss a half-functioning solution into the bin and rewrite it,
+rather than taking it apart and rebuilding a better version. This leads to programs getting
+rewritten and rewritten, sometimes doing things differently but most of the time it's just the same
+thing under a different layer of paint.
 
 But I digress. That is more of a problem with software development in general. We can review a more
 concrete example: the JavaScript tooling ecosystem. To develop front-end in JS, you need three
@@ -95,8 +95,10 @@ Why do we put up with this? Why isn't any effort being put into simplifying the 
 instead of making it more elaborate, powerful, and verbose? Consider webpack. It is a powerful
 utility that is supposed to combine all your assets --- that is, code, CSS, images --- into a single
 module that is used in your application. This is a powerful thing. The only problem is that its
-configuration is *hell*. I work with SBT every day, and my goodness, even SBT is easier to
-configure than Webpack. Ask any Scala developer what it means to say that. You will get funny looks.
+configuration is *hell*. I work with SBT every day, and my goodness, even SBT is easier to configure
+than Webpack. Ask any Scala developer what it means to say that. You will get funny looks. Even Java
+folks will consider this crazy, although, in fairness, they've
+[moved into the post-framework age](http://microprofile.io/), and consider us mortals rather quaint.
 
 ## SPA development is more than just tools
 
@@ -107,8 +109,8 @@ like [Redux](https://github.com/reactjs/react-redux)
 and [React Router](https://github.com/ReactTraining/react-router). 
 
 These libraries are nice and intelligent, but I feel they are a wasted abstraction. Using the trick
-below I can create React apps that match closely the performance of a real SPA app, without having
-to rely on these libraries.
+below I can create React apps that can approximate the performance of a real SPA app, without having
+to rely on these complicated architectural patterns.
 
 **Caveat lector**. This is largely a matter of taste. If you really like Redux and React Router, by
 all means use them, but I find their usability to be sub-par to the MVC architecture of any
@@ -117,22 +119,22 @@ views generate user actions (button clicks) that are dispatched to stores (state
 update themselves (increment a number) then deliver state changes (an incremented number) to the
 views which re-render themselves. If a request is sent to the server, it must be split into two
 parts: first, a button click is registered, and its effect is rendered; second, a request is sent to
-the backend and when it completes, an action describing a completed request is sent to the message
-dispatcher. So any interaction with the backend requires two actions. Sounds complicated? Yeah, this
-is why I prefer a dumb MVC architecture.
+the back-end and when it completes, an action describing a completed request is sent to the message
+dispatcher. So any interaction with the back-end requires two actions. Sounds complicated? Yeah, this
+is why I prefer a dumb MVC architecture (or Relay).
 
 ## In summary
 
 So, to put this argument into a more cogent form, I'll summarize them below.
 
-**Not enough emphasis is placed in making the tooling stack usable.** Why doesn't anyone integrate
+**Lack of emphasis on usability, a myopic focus on adding features.** Why doesn't anyone integrate
 dependency management, module bundling and task running under the same program? Why do we have to
 use three different programs that are getting replaced every year? Tool "monoliths" like SBT may be
 ugly in parts, but they can do package management, compilation, debugging, testing -- even if it's
 DSL is garish and confusing, still, once you're familiar with it, you don't have to master six other
 horrifying DSLs. Just one.
 
-**People chase innovations in the stack with little care about their impact on maintainability.** Babel lets us
+**Chasing novelty with little care about its impact on maintainability.** Babel lets us
 write JS in eleventy different dialects. While that is a cool thing in itself, it a horror show for
 developers. You ask, who wouldn't want to use `await`, or ES6 classes? Well, how about the person
 who doesn't want to *learn how to use Babel*?
@@ -143,14 +145,14 @@ flavor-of-the-month hack, but it's also a terrific way of building unmaintainabl
 this zany *hack* to work, you need ~~tra~~compilers that translate your modern code to old code. The
 requirement of that tool is too high a price to pay for some fancy language features.
 
-**Monolithic full-stack frameworks may be dated in parts but they generally possessively exemplary
+**Snubbing full-stack frameworks for their want novelty, although they generally feature exemplary
 usability**. Clojure developers have found a way of eschewing frameworks over composable
 libraries. For some reason, everybody else is really bad at this, so we build frameworks, i.e., sets
 of libraries that govern the design of your program in a certain way. Monolithic frameworks like
 Rails or Django are fundamentally dated --- though this is easily fixed --- but they are
 usable. Setting up a functional application with these takes a few minutes, and it just works.
 
-## A solution: renovation instead of rebuilding
+## A new direction: renovate, not rewrite
 
 In my opinion, front-end development can be done in an alternate, saner way. It doesn't mean going
 back to the stone age of Apache or Rails with ActiveRecord. Rather, it means refurbishing these old,
@@ -161,7 +163,7 @@ In other words, there is an alternative to the current JavaScript SPA horror sho
 following technologies, as an example:
 
 A REST API built in a scalable and performant language
-:  *Examples: Scala, Go, Clojure, Java, Rust, OCaml, Elixir*
+:  *Examples: Scala, Haskell, Go, Clojure, Java, Rust, OCaml, Elixir*
   
    This gives us a clear advantage when scaling and deploying our application. Data access is made
    opaque and is in no way tied to the front-end - which is ultimately just presentation and some
@@ -174,7 +176,7 @@ A REST API built in a scalable and performant language
    With these properties, you should be quite comfortable in your back-end development.
   
 Client state, presentation and back-end communication handled using a monolithic framework
-:  *Examples: Ruby on Rails, Django, Pyramid, MeteorJS, Udash*
+:  *Examples: Ruby on Rails, Django, Pyramid, MeteorJS, Udash, Play*
 
    Rails may be dated in some parts --- coupling your front-end with data access is one thing --- but
    as an infrastructure it is functional, mature, easy to understand and *stable*. The Ruby ecosystem
@@ -186,22 +188,36 @@ A wrapper that turns ordinary HTTP page requests into XHRs
   
    Turbolinks is perhaps a hack but it is clever: any HTTP request that would normally cause a page
    reload, like a link or a form submission, is converted into an XHR. Then, the page redraws itself
-   using a...
-  
-A templating engine that can redraw the DOM quickly
+   by swapping out the `<body>` element from the returned response.
 
-:  *Examples: React, Clearwater*
+Turbolinks is a "pseudo-SPA" application in that it simply reroutes ordinary page requests (links,
+form submissions) as XHRs and then from the new page, it __merges__ the `<head>` element and __swaps__
+the `<body>` element. By using a gem like `react-rails` you can combine this with react, however, it
+does **not** use React's virtual DOM when redrawing the `body` content. It only mounts and unmounts the
+components when the page swaps, retaining the actual DOM bindings. 
 
-   Since the page is effectively re-requested, we need a rendering engine that can redisplay this
-   updated DOM content quickly. Using Turbolinks, a `201 Created` response --- a server-side React
-   rendering --- is fetched automatically using a XHR, and is finally re-rendered lightning
-   fast on top of the old DOM using React, which will not redraw the whole page.
+## What?! Your answer is *Rails*? *In 2016*?
+
+Just because these frameworks aren't making headlines doesn't mean they are stuck in the stone
+age. These monolithic frameworks still, after years of maturation, possess novelty value in one,
+unparalleled aspect: usability. These frameworks may not lend themselves to universal applications,
+but they're still capable of absorbing new technologies like
+[websockets](http://edgeguides.rubyonrails.org/action_cable_overview.html) and
+[GraphQL](https://github.com/rmosolgo/graphql-ruby).
+
+Some parts of them are stuck in the past, of which the most striking one is combining data access
+with data control and presentation in the same program. This is easily fixed: make your Rails
+controllers call an external, opaque service to render is data. The job of the full-stack framework
+is reduced to managing client state and data presentation, which go together.
+
+So, what can be done? Here's an example.
    
-## An example: react-rails
+## A REST-backed Rails app with React as the templating engine
 
-With Rails, by using [react-rails](https://github.com/reactjs/react-rails), every page request is transformed
-into a XHR. When the request completes, React redraws the prerendered content **quickly** on top of the old by
-using its internal virtual DOM. Under the hood, react-rails uses
+[react-rails](https://github.com/reactjs/react-rails) is a Rails gem that gives us React components
+in the asset pipeline, supporting server-side rendering and Turbolinks (caveat: see above)
+
+Under the hood, when rendering on the server, react-rails uses
 [Babel](https://github.com/babel/ruby-babel-transpiler) and
 [ExecJS](https://github.com/sstephenson/execjs) to prerender the content. Better yet, your content
 is still rendered by a simple Rails controller like the following.
@@ -212,11 +228,13 @@ The controller lives in `app/controllers/foos_controller.rb`:
 class FoosController < ApplicationController
   # maps to GET /foos (on the front-end)
   def index
+    # incurs a GET /foos on the back-end
     @foos = Foo.all.to_json
   end 
   
   # maps to POST /foos (on the front-end)
   def create
+    # this is a POST /foos on the back-end
     Foo.create(:bar => params['bar'])
 
     # turbolinks turns this into a XHR
@@ -234,7 +252,7 @@ class Foo < Her::Model
 end
 ```
 
-Now `Foo.find(1)` maps to `GET /foos/1` in the back-end.
+Now `Foo.find(1)` maps to `GET /foos/1` in the back-end, and so forth.
 
 The view is generated by `app/views/foos/index.html.erb`
 
@@ -290,6 +308,59 @@ responsiveness of a 100% JavaScript SPA, while simultaneously avoiding the messy
 * A scalable back-end without any data access logic in the front-end (the usual front-end back-end
   split), the framework handles only UI state and presentation logic. 
   
+There are some obvious compromises in such a solution, which are both good and bad.
+
+#### Compromises made
+
+The biggest compromise is in performance, which is due to the following:
+
+* **Does not use React's DOM to its full power**. Turbolinks just swaps the `body` element. This
+  could be improved by making it use the React virtual DOM. This is the bad part. The good part is
+  that we don't have to create XHRs ourselves in React components.
+  
+* **Forces the user to use JSX, throws ERB/HAML in the bin**. It is true that the example
+  application could be indeed built without JSX --- just don't use react-rails --- but I find JSX to
+  be a nicer templating syntax than ERB. advantage of React
+  
+  But it would be naïve to assume this brings us the whole of *React*. It brings us the *templating
+  syntax* and binding mechanisms, but since Turbolinks effectively causes a re-rendering of the
+  *whole* HTML page, this doesn't fully leverage the server-side rendering aspect of React. 
+  
+  So, overall, the good part of this compromise is that we get to use JSX, which has a nicer,
+  functional approach compared to ERB, but the bad part is that we don't harness the full power of
+  React.
+  
+* **Turbolinks effectively reverses React server-side rendering**. Whereas in a normal SPA app the
+  server-side rendering is the "base" template, in this case a *new* server-side rendering is
+  produced on every interaction. In a normal SPA app, one just updates the DOM with new *state* ---
+  i.e., props --- not with a new **DOM**.
+  
+  There is a solution: skip Turbolinks and use XHRs in React components. A simple solution in a
+  controller:
+  
+  ```ruby
+  def create
+      @f = Foo.create(:bar => params[:bar])
+      if request.xhr?
+        # send a JSON of all the Foos
+        render :json => Foo.all.to_json
+      else
+        # send HTML with a React component
+        redirect_to action: 'index'
+      end
+  end
+  ```
+  
+  If the request is made from a component, it's can now use `setState` (or a store) to update its
+  new state. In this paradigm, Rails is acting as the state store.
+  
+  A better example would be to make the Rails app support GraphQL and use Relay to communicate with
+  the Rails part, see below.
+  
+I think, given the simplicity of the above application, I think it's fair to say that these
+compromises are warranted. If the actual set-up were any more complicated I wouldn't be so
+certain. But, for the simplicity, we must trade performance.
+  
 ### A functioning example
 
 I've created a functioning example and put it into two repositories:
@@ -299,7 +370,7 @@ I've created a functioning example and put it into two repositories:
   A Rails 5 app combining react-rails and Her to talk to the back-end.
   
   To install, clone the repo, run `bundle install`, run `foreman start`. This will start the Rails
-  server and the live reloader.
+  server and the live re-loader.
 
 * Back-end -- <https://github.com/ane/rails-react-backend>
 
@@ -321,10 +392,9 @@ diverge and grow larger and more powerful. The result is a confusing developer e
 In this post, I showed that we can scrape the good parts of modern JS developments and use them to
 modernize an older application stack that mimics the user experience of a SPA, but is not one. The
 application uses a clever library --- Turbolinks --- to convert page requests into XHRs, creating an
-illusion of a single-page application. By combining this with React we get smooth and rapid page
-reloads, since React can diff the DOM changes incoming in the XHRs and update the page quickly. 
+illusion of a single-page application. 
 
-The end result is a *half-stack framework*: we yank data access from a monolithic full-stack
+The end result is a *half stack web framework*: we yank data access from a monolithic full-stack
 framework (Rails) and make it use a REST API and we replace its presentation logic (ERB) with
 React. The framework is left to handle client state, routing and asset pipelining, which are the
 painful parts of SPA development, and the UI is rendered using React. So the Model--View--Controller
@@ -333,12 +403,26 @@ the actual business logic. Effectively, this reduces Rails to a thin SPA-like fr
 
 Where to go from here? Here are some interesting things that could be explored:
 
+* **Turbolinks with React**. Use React to parse the HTML returned by Turbolinks (if rendered on the
+  server) and use the React virtual DOM to update the DOM, instead of blindly swapping the `body` element.
 * **GraphQL**. Although Her is nice, we could use [GraphQL](http://graphql.org/) when communicating
-  with the backend. Not sure how compatible with Rails this is. 
+  with the backend **and** also use it as a communication method between Rails and React.
 * **TypeScript**. I like static typing, but currently react-rails doesn't really work that well with TypeScript.
 * **React On Rails**. A
   different [kind of React & Rails integration](https://github.com/shakacode/react_on_rails), which
   lets you use Webpack. React On Rails is more flexible than react-rails: you get the full power of
   Webpack and NPM here, so this is both good and bad.
+  
+All in all, this solution is a compromise. 
 
-The future is going to be interesting!
+Compared to a full-stack Rails app, we have to do extra work in creating a REST API backend, but the
+result is an app that's easier to manage due to the separation of concerns. With a separate data
+access layer --- the REST API --- complex business logic is contained in a single place. It is easy
+to couple several clients to such a front-end, and our Rails app is just one of these.
+
+But, compared to a full-fledged SPA, this app will never be as quick, it will never be as fluid, and
+it may not be what cutting-edge front-end development this day represents, but it is is *simple*,
+there is *one* build tool (bundler), and it is *fun* to develop in. 
+
+I might miss fancy things like state hydration and Redux, but the insanity of Webpack, Gulp, Babel
+and NPM, I will **not** miss.
