@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Reactive HTTP requests"
+title: "Akka Streams: Connecting Streams to HTTP Requests"
 date: 2016-10-17
 tags:
   - scala
@@ -8,7 +8,7 @@ tags:
   - reactive-streams
 ---
 
-<figure class="figure pull-md-right m-l-2">
+<figure class="figure float-md-right ml-2">
 <img src="/images/streaming-http/first.png" class="figure-img img-fluid">
 <figcaption class="figure-caption">Figure 1. Input sources to an application</figcaption>
 </figure>
@@ -68,7 +68,7 @@ simply a *blueprint* of a reactive program. It says "wire these sources together
 outputs, send them to A, and from there finally to C", but it doesn't do anything until we
 *materialize* it. 
 
-<figure class="figure pull-md-right m-l-2">
+<figure class="figure float-md-right ml-2">
 <img src="/images/streaming-http/second.png" class="figure-img img-fluid">
 <figcaption class="figure-caption">Figure 2. Hooking our flow to the HTTP server flow.</figcaption>
 </figure>

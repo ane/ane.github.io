@@ -2,8 +2,8 @@
 # Front matter comment to ensure Jekyll properly reads file.
 ---
 
-$headerFont: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-$bodyFont: "PT Serif", "Georgia", "Times New Roman", serif;
+$headerFont: sans-serif;
+$bodyFont: "Georgia", "Palatino", "Times New Roman", serif;
 $preFont: "Menlo", "Consolas", "Monaco", "Droid Sans Mono", monospace;
 
 body {
@@ -47,6 +47,10 @@ pre.highlight {
     h1, h2, h3, h4, h5, h6 {
         font-family: $headerFont;
         font-weight: 700;
+    }
+
+    h1.page-header + p {
+        margin-top: -0.25rem;
     }
 }
 
