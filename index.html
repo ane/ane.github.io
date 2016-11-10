@@ -9,7 +9,7 @@ about: 'about.html'
   <div>
     {% if paginator.posts.size > 0 %}
     <div class="row">
-      <div class="col-sm-9">
+      <div class="col-sm-12 col-lg-10 offset-lg-1">
         {% for post in paginator.posts %}
         {% if post.categories.size == 0 %}
         <article class="post">

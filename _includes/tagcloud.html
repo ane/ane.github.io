@@ -1,4 +1,4 @@
-<div class="card card-block bg-faded">
+<div class="card card-block bg-faded ml-3 float-md-right" style="width: 300px">
     <h5 class="card-title">Tag Cloud</h5>
     {% assign tags = site.tags | sort %}
     {% for tag in tags %} <span class="site-tag"> <a href="/tags.html#{{ tag | first | slugify }}" style="font-size: {{ tag | last | size | times: 32 | plus: 50  }}%">{{ tag[0] | replace:'-', ' ' }}{% unless forloop.last %}{% endunless %}</a> </span> {% endfor %}

@@ -4,7 +4,8 @@ title: Tags
 ---
 
 <div class="row">
-<div class="col-sm-9">
+<div class="col-sm-12 col-lg-10 offset-lg-1">
+{% include tagcloud.html %}
 <p>
 Here are all posts sorted by their tags.
 </p>
@@ -25,9 +26,6 @@ to the `site_tags` variable. -->
 {% endif %}{% endfor %}
 </ul>
 {% endunless %}{% endfor %}
-</div>
-<div class="col-sm-3">
-{% include tagcloud.html %}
 </div>
 </div>
 
