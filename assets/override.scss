@@ -4,7 +4,7 @@
 
 $headerFont: sans-serif;
 $bodyFont: "Georgia", "Palatino", "Times New Roman", serif;
-$preFont: "Menlo", "Consolas", "Monaco", "Droid Sans Mono", monospace;
+$preFont: "Monaco", "Droid Sans Mono", monospace;
 
 body {
     font-family: $bodyFont;
@@ -14,8 +14,13 @@ body {
     padding: 2rem 2rem;
 }
 
+p code {
+    color: #068;
+    border: 1px solid #e1e1e8;
+}
+
 code {
-    font-size: 80%;
+    font-size: 75%;
     padding: .1rem .2rem;
 }
 
