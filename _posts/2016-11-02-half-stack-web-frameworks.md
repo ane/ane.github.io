@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Half stack web frameworks
+disqus: true
 date: 2016-11-02
 tags:
   - web

@@ -2,9 +2,16 @@
 # Front matter comment to ensure Jekyll properly reads file.
 ---
 
-$headerFont: sans-serif;
-$bodyFont: "Georgia", "Palatino", "Times New Roman", serif;
+$headerFont: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$bodyFont: sans-serif-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 $preFont: "Monaco", "Droid Sans Mono", monospace;
+
+a {
+    color: #006688;
+    &:visited {
+        color: #003366;
+    }
+}
 
 body {
     font-family: $bodyFont;
@@ -15,7 +22,7 @@ body {
 }
 
 p code {
-    color: #068;
+    color: #B24200;
     border: 1px solid #e1e1e8;
 }
 
@@ -48,11 +55,12 @@ pre.highlight {
     background: #f8f8f8;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-family: $headerFont;
+    font-weight: 600;
+}
+
 .post-meta {
-    h1, h2, h3, h4, h5, h6 {
-        font-family: $headerFont;
-        font-weight: 700;
-    }
 
     h1.page-header + p {
         margin-top: -0.25rem;
