@@ -1,133 +1,158 @@
 ---
-title: Universal reactive streams with Apache Camel
+title: On Apache Camel and the price of abstraction
 layout: post
 disqus: true
 date: 2017-03-02T00:00:00
 tags:
   - java
   - clojure
-  - scala
-  - akka
   - camel
-  - rx
 ---
 
-Apache Camel is an enterprise integration framework with powerful abstractions for consuming and
-producing messages from external services, and for wiring two or more services together. What is
-particularly nice is the level of abstraction, to read from an endpoint all you need is the Camel
-component (a library dependency) and a valid URI for connecting to it.
-
-What is particularly interesting is that doing reactive systems using Camel is relatively easy. When
-wiring two Camel endpoints together with a [`Route`](http://camel.apache.org/routes.html), it is a
-pull-based system. So, consumers will poll upstream for new messages.
-
-Usually, as specified in the [Reactive Manifesto](http://www.reactive-manifesto.org), in reactive
-programming we'd prefer a *push-based system*. This means that downstream consumers *react* to
-events rather than ask for them, this is the push--pull dichotomy. With push-based systems it's
-easier to implement [back pressure](https://en.wikipedia.org/wiki/Back_pressure). Back pressure
-ensures that *a fast producer does not overwhelm a slow consumer*. This prevents downstream
-consumers from getting out of memory errors. What is tremendously more important is that back
-pressure can flow throughout the stream. Back pressure is signaled by downstream consumers to
-upstream producers along the protocol.
-
-You may now be wondering, wait, if one has back pressure, isn't it a hybrid push--pull system? Yes,
-because downstream signaling upstream that it has room for more elements, is effectively the same
-thing as polling the consumer for more elements, only that the producer can react to this signal and
-send items. Conversely, if production exceeds demand, the model switches to *push*. 
-
-Remember that the Reactive Manifesto is fundamentally about *API design*. It specifies the
-`.request(N)` method for the Subscriber, which signals demand to the Publisher. When you cross
-network boundaries, what if such a signal gets lost? How does the Publisher react, does it switch to
-a push-model? What if the Publisher is itself a Subscriber to another upstream Publisher? It turns
-out, the answer to this isn't entirely simple. (More on this later.)
-
-A larger motivation is to connect different systems together reactively. This may sound more
-difficult than it is, although it's definitely not *simple*. I'll show an example built using Camel,
-and provide a Clojure DSL for creating reactive streams out of Camel endpoints.
-
-## Apache Camel
-
-When it comes to network boundaries, [Apache Camel](http://camel.apache.org/) is an enterprise
-integration framework. It lets you connect any two services together, provided they have
-*components* --- Camel modules for talking to that system. The beauty of it is that your code can be
-agnostic of the target protocol, as you connect services via URIs,
-e.g. `rabbitmq://myserver:1234/exchangeName?routingKey=blah`. This will instantiate
-the
-[RabbitMQ](https://www.rabbitmq.com/) [Camel component](http://camel.apache.org/rabbitmq.html). The
-total number of available [components](http://camel.apache.org/components.html) is huge! You have
-e.g.:
+[Apache Camel](http://camel.apache.org/) is an enterprise integration framework. It lets you connect
+networked services together. Each service is implemented via *components*: Camel modules for talking
+to specific services. Between components, one uses the canonical Exchange and Message formats for
+communication. The actual heavy lifting, protocol work, is done by the component. Additionally,
+components can be instantiated by an URI: adding an endpoint starting with
+`rabbitmq://myserver:1234/...` instantiates
+the [RabbitMQ](https://www.rabbitmq.com/) [component](http://camel.apache.org/rabbitmq.html), as
+long as it is in the classspath. The total number of
+available [components](http://camel.apache.org/components.html) is huge! You have e.g.:
 
 * ActiveMQ, RabbitMQ, Kafka, AVRO connectors
 * Files and directories
 * REST, SOAP, WSDL, etc.
 * More esoteric ones like SMPP -- yes, you can send SMSes with Camel!
 
-The idea is that as long as there is a component for it, you can consume or produce message to
-it. Better yet, you don't actually have to instantiate anything in particular, the component loading
-will be done based on the URI. So, if you want to read from RabbitMQ, serialize them into JSON, do
-some transformations, and finally send them as SMSes to a
-[SMPP](https://en.wikipedia.org/wiki/Short_Message_Peer-to-Peer) endpoint you need the following:
+What's the point? Let's assume we need to integrate an upstream system Xyz into Bar. Xyz provides
+data to you using a binary JSON format, using some known protocol, like ActiveMQ. Then you need to
+apply some transformations to the data, finally sending it to Bar, which accepts XML, and requires
+the information to be POSTed to `someURL`.
 
-1. Dependencies available for Camel, [camel-rabbitmq](http://camel.apache.org/rabbitmq.html)
-   and [camel-smpp](http://camel.apache.org/smpp.html)
-2. Endpoint URIs, `rabbitmq://host:1234/exchange?...` and
-   `smpp://user@host:2775?password=password?systemType=Fsub_Fdel&dataCoding=3`, etc.
-3. A Camel `RouteBuilder` that defines `.from("rabbitmq://...")` and `.to("smpp://...")`
-4. A Camel `Processor` that does the transformation in-between
+In a non-camel setting, using your favorite language, to do this, you 
 
-The high-level version seems like an extremely powerful abstraction -- service integration never got
-any easier. Sometimes though, it's not as easy as it looks, as you'll have to do type conversions
-from one format to the other. Without any configuration, Camel sends data as raw bytes, so if you
-want to read JSON from RabbitMQ, transform it into an actual SMPP message, and send it.
+1. Using an ActiveMQ connector, you build your queue reader and de-serializer
+2. Apply your business logic (whatever that is) to the de-serialized data
+3. Transform into XML
+4. POST the data towards `someURL` using some HTTP library
 
-Here's a concrete Java example of a service that reads from RabbitMQ and then sends them to a
-file. It reads from an exchange `myExchange` from a direct queue called `blargh` and then pumps them
-to a file called `blargh.txt`, appending results to the end of the file as messages are received.
+Fairly straightforward, right? All you need are an ActiveMQ library, a HTTP library and something
+that works with JSON and XML.
 
-```java
-public class RabbitToFile {
-  public static void main(String args[]) throws Exception {
-    CamelContext context = new DefaultCamelContext();
-    context.addRoutes(new RouteBuilder() {
-      public void configure() {
-        from("rabbitmq://localhost:5672/myExchange?queue=blargh")
-                .to("file:output?fileName=blargh.txt&fileExist=append");
-      }
-    });
-    context.start();
-  }
-}
+Here's where it gets hairy. Three months in, you are informed that the upstream source is converting
+to RabbitMQ. Oh well, you think, it's nicer, faster, and implements a saner version of AMQP, why
+not. So you refactor ActiveMQ to RabbitMQ and there it is.
+
+The point of Camel is this. The previous step requires you to manually refactor your ActiveMQ logic
+to RabbitMQ. But you're just sending messages, you don't really care about the protocol. You're just
+sending messages to an endpoint, it's the *data* you should care about, nothing else.
+
+So here's when Apache Camel comes in. It let's you specify an URL like
+
+```
+rabbitmq://localhost/blah?routingKey=Events.XMC.*
 ```
 
-This simple example simply wires the two endpoints together. What if we want to simply read a
-message from ActiveMQ, log its contents, and send it to nowhere in particular? For this, we need to
-implement a `Processor`.
+to use the RabbitMQ component, and to painlessly switch to Kafka, you'd add a dependency to the
+`camel-kafka` artifact and specify the URL as
 
-```java
-public class ActiveMQProcessor {
-    public static void main(String args[]) throws Exception {
-        CamelContext context = new DefaultCamelContext();
-        Processor logMessages = new Processor() {
-            Logger logger = LoggerFactory.getLogger("ActiveMQProcessor");
-            public void process(Exchange exchange) throws Exception {
-                String content = exchange.getIn().getBody(String.class);
-                logger.info("Got content: {}", content);
-            }
-        };
-        context.addRoutes(new RouteBuilder() {
-            public void configure() throws Exception {
-                from("activemq:queue:foobar").process(logMessages).to("mock:nowhere");
-            }
-        });
-        context.start();
-    }
-}
+```
+kafka:localhost:9092?topic=test
 ```
 
-As you can see, we need to supply an *endpoint* in the form of `mock:nowhere`. This is because Camel
-routes are *wirings*, i.e., connections between two places. This creates a continuously running
-stream, Camel handles polling for you.
+and the Camel Kafka component handles message delivery for you. Since you're sending canonical camel
+messages, you needn't trouble yourself on how this message is already sent. It is likely that you
+will have to add or remove some message headers though.
 
-The beauty of all this is that as long as there is a Camel component for the endpoint, this will
-work with all of them, as long as your URI is well-defined. Naturally, some components do not
-translate so well
+## A practical example
+
+Now, you may be asking, *is that it*? Is it really that simple?
+
+The answer is that it depends. Some components are better than others. If you want to be truly
+protocol and component agnostic, and you want to refactor from protocol `Foo` to `Bar` just by
+switching the URL of `foo://...` to `bar://`, you need to make sure that
+
+1. You can configure everything for that endpoint using the UI
+2. Message exchanges do not require extra shenanigans to work (no custom headers required)
+
+Case in point, let's compare switching from [ActiveMQ](http://camel.apache.org/activemq.html)
+to [RabbitMQ](http://camel.apache.org/rabbitmq.html). The first glaring difference is that the
+ActiveMQ component does not accept the host part in the URI. So we need to do something like
+
+```java
+CamelContext ctx = new DefaultCamelContext();
+ctx.addComponent("activemq", 
+    ActiveMQComponent.activeMQComponent("tcp://USER:PASS@HOSTNAME?broker.persistent=false"))
+```
+
+This makes any `activemq:...` URI in the context `ctx` connect to the parameters configured.
+
+Conversely, the RabbitMQ component lets you directly set this in the URI part (multiple addresses can be
+given with the `addresses` parameter). So if you're going with ActiveMQ to RabbitMQ, your code
+actually becomes simpler, but the complexity merely moves to the URI. The other way around, you have
+to move your URI-configuration to actual code (or XML, but please, *don't*).
+
+## The price of abstraction
+
+So where does this lead us? Ideally, the situation is that given between a choice between three
+components, you could use an external configuration file that configures a simple URI. The right
+component is identified based on the URI, pulled out of the classpath. This assumes that, in order
+of importance,
+
+1. the endpoints are volatile and _finite_ and can vary between different implementations,
+2. each implementation has a Component which is in the classpath, and
+3. said volatility varies often enough it warrants dynamic configurability via configuration editing
+   and app restarts.
+
+If **all** of the above hold true, Camel might a good fit for you. Otherwise, I'd be careful: the
+abstraction isn't free! What this leads to is a kind of *complexity shoveling*: although with the
+RabbitMQ component we don't need to use *code* to configure it, we move it to the URI. So it's still
+a configuration point. Yet, it's a *nicer* configuration point. As in the example above, we see that
+the connection contains three configurable variables `USER`, `PASS`, and `HOSTNAME`. So, *in
+addition* to having to configure the system using code, we have to still configure it otherwise,
+lest we hard-code the values into the application.
+
+The above approach suffers from decentralization: you now have *two* places where you customize your
+system. The first is defining the custom component for a system in **code**. The second is
+configuring said custom component via other means. 
+
+Our ability to centralize configuration -- any configuration, not just that of Camel -- depends on
+the power of the configuration language. Too powerful, you end up in DSL hell. Not powerful enough,
+people write their [own horror shows](http://camel.apache.org/spring.html) to add power.
+
+Lastly, we run in the problem of universal pluggability, or universal composition. We imagine that
+systems like Camel let us "run anything" and "connect everything", but the reality is
+different. Systems are usually made of a finite set of components. For practical purposes, it makes
+no sense to depend on every Camel component. Therefore, you need to pick your dependencies from this
+finite set of known endpoints. This effectively shatters the myth of universal pluggability.
+
+Most importantly though, nobody really *needs this*. What really matters is the simplicity of
+extension. A well designed component is completely configurable through its URI parameters. These
+are easy to add to your Camel-based system: you only need to understand the new configuration, add
+the dependency and you're done.
+
+In summary, if you're considering Apache Camel, make sure you check both of these, of which the
+second is most important. 
+
+1. The components are volatile and you need to change them often, so that you can justify the
+   pluggable hole (the changing URI!)
+2. The components you want *exist* and are completely configurable via that pluggable hole
+
+If you're unsure of the first item, you can still treat Camel as a lazy way to future-proof the
+system, e.g., by using one component now, while knowing that another may be used in the future.
+
+Overall, I think Camel is a nice abstraction, well-suited to situations where you need to aggregate data
+from multiple sources and these sources and their protocols may change. I'm currently working on a
+[Clojure library](http://github.com/ane/llama) for a Clojure-based routing DSL. It's shaping up to
+be quite nice! Here's an example of the routing DSL:
+
+```clj
+(route (from "netty4-http:localhost:80/foo")
+       (foreach 
+         (fn [x] (println (clojure.string/upper-case ("X-Foo-Bar" (headers (in x)))))))
+       (to "rabbitmq://localhost:5672/foo"))
+```
+
+My goal is to make the DSL terse and functional (which the current model really isn't) and to add
+[Akka Camel](http://doc.akka.io/docs/akka/current/scala/camel.html) Consumers and Producers to
+it. The nice thing about Clojure is that the macro system lets me define these really easily!
