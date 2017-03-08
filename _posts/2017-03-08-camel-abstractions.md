@@ -9,14 +9,20 @@ tags:
   - camel
 ---
 
-[Apache Camel](http://camel.apache.org/) is an enterprise integration framework. It lets you connect
-networked services together. Each service is implemented via *components*: Camel modules for talking
-to specific services. Between components, one uses the canonical Exchange and Message formats for
-communication. The actual heavy lifting, protocol work, is done by the component. Additionally,
-components can be instantiated by an URI: adding an endpoint starting with
+[Apache Camel](http://camel.apache.org/) is an enterprise integration framework. If that doesn't say
+anything to you, let's try this: Camel lets you connect endpoints together. These endpoints can
+vary, from simple local components like files to external services like ActiveMQ or HTTP servers,
+the idea is to have a (1) common language format, messages and exchanges and a (2) simple method for
+doing the connections. The common language is translated into protocol level language by
+components, which provides the technical implementation of that service.
+
+The actual heavy lifting, protocol work, is done by the component. Choosing what component to
+instantiate is done using an URI. An URI will identify the target component, e.g.,
 `rabbitmq://myserver:1234/...` instantiates
-the [RabbitMQ](https://www.rabbitmq.com/) [component](http://camel.apache.org/rabbitmq.html), as
-long as it is in the classpath. The total number of
+the [RabbitMQ](https://www.rabbitmq.com/) [component](http://camel.apache.org/rabbitmq.html),
+`file:...` instantiates the [file component](http://camel.apache.org/file2.html), `netty4:...`
+instantiates the Netty component (version 4.0). As long as the component is available in the
+classpath, it will be instantiated in the background by Camel. The total number of
 available [components](http://camel.apache.org/components.html) is huge! You have e.g.:
 
 * ActiveMQ, RabbitMQ, Kafka, AVRO connectors
@@ -24,7 +30,7 @@ available [components](http://camel.apache.org/components.html) is huge! You hav
 * REST, SOAP, WSDL, etc.
 * More esoteric ones like SMPP -- yes, you can send SMSes with Camel!
 
-What's the point? Let's assume we need to integrate an upstream system Xyz into Bar. Xyz provides
+So what's the point? Let's assume we need to integrate an upstream system Xyz into Bar. Xyz provides
 data to you using a binary JSON format, using some known protocol, like ActiveMQ. Then you need to
 apply some transformations to the data, finally sending it to Bar, which accepts XML, and requires
 the information to be POSTed to `someURL`.
