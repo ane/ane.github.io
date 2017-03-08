@@ -11,16 +11,20 @@ tags:
 
 [Apache Camel](http://camel.apache.org/) is an enterprise integration framework. If that doesn't say
 anything to you, let's try this: Camel lets you connect endpoints together. These endpoints can
-vary, from simple local components like files to external services like ActiveMQ or HTTP servers,
-the idea is to have a (1) common language format and a (2) simple method for actually performing the
-connections. 
+vary. They can simple local components, like files, or external services like ActiveMQ or web
+services. It has a common language format for the data, so that your data can be
+protocol agnostic, and an intuitive DSL for specifying the connections and how the data should be
+processed between messages.
 
-The common language, *exchanges* and *messages*, are translated into protocol level language by
-components, which provide the technical implementation of that service. 
+The common language consists of *exchanges* and *messages*. These are translated into
+protocol-specific formats (like a HTTP request) by components, which provide the technical
+implementation of that service, i.e., the translation of a simple `Message` into an actual HTTP
+request.
 
 The connection method is an intuitive DSL that speaks in terms such as `from` and `to`. Informally,
-you connect an ActiveMQ server that logs to files by saying you're reading *from* ActiveMQ *to* a
-file.
+you can create a route that can, for example, read messages *from* ActiveMQ, and write them *to* a
+file. The language is much richer than this, grouping together things like aggregation, filtering,
+routing, splitting, load balancing, the list goes on.
 
 Choosing what component to instantiate is done using an URI. An URI will identify the target
 component, e.g., `rabbitmq://myserver:1234/...` instantiates
