@@ -64,8 +64,6 @@ and the Camel Kafka component handles message delivery for you. Since you're sen
 messages, you needn't trouble yourself on how this message is already sent. It is likely that you
 will have to add or remove some message headers though.
 
-## A practical example
-
 Now, you may be asking, *is that it*? Is it really that simple?
 
 The answer is that it depends. Some components are better than others. If you want to be truly
@@ -92,8 +90,6 @@ Conversely, the RabbitMQ component lets you directly set this in the URI part (m
 given with the `addresses` parameter). So if you're going with ActiveMQ to RabbitMQ, your code
 actually becomes simpler, but the complexity merely moves to the URI. The other way around, you have
 to move your URI-configuration to actual code (or XML, but please, *don't*).
-
-## The price of abstraction
 
 So where does this lead us? Ideally, the situation is that given between a choice between three
 components, you could use an external configuration file that configures a simple URI. The right
@@ -161,5 +157,13 @@ it. The nice thing about Clojure is that the macro system lets me define these r
 Overall, Camel is a nice abstraction, well worth the effort and years that has been put into
 it. It's not a *free* abstraction, since there's always a slight compatibility or configuration
 overhead. If it works, it removes programmers from the protocol level, moving them to
-the data level. Conversely, if it doesn't, it puts programmers at an awkward position: you're still
-working with both data and protocol, *and* you have the overhead of the framework to deal with.
+the data level. This is the level where you should be working at, if your goal is to shuffle data
+around. For this purpose, when it works, Camel is excellent.
+
+Conversely, if it doesn't, it puts programmers at an awkward position: you're still
+working with both data and protocol, *and* you have the overhead of the framework to deal
+with. Worse, your code is now polluted by the requirements of *Camel endpoints*, when the goal of
+Camel is to completely remove the requirements imposed by endpoints in general.
+
+That said, in integration scenarios, Camel works *most of the time*, so you should always have a
+think about it before you start using it.
