@@ -12,13 +12,18 @@ tags:
 [Apache Camel](http://camel.apache.org/) is an enterprise integration framework. If that doesn't say
 anything to you, let's try this: Camel lets you connect endpoints together. These endpoints can
 vary, from simple local components like files to external services like ActiveMQ or HTTP servers,
-the idea is to have a (1) common language format, messages and exchanges and a (2) simple method for
-doing the connections. The common language is translated into protocol level language by
-components, which provides the technical implementation of that service.
+the idea is to have a (1) common language format and a (2) simple method for actually performing the
+connections. 
 
-The actual heavy lifting, protocol work, is done by the component. Choosing what component to
-instantiate is done using an URI. An URI will identify the target component, e.g.,
-`rabbitmq://myserver:1234/...` instantiates
+The common language, *exchanges* and *messages*, are translated into protocol level language by
+components, which provide the technical implementation of that service. 
+
+The connection method is an intuitive DSL that speaks in terms such as `from` and `to`. Informally,
+you connect an ActiveMQ server that logs to files by saying you're reading *from* ActiveMQ *to* a
+file.
+
+Choosing what component to instantiate is done using an URI. An URI will identify the target
+component, e.g., `rabbitmq://myserver:1234/...` instantiates
 the [RabbitMQ](https://www.rabbitmq.com/) [component](http://camel.apache.org/rabbitmq.html),
 `file:...` instantiates the [file component](http://camel.apache.org/file2.html), `netty4:...`
 instantiates the Netty component (version 4.0). As long as the component is available in the
