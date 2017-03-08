@@ -1,8 +1,8 @@
 ---
-title: On Apache Camel and the price of abstraction
+title: Apache Camel and the price of abstractions
 layout: post
 disqus: true
-date: 2017-03-02T00:00:00
+date: 2017-03-08T00:00:00
 tags:
   - java
   - clojure
@@ -16,7 +16,7 @@ communication. The actual heavy lifting, protocol work, is done by the component
 components can be instantiated by an URI: adding an endpoint starting with
 `rabbitmq://myserver:1234/...` instantiates
 the [RabbitMQ](https://www.rabbitmq.com/) [component](http://camel.apache.org/rabbitmq.html), as
-long as it is in the classspath. The total number of
+long as it is in the classpath. The total number of
 available [components](http://camel.apache.org/components.html) is huge! You have e.g.:
 
 * ActiveMQ, RabbitMQ, Kafka, AVRO connectors
@@ -72,8 +72,9 @@ The answer is that it depends. Some components are better than others. If you wa
 protocol and component agnostic, and you want to refactor from protocol `Foo` to `Bar` just by
 switching the URL of `foo://...` to `bar://`, you need to make sure that
 
-1. You can configure everything for that endpoint using the UI
-2. Message exchanges do not require extra shenanigans to work (no custom headers required)
+1. You can configure everything for that endpoint using the URI
+2. Message exchanges do not require extra shenanigans to work (no custom headers or a special format
+   required)
 
 Case in point, let's compare switching from [ActiveMQ](http://camel.apache.org/activemq.html)
 to [RabbitMQ](http://camel.apache.org/rabbitmq.html). The first glaring difference is that the
@@ -139,20 +140,26 @@ second is most important.
 2. The components you want *exist* and are completely configurable via that pluggable hole
 
 If you're unsure of the first item, you can still treat Camel as a lazy way to future-proof the
-system, e.g., by using one component now, while knowing that another may be used in the future.
+system, e.g., by using one component now, while knowing that another may be used in the future. To
+that end, you need to make sure that the components fit the above requirements.
 
-Overall, I think Camel is a nice abstraction, well-suited to situations where you need to aggregate data
-from multiple sources and these sources and their protocols may change. I'm currently working on a
+I'm currently working on a
 [Clojure library](http://github.com/ane/llama) for a Clojure-based routing DSL. It's shaping up to
 be quite nice! Here's an example of the routing DSL:
 
 ```clj
 (route (from "netty4-http:localhost:80/foo")
-       (foreach 
-         (fn [x] (println (clojure.string/upper-case ("X-Foo-Bar" (headers (in x)))))))
+       (process 
+         (comp println body in))
        (to "rabbitmq://localhost:5672/foo"))
 ```
 
 My goal is to make the DSL terse and functional (which the current model really isn't) and to add
 [Akka Camel](http://doc.akka.io/docs/akka/current/scala/camel.html) Consumers and Producers to
 it. The nice thing about Clojure is that the macro system lets me define these really easily!
+
+Overall, Camel is a nice abstraction, well worth the effort and years that has been put into
+it. It's not a *free* abstraction, since there's always a slight compatibility or configuration
+overhead. If it works, it removes programmers from the protocol level, moving them to
+the data level. Conversely, if it doesn't, it puts programmers at an awkward position: you're still
+working with both data and protocol, *and* you have the overhead of the framework to deal with.
