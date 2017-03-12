@@ -9,7 +9,7 @@ tags:
   - camel
 ---
 
-[Apache Camel](http://camel.apache.org/) is a routing and mediationg engine. If that doesn't say
+[Apache Camel](http://camel.apache.org/) is a routing and mediation engine. If that doesn't say
 anything to you, let's try this: Camel lets you connect endpoints together. These endpoints can
 vary. They can simple local components, like files, or external services like ActiveMQ or web
 services. It has a common language format for the data, so that your data can be
