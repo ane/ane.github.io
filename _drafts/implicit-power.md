@@ -10,11 +10,17 @@ Scala gets lots of flak for implicits. Some of the feedback is justified: implic
 quite intimidating or confusing for beginners. That does not justify their dismissal, as implicits,
 in all of their flavours, when used correctly, can be actually quite simple and powerful.
 
-I recently had to do a refactoring for a part of a program which was, more or less, a REST API in
-front of a database. One provided abstractions called *collections* of database tables. Each
-collection had a set of methods (such as `get`) that were then translated to a database query to
-fetch *entities*. An entity is a piece of data encapsulating some value. Using a fictional and
-simplified example of an `Bork` from a database:
+I recently had to do a refactoring for large program. The codebase was old, and wasn't designed to
+cope with the sort of change I was going to introduce, and I didn't have much time either. Pressed
+for time, but compelled by a modicum of professional pride, I didn't want to half-ass the task by
+adding jury-rigged solutions that would have left me feeling dirty and empty inside, at worst,
+leaving a rotting mess to future developers---me.
+
+The codebase itself was simple, but large. Its task was more or less to serve as a REST API in front
+of a high-availability, fast database (Cassandra). One part of the program provided abstractions
+called *collections* of database tables. Each collection had a set of methods (such as `get`) that
+were then translated to a database query to fetch *entities*. An entity is a piece of data
+encapsulating some value. Using a fictional and simplified example of an `Bork` from a database:
 
 ``` scala
 case class Bork(id: Int,
