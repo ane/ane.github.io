@@ -209,13 +209,13 @@ Session.prepare(QueryBuilder.insertInto(namespace, table).values(...))
 
 Another nice thing was using implicit arguments. The REST API gets the namespace from the URI segment
 as a parameter to the anonymous function. If I called `borks.get` I would have needed to put an
-`implicit val n = namespace`. I avoided that using the implicit argument method:
+`implicit val n: Namespace = namespace`. I avoided that using the implicit argument method:
 
 ``` scala
 val borks: Borks = ...
 
 pathPrefix("borks" / IntNumber) { id =>
-  queryNamespace(id) { implicit namespace =>
+  queryNamespace(id) { implicit namespace: Namespace =>
     get {
       complete {
         borks.get(borkId).toJson
@@ -225,18 +225,26 @@ pathPrefix("borks" / IntNumber) { id =>
 }
 ```
 
-The `implicit namespace =>` is equivalent to having `namespace => implicit val n =
-namespace; ...`. Very useful if you're calling methods requiring implicits in closures. A
-simpler example:
+The `implicit namespace: Namespace =>` is equivalent to having `namespace => implicit val n:
+Namespace = namespace; ...`. Very useful if you're calling methods requiring implicits in closures,
+though potentially hazardous, if you're not typing your implicits! A simpler example:
 
 ``` scala
-// contrived example, makes no sense
-def foo(i: Int)(implicit vyx: String) = {
-   i * vyx.length
+trait Vyx {
+  def frobnicate(num: Int): Int
 }
 
-val foo = Seq("one", "two", "three") map { implicit v => foo(1) }
+// contrived example, makes no sense
+def foo(i: Int)(implicit vyx: Vyx) = {
+   i * vyx.frobnicate(num)
+}
+
+val foo = Seq("one", "two", "three") map { implicit v: Vyx => foo(1) }
 ```
+
+It's a good idea to type your implicit values as defining an `implicit x: X` will yoink any implicit
+`X` in scope, and if this `X` happens to be a basic type like `String`, and you're not careful, you
+end up with the wrong implicit value.
 
 Implicits weren't a new thing to me, this was just a scenario where I was able to simultaneously
 benefit from many kinds of implicits Scala has to offer (parameters, conversions and
