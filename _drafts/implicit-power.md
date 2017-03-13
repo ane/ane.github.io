@@ -49,10 +49,10 @@ collection trait, like the API front here:
 val borks: Borks = ...
 
 // spray dsl
-pathNamespace("borks" / IntNumber) { borkId =>
+pathNamespace("borks" / IntNumber) { id =>
   get {
     complete {
-      borks.get(borkId).toJson
+      borks.get(id).toJson
     }
   }
 }
@@ -72,17 +72,19 @@ concurrent access to several (possibly non-finite) databases, and the support ha
 
 Turns out the simple solution -- instantiate one `BorksImpl` for each keyspace -- was not available,
 as there could be entities in one *shared* keyspaces mapping to other keyspaces. So, one collection
-like `BorksImpl` needed to know which keyspaces it was supposed to query. 
+like `BorksImpl` needed to know which keyspaces it was supposed to query, because this information
+is unavailable to the caller.
 
-Another problem was that we couldn't simply consolidate all the entries into the same database, as
-we had access limitations -- callers of `get` acting on keyspace `Foo` were not allowed to see the
-data in keyspace `Bar`. This justified the creation of a split by keyspace, isolating data for the
-purposes of permission control. This also destroyed the possibility of the above solution, i.e.,
-instantiate one `BorksImpl` for each keyspace, because *one* `BorksImpl` might have needed to query
-for data from many keyspaces.
+A way around the splitting and namespacing was consolidation, but this introduced security
+problems. We couldn't simply consolidate all the entries into the same database, as we had access
+limitations -- callers of `get` acting on keyspace `Foo` were not allowed to see the data in
+keyspace `Bar`. This justified the creation of a split by keyspace, isolating data for the purposes
+of permission control. This also destroyed the possibility of the above solution, i.e., instantiate
+one `BorksImpl` for each keyspace, because *one* `BorksImpl` might have needed to query for data
+from many keyspaces.
 
-Then, knowing that our Borks may have existed in any number of keyspaces, the naive implementation
-was to add the namespace parameter to the `get` method:
+So, a request with an id `123` comes in at `/borks/123`, the application uses the central lookup
+table to find the target keyspace. The initial implementation looked like this.
 
 ``` scala
 trait Borks {
@@ -104,14 +106,11 @@ And update the caller API:
 ``` scala
 val borks: Borks = ...
 
-// spray dsl, transform /borks/1 to /borks/namespace/1
-pathNamespace("borks") { 
-  pathNamespace(Segment) { namespaceSegment =>
-    pathNamespace(IntNumber) { id => 
-      get {
-        complete {
-          borks.get(namespaceSegment, borkId).toJson
-        }
+pathPrefix("borks" / IntNumber) { id =>
+  queryNamespace(id) { namespace =>
+    get {
+      complete {
+        borks.get(namespace, borkId).toJson
       }
     }
   }
@@ -119,9 +118,10 @@ pathNamespace("borks") {
 ```
 
 This was fairly simple, but painful, as the `get` methods of collections like `Borks` may have
-called other methods on other collections, nestind calls ever downward. As a result, I had to deal
-with adding the `namespace: String` parameter to *all* methods on all collections. Remember, adding the
-namespace method as a *field* was not an option -- the namespace was an extra parameter to every method
+called other methods on other collections, nestind calls ever downward, as shown below in the
+example, where `Borks` calls `barks.get` and so forth.  As a result, I had to deal with adding the
+`namespace: String` parameter to *all* methods on all collections. Remember, adding the namespace
+method as a *field* was not an option -- the namespace was an extra parameter to every method
 invocation.
 
 So I was dealing with transforming code that looked like this:
@@ -214,14 +214,11 @@ as a parameter to the anonymous function. If I called `borks.get` I would have n
 ``` scala
 val borks: Borks = ...
 
-// spray dsl, transform /borks/1 to /borks/namespace/1
-pathNamespace("borks") { 
-  pathNamespace(Segment) { implicit namespace =>
-    pathNamespace(IntNumber) { id => 
-      get {
-        complete {
-          borks.get(borkId).toJson
-        }
+pathPrefix("borks" / IntNumber) { id =>
+  queryNamespace(id) { implicit namespace =>
+    get {
+      complete {
+        borks.get(borkId).toJson
       }
     }
   }
