@@ -4,11 +4,9 @@ date: 2016-10-14
 title: "Communicators: Actors with purely functional state"
 summary: "or, why mutable state is dangerous"
 disqus: true
+category: scala
 tags:
-  - scala
   - akka
-  - fp
-  - erlang
 ---
 
 In Scala, Akka actors, as in the traditional [Actor model](http://en.wikipedia.org/wiki/Actor_model), may

@@ -2,8 +2,7 @@
 layout: post
 title: Implicit power
 date: 2017-03-12T00:00:00
-tags:
-  - scala
+category: scala
 ---
 
 Scala gets lots of flak for implicits. Some of the feedback is justified: implicits in Scala can be

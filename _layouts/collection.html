@@ -1,0 +1,37 @@
+---
+layout: default
+index: yes
+---
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-lg-10 offset-lg-1">
+      {% capture collection_categories %}
+        {% for post in site[page.collection] %}
+        {% unless post.index %}
+            {{ post.categories }}
+        {% endunless %}
+        {% endfor %}
+      {% endcapture %}
+      {% assign all_posts = site[page.collection] | group_by: 'category' | sort: 'name' %}
+      <h2>{{ site.collections | where: 'label', page.collection | map: 'title' }}</h2>
+      <hr/>
+      {% for cat in all_posts %}
+      {% assign subcat = cat.name %}
+      <div class="{% if subcat != "" %}pl-1{%endif%}">
+      {% if subcat != "" %}
+        <h3><a href="/{{page.collection}}/{{subcat}}/">{{ subcat | capitalize }}</a></h3>
+      {% endif %}
+      <ul>
+        {% assign posts = cat.items | sort: 'date' | reverse %}
+        {% for post in posts %}
+        {% unless post.index %}
+            <li><a href="{{ post.url }}">{{ post.title }} <span class="text-muted">&mdash; {{ post.date | date: "%-d %B %Y" }}</span></a></li>
+        {% endunless %}
+        {% endfor %}
+      </ul>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div
