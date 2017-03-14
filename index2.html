@@ -1,0 +1,53 @@
+---
+engine: -*- engine:liquid -*-
+layout: default
+title: Index
+---
+
+<div class="container">
+  <div>
+    <div class="row">
+      <div class="col-sm-12 col-lg-10 offset-lg-1">
+        <h1>Antoine Kalmbach</h1>
+        <hr/>
+        <div class="clearfix">
+          <div class="card bg-faded float-sm-right ml-3" style="width: 158px">
+            <img class="card-img" src="/images/me.jpg" style="width: 100%">
+          </div>
+          {% capture my-include %}{% include me.md %}{% endcapture %}
+          {{ my-include | markdownify }}
+          {% assign all = "" | split: "" %}
+          {% for coll in site.collections %}
+            {% for post in coll.docs %}
+              {% assign all = all | push: post %}
+            {% endfor %}
+          {% endfor %}
+          {% assign all = all | where_exp: 'item', 'item.index==nil' | sort: 'date' | reverse %}
+        </div>
+        <h4 class="clearfix mt-5">Index</h4>
+        <hr/>
+        <div class="row mt-4">
+          {% assign colls = site.collections | reverse %}
+          {% for coll in colls %}
+            {% if coll.label != "posts" %}
+              <div class="col-sm-6">
+                <h5><a href="/{{ coll.label }}">{{ coll.title | capitalize }}</a></h5>
+                <small>{{ coll.meta | markdownify }}</small> 
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <hr/>
+        <h4>Recent posts</h4>
+        <ul>
+          {% for post in all limit: 5 %}
+            <li><a href="{{ post.url }}">{{ post.title }} <span class="text-muted">&mdash; {{ post.date | date: "%-d %B" }}</span></a></li>
+          {% endfor %}
+        </ul>
+        <p>
+          <a href="/archive.html"><em>more...</em></a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div

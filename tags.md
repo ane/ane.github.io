@@ -1,5 +1,6 @@
 ---
 layout: page
+engine: -*- engine:liquid -*-
 title: Tags
 ---
 

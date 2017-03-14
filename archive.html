@@ -1,4 +1,5 @@
 ---
+engine: -*- engine:liquid -*-
 layout: page
 title: 'Archive'
 ---
@@ -8,6 +9,13 @@ title: 'Archive'
     <h2>Archive</h2>
     <hr>
     <h5 class="text-muted text-uppercase">By year</h5>
-    {% include year-archive.html collection=site.posts %}
+    {% assign all = "" | split: "" %}
+    {% for coll in site.collections %}
+      {% for post in coll.docs %}
+        {% assign all = all | push: post %}
+      {% endfor %}
+    {% endfor %}
+    {% assign all = all | where_exp: 'item', 'item.index==nil' | sort: 'date' | reverse %}
+    {% include year-archive.html collection=all %}
   </div>
 </div>

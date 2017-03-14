@@ -2,7 +2,7 @@
 layout: post
 disqus: true
 date: 2016-01-08
-category: OCaml
+category: ocaml
 title: The expression problem as a litmus test 
 ---
 

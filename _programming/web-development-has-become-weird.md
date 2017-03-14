@@ -2,8 +2,7 @@
 title: Web development has become weird
 date: 2016-10-25
 layout: post
-tags:
-  - web
+category: web
 ---
 
 Call me old-fashioned, call me a curmudgeon, but I think web development has become stupid and

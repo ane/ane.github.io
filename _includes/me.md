@@ -1,14 +1,8 @@
-I'm a software engineer living in Jyväskylä, Finland. I work
-at [Qvantel](http://www.qvantel.com).
-
-This is my website. There's a blog, which is mainly about programming and software. For a bit of
-background, you can read a [a meta post of sorts](/etc/before-we-begin.html) that
-describes the tone of the writings you will find on this site.
+I'm a software developer living in Jyväskylä, Finland. I work as a
+at [Qvantel](http://www.qvantel.com). This is my website, where I write things about programming and
+other things.
 
 You can drop me an [email](mailto:ane@iki.fi) or find me on [Github](https://github.com/ane). I'm
 also on [Twitter](https://twitter.com/anewtf).
 
-Everything on this site unless otherwise explicitly stated is licensed
-under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
-The post archive can be accessed [here](/archive.html).

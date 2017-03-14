@@ -3,20 +3,16 @@ layout: post
 title: Half stack web frameworks
 disqus: true
 date: 2016-11-02
-tags:
-  - web
-  - ruby
-  - react
-  - javascript
+category: web
 ---
 
-In my previous post, I discussed [how web development had become weird]({% post_url
-2016-10-26-web-development-has-become-weird %}). In this post, I will discuss what exactly is it
-that makes it so weird. I will also present an alternative to JavaScript-based SPAs that look and
-behave like them, yet at the base are built using standard full-stack frameworks. They can leverage
-modern JavaScript libraries like React and compilers like Babel while simultaneously avoiding the
-confusing tooling ecosystem and providing a rich and responsive user experience, all the
-while retaining an pleasant developer experience.
+In my previous post, I
+discussed [how web development had become weird](./web-development-has-become-weird.html). In this
+post, I will discuss what exactly is it that makes it so weird. I will also present an alternative
+to JavaScript-based SPAs that look and behave like them, yet at the base are built using standard
+full-stack frameworks. They can leverage modern JavaScript libraries like React and compilers like
+Babel while simultaneously avoiding the confusing tooling ecosystem and providing a rich and
+responsive user experience, all the while retaining an pleasant developer experience.
 
 ## What exactly is wrong with the tooling ecosystem?
 

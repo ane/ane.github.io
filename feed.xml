@@ -1,13 +1,21 @@
 ---
 ---
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- engine: -*- engine: liquid -*- -->
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<title>{{ site.name | xml_escape }}</title>
 		<description>{% if site.description %}{{ site.description | xml_escape }}{% endif %}</description>		
 		<link>{{ site.url }}</link>
 		<atom:link href="{{ site.url }}/feed.xml" rel="self" type="application/rss+xml" />
-		{% for post in site.posts limit:10 %}
+        {% assign all = "" | split: "" %}
+        {% for coll in site.collections %}
+          {% for post in coll.docs %}
+            {% assign all = all | push: post %}
+          {% endfor %}
+        {% endfor %}
+        {% assign all = all | where_exp: 'item', 'item.index==nil' | sort: 'date' | reverse %}
+		{% for post in all %}
 			<item>
 				<title>{{ post.title | xml_escape }}</title>
 				{% if post.author.name %}

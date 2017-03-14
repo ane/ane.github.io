@@ -1,6 +1,6 @@
 name: Antoine Kalmbach
-description: Antoine Kalmbach\'s Blog
-meta_description: "The personal blog of Antoine Kalmbach, a Finnish-French software engineer."
+description: "Antoine Kalmbach's Website"
+meta_description: "The personal site of Antoine Kalmbach, a Finnish-French software engineer."
 encoding: utf-8
 excerpt_separator: <!--break-->
 logo: false
@@ -35,15 +35,13 @@ kramdown:
   footnote_nr:    1
 
 collections:
+  misc:
+    output: true
+    title: Miscellaneous
+    permalink: /:collection/:categories/:title:output_ext
+    meta: "software, tools, reviews, essays"
   programming:
     output: true
     title: Programming
     permalink: /:collection/:categories/:title:output_ext
-  webdev:
-    output: true
-    title: Web Development
-    permalink: /:collection/:categories/:title:output_ext
-  etc:
-    output: true
-    title: Architecture & Misc
-    permalink: /:collection/:categories/:title:output_ext
+    meta: "languages, architecture, practices, [web development](/programming/web/), [Scala](/programming/scala/), [OCaml](/programming/ocaml/)"
