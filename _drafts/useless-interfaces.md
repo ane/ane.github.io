@@ -1,5 +1,5 @@
 ---
-title: Useless interfaces, or, trait distillation
+title: Useless interfaces and interface distillation
 layout: post
 date: 2017-03-13T00:00:00
 tags:
@@ -49,13 +49,14 @@ val c = Clock()
 val foo = new Foo(m)
 ```
 
-This pattern is older than the sun, and has been a characteristic of object-oriented programming
-ever since. Fundamentally, it is alright to separate implementation from specification, but where it
-goes wrong is the *overuse* of this paradigm.
+This pattern is older than the sun, and has been a characteristic of modern, inheritance-based
+object-oriented programming for ages. Fundamentally, it is alright to separate implementation from
+specification, but where it goes wrong is the *overuse* of this paradigm, or when this separation is
+superfluous.
 
-This is dependency injection on the toilet. There is no fundamental reason why a class or module
-like `Mediator` warrant an extra interface *when it is likely that you will never provide a second
-implementation*. 
+This separation is superfluous when it serves no purpose. You could as well call it dependency
+injection on the toilet. There is no fundamental reason why a class or module like `Mediator`
+warrant an extra interface *when it is likely that you will never provide a second implementation*.
 
 At a glance, Guy Steele's influential *plan for growth* idea from his "Growing a Language" talk
 seems to contradict what I just said. Shouldn't defining an interface help us plan for future,
@@ -64,26 +65,36 @@ secondary implementations of the `Mediator`? Perhaps a different kind of a `Medi
 Removing the `Mediator` trait and simply renaming its only implementation will still keep the code
 working, with the benefit that there are fewer lines of code now, and it isn't any harder to extend.
 
-This is actually more in line with Steele's idea. It doesn't say anywhere a trait or interface cannot be
-*distilled* from base implementations. In other words, when our intuition says to plan for
-repetition -- patterns -- we should *identify* them. The Gang of Four book was never a recipe book
-for building great programs. It was a catalog! They observed several kinds of large-scale systems
-and programs and extracted repetetive behaviours in the code, patterns. They never said that to do
-things right, one ought to use the visitor pattern, or that not using it would lead to bad programs.
+This is actually more in line with Steele's idea. It doesn't say anywhere a trait or interface
+cannot be *distilled* from a base implementations. In other words, when our intuition says to plan
+for repetition -- patterns -- we should *identify* them. The Gang of Four book was never a recipe
+book for building great programs. It was a catalog! They observed several kinds of large-scale
+systems and programs and extracted repetetive behaviours in the code, patterns. They never said that
+to do things right, one ought to use the visitor pattern, or this other pattern, otherwise your
+programs will be bad.
 
-So, the wise coder thinks, this behaviour I have specificed may be repetitive, let me *first* create
-a construct that lets me share the repetition (an interface), and then proceed with the
-implementation. This is fine if the actual code is known to be repeated, but by seeing interfaces as
-a hammer and every bit of code as a nail, you will soon bury yourself in pointless dependency
-injection scenarios.
+Back to interface distillation. Programming is about getting rid of repetition. The more experienced
+the programmer, the better they get at noticing patterns of repetition. The downside is that this
+may also lead to overengineering for repetition.
+
+So, an experienced programmer thinks, this behaviour I have specificed may be repetitive, let me
+*first* create a construct that lets me share the repetition (an interface), and then proceed with
+the implementation. This is fine if the actual code is known to be repeated, but by seeing
+interfaces as a hammer and every bit of code as a nail, you will soon bury yourself in pointless
+dependency injection scenarios.
 
 It may be just as easy to first create a base implementation and once you must duplicate its
 behaviour, only *then* create the abstract implementation. You might actually need to spend *less*
 total time wiring up the interface, since you observed the repetition. Creating an abstract
 implementation first always involves a deal of speculation and this is not reliable.
 
-Of course, all of is much easier in functional programming where you can provide a method just by passing a
-higher-order function.
+The more experienced programmer understands that you don't always need to plan for repetition. In
+fact, repetition is good sometimes. Not every shared functionality needs to be extracted to its own
+module, because sometimes, shared dependencies will be bad. 
+
+The approach I suggest is to in order to produce modularity as a side effect, structure your program
+into small, reusable pieces. Don't create huge, monolithic interfaces. Functional programming shows
+us that dependency injection can be done just by passing a function.
 
 ```scala
 class Foo(postponer: Request => Postponed[Request], delayer: =>Duration) {
@@ -100,24 +111,7 @@ val foo = new Foo(m.postpone, c.randomDelay)
 One sees that a higher-order function like the above can be just as well represented by a trait with
 a single method. If you only need that method, you should depend only on that. With a structural
 type system it is easy to decompose types. An alternative is to stack traits, and in languages like
-Scala this is fairly easy.
-
-```scala
-trait Validator {
-  def validate(r: Request): Boolean
-}
-
-trait Postponer {
-  def postpone(r: Request): Postponed[Request]
-}
-
-trait Frobnicator {
-  def frobnicate(a: Request, b: Request): Frobnicated[Request]
-}
-
-trait Mediator extends Validator with Postponer with Frobnicator
-```
-
-Now you can treat `Mediator` as a `Validator` without caring about the other traits. If `Foo` needs
-only `validate`, it can easily depend on just the `Validator` aspect of the `Mediator` trait. This
-becomes easier to test: now you need to mock only the `Validator` trait.
+Scala this is fairly easy. You can basically decompose the `Mediator` trait into `Validator`,
+`Delayer` etc. and depend only on those traits you deem necessary. To that end, it's a much saner
+approach to create patterns *a posteriori*: don't jump head-first into interface hell, distill
+patterns from structures that are repetetive.
