@@ -100,24 +100,11 @@ val foo = new Foo(m.postpone, c.randomDelay)
 One sees that a higher-order function like the above can be just as well represented by a trait with
 a single method. If you only need that method, you should depend only on that. With a structural
 type system it is easy to decompose types. An alternative is to stack traits, and in languages like
-Scala this is fairly easy.
+Scala this is fairly easy. You could as well decompose `Mediator` into `Validator`, `Postponer`,
+et cetera, ideally interfaces should be fairly homogenous in their purpose: if your abstraction
+defines methods for reading, keep it separate from writing, and so forth.
 
-```scala
-trait Validator {
-  def validate(r: Request): Boolean
-}
-
-trait Postponer {
-  def postpone(r: Request): Postponed[Request]
-}
-
-trait Frobnicator {
-  def frobnicate(a: Request, b: Request): Frobnicated[Request]
-}
-
-trait Mediator extends Validator with Postponer with Frobnicator
-```
-
-Now you can treat `Mediator` as a `Validator` without caring about the other traits. If `Foo` needs
-only `validate`, it can easily depend on just the `Validator` aspect of the `Mediator` trait. This
-becomes easier to test: now you need to mock only the `Validator` trait.
+Overall, it's usually a good idea to toy around first with the concrete, and then extract the
+abstraction. Going the other way around is a dangerous swamp. It's certainly something I've used to
+do -- overengineer abstractions *a priori* -- but I found better results by getting my hands dirty,
+by writing repetitive code first and then cleaning it up.
