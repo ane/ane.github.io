@@ -8,10 +8,10 @@ title: Index
   <div>
     <div class="row">
       <div class="col-sm-12 col-lg-10 offset-lg-1">
-        <h2>Antoine Kalmbach</h2>
+        <h1>Antoine Kalmbach</h1>
         <hr/>
         <div class="clearfix">
-          <div class="card bg-faded float-sm-right ml-3" style="width: 158px">
+          <div class="card bg-faded float-sm-right ml-3 mb-2" style="width: 158px">
             <img class="card-img" src="/images/me.jpg" style="width: 100%">
           </div>
           {% capture my-include %}{% include me.md %}{% endcapture %}
@@ -22,23 +22,20 @@ title: Index
               {% assign all = all | push: post %}
             {% endfor %}
           {% endfor %}
-          {% assign all = all | where_exp: 'item', 'item.index==nil' | sort: 'date' | reverse %}
+          {% assign all = all | where_exp: 'item', 'item.index == nil' | sort: 'date' | reverse %}
         </div>
-        <h4 class="clearfix mt-5">Index</h4>
-        <hr/>
-        <div class="row mt-4">
-          {% assign colls = site.collections | reverse %}
+        {% assign colls = site.collections | where_exp: 'item', 'item.title != nil' | reverse %}
+        <div class="card-deck my-4">
           {% for coll in colls %}
-            {% if coll.label != "posts" %}
-              <div class="col-sm-6">
-                <h5><a href="/{{ coll.label }}">{{ coll.title | capitalize }}</a></h5>
+            <div class="card">
+              <div class="card-block">
+                <h4><a href="/{{ coll.label }}">{{ coll.title | capitalize }}</a></h4>
                 <small>{{ coll.meta | markdownify }}</small> 
               </div>
-            {% endif %}
+            </div>
           {% endfor %}
         </div>
-        <hr/>
-        <h4>Recent posts</h4>
+        <h4 class="mb-3">Recent posts</h4>
         <ul>
           {% for post in all limit: 5 %}
             <li><a href="{{ post.url }}">{{ post.title }} <span class="text-muted">&mdash; {{ post.date | date: "%-d %B" }}</span></a></li>
