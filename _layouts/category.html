@@ -1,0 +1,55 @@
+---
+engine: -*- engine:liquid -*-
+layout: default
+index: yes
+---
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-lg-10 offset-lg-1">
+      {% assign all_cats = site[page.collection] | group_by: 'category' | where_exp: 'i', 'i.name != ""' | sort: 'name' %}
+      {% for c in all_cats %}
+        {% if c.name == page.category %}
+          {% assign c_idx = forloop.index %}
+        {% endif %}
+      {% endfor %}
+      {% for c in all_cats %}
+        {% if forloop.index == c_idx %}
+          {% if c_idx != 1 %}
+            {% assign prv = c_idx | minus: 2 %}
+            {% assign prev = all_cats[prv] %}
+          {% endif %}
+          {% unless forloop.last %}
+            {% assign nxt = c_idx %}
+            {% assign next = all_cats[nxt] %}
+          {% endunless %}
+        {% endif %}
+      {% endfor %}
+      {% assign all_posts = all_cats | where: 'name', page.category %}
+      {% for cat in all_posts %}
+        {% assign subcat = cat.name %}
+        <div>
+          {% if subcat != "" %}
+            <p>
+              {% if next %} Next: <a href="/{{page.collection}}/{{next.name}}/">{{next.name|capitalize}}</a>,&nbsp;{% endif %}
+              {% if prev %} Previous: <a href="/{{page.collection}}/{{prev.name}}/">{{prev.name|capitalize}}</a>,&nbsp;{% endif %}
+              Up: <a href="..">{{ page.collection | capitalize }}</a>
+            </p>
+            <h2>
+              <a href="/{{page.collection}}/{{subcat}}/">{{ subcat | capitalize }}</a>
+            </h2>
+          {% endif %}
+          <hr/>
+          <ul>
+            {% assign posts = cat.items | sort: 'date' | reverse %}
+            {% for post in posts %}
+              {% unless post.index %}
+                <li><a href="{{ post.url }}">{{ post.title }} <span class="text-muted">&mdash; {{ post.date | date: "%-d %B %Y" }}</span></a></li>
+              {% endunless %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div

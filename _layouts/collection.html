@@ -1,5 +1,5 @@
 ---
-
+engine: -*- engine:liquid -*-
 layout: default
 index: yes
 ---
@@ -19,9 +19,9 @@ index: yes
       <hr/>
       {% for cat in all_posts %}
       {% assign subcat = cat.name %}
-      <div class="{% if subcat != "" %}pl-3{%endif%}">
+      <div>
       {% if subcat != "" %}
-        <h3><a href="/{{page.collection}}/{{subcat}}/">{{ subcat | capitalize }}</a></h3>
+        <h4><a href="/{{page.collection}}/{{subcat}}/">{{ subcat | capitalize }}</a></h4>
       {% endif %}
       <ul>
         {% assign posts = cat.items | sort: 'date' | reverse %}
