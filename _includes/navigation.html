@@ -1,0 +1,23 @@
+<!-- -*- engine:liquid -*- -->
+{% assign all_cats = site[page.collection] | group_by: 'category' | where_exp: 'i', 'i.name != ""' | sort: 'name' %}
+{% for c in all_cats %}
+  {% if c.name == page.category %}
+    {% assign c_idx = forloop.index %}
+  {% endif %}
+{% endfor %}
+{% for c in all_cats %}
+  {% if forloop.index == c_idx %}
+    {% if c_idx != 1 %}
+      {% assign prv = c_idx | minus: 2 %}
+      {% assign prev = all_cats[prv] %}
+    {% endif %}
+    {% unless forloop.last %}
+      {% assign nxt = c_idx %}
+      {% assign next = all_cats[nxt] %}
+    {% endunless %}
+  {% endif %}
+{% endfor %}
+{% if next %} Next: <a href="/{{page.collection}}/{{next.name}}/">{{next.name|capitalize}}</a>,&nbsp;{% endif %}
+{% if prev %} Previous: <a href="/{{page.collection}}/{{prev.name}}/">{{prev.name|capitalize}}</a>,&nbsp;{% endif %}
+{% unless page.layout == 'collection' %}Up: <a href="..">{{ page.collection | capitalize }}</a>,&nbsp;{% endunless %}
+Top: <a href="/">Index</a>

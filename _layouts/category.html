@@ -31,9 +31,7 @@ index: yes
         <div>
           {% if subcat != "" %}
             <p>
-              {% if next %} Next: <a href="/{{page.collection}}/{{next.name}}/">{{next.name|capitalize}}</a>,&nbsp;{% endif %}
-              {% if prev %} Previous: <a href="/{{page.collection}}/{{prev.name}}/">{{prev.name|capitalize}}</a>,&nbsp;{% endif %}
-              Up: <a href="..">{{ page.collection | capitalize }}</a>
+              {% include navigation.html %}
             </p>
             <h2>
               <a href="/{{page.collection}}/{{subcat}}/">{{ subcat | capitalize }}</a>

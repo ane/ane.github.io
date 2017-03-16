@@ -3,6 +3,7 @@ layout: page
 title: About
 ---
 
+
 <div class="row">
     <div class="col-sm-12 col-lg-10 offset-lg-1">
         <h2>About</h2>

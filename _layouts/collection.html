@@ -15,6 +15,7 @@ index: yes
         {% endfor %}
       {% endcapture %}
       {% assign all_posts = site[page.collection] | group_by: 'category' | sort: 'name' %}
+      {% include navigation.html %}
       <h2>{{ site.collections | where: 'label', page.collection | map: 'title' }}</h2>
       <hr/>
       {% for cat in all_posts %}
