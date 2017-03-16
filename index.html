@@ -10,18 +10,24 @@ about: 'about.html'
     {% if paginator.posts.size > 0 %}
     <div class="row">
       <div class="col-sm-12 col-lg-10 offset-lg-1">
-        {% for post in paginator.posts %}
-        {% if post.categories.size == 0 %}
-        <article class="post">
-          {% include post-title.html post=post %}
-          {{ post.content }}
-          {% unless forloop.last %} <hr> {% endunless %}
-        </article>
-        {% endif %}
-        {% endfor %}
-
-
-        {% include pagination.html %}
+        <h1>Antoine Kalmbach</h1>
+        <hr/>
+        <div class="clearfix">
+          <div class="card bg-faded float-sm-right ml-3 mb-2" style="width: 158px">
+            <img class="card-img" src="/images/me.jpg" style="width: 100%">
+          </div>
+          {% capture my-include %}{% include me.md %}{% endcapture %}
+          {{ my-include | markdownify }}
+        </div>
+        <h2 class="mb-3">Recent posts</h2>
+        <ul>
+          {% for post in site.posts limit: 5 %}
+          <li><a href="{{ post.url }}">{{ post.title }} <span class="text-muted">&mdash; {{ post.date | date: "%-d %B" }}</span></a></li>
+          {% endfor %}
+        </ul>
+        <p>
+          <a href="/archive.html"><em>more...</em></a>
+        </p>
       </div>
     </div>
     {% else %}
