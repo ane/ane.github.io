@@ -10,16 +10,15 @@ about: 'about.html'
     {% if paginator.posts.size > 0 %}
     <div class="row">
       <div class="col-sm-12 col-lg-10 offset-lg-1">
-        <h1>Antoine Kalmbach</h1>
-        <hr/>
+        <h1 class="mb-3">Antoine Kalmbach</h1>
         <div class="clearfix">
-          <div class="card bg-faded float-sm-right ml-3 mb-2" style="width: 158px">
+          <div class="card bg-faded float-sm-right ml-3 mb-2" style="width: 150px">
             <img class="card-img" src="/images/me.jpg" style="width: 100%">
           </div>
           {% capture my-include %}{% include me.md %}{% endcapture %}
           {{ my-include | markdownify }}
         </div>
-        <h2 class="mb-3">Recent posts</h2>
+        <h3 class="mb-3">Recent posts</h3>
         <ul>
           {% for post in site.posts limit: 5 %}
           <li><a href="{{ post.url }}">{{ post.title }} <span class="text-muted">&mdash; {{ post.date | date: "%-d %B" }}</span></a></li>
