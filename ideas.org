@@ -1,26 +1,3 @@
-* TODO The Churn                                           :essay:technology:
-
-In light of the *The Churn* expanse novella, explain how technologies
-come and go, but in the end the hapless sysadmins and programmers are
-the one who have to cope with the changes. 
-
-** Location
-
-A fictional devops-conference, explaining the shiny new thing.
-
-** Technique
-
-A fictional dialogue between a grizzled greybeard, a
-frustrated sysadmin, and a young bright-eyed developer.
-
-** Point
-
-The technology itself is irrelevant, since it will change
-anyway. Currently software is disposable, so one should accept and
-strive to maintain a problem-solving mentality. If your end users want
-to upgrade for whimsical reasons, let them; it doesn't ultimately
-matter. Just be professional.
-
 * TODO Sometimes, data is all you need                        :software:data:
 
 Explain how, sometimes it's unnecessary to type your data using custom
@@ -47,8 +24,3 @@ Rich Hickey: use data
   changed - conversely, in this case relying on a plain hash map saves time.
 - Remark: MongoDB and its lack of schemas is the the extreme where
   schema churn is a bad, bad thing.
-
-* Affine types
-
-Show how Rust's type affinity is really cool
-
