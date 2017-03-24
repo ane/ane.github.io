@@ -1,5 +1,5 @@
 ---
-title: Useless interfaces and interface distillation
+title: Useless interfaces 
 layout: post
 date: 2017-03-23T00:00:00
 disqus: true
