@@ -1,7 +1,8 @@
 ---
 title: Useless interfaces and interface distillation
 layout: post
-date: 2017-03-13T00:00:00
+date: 2017-03-23T00:00:00
+disqus: true
 tags:
   - programming
 ---
