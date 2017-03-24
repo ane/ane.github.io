@@ -11,9 +11,9 @@ A feature that often irks me in object-oriented code is the prevalence of useles
 interfaces. Interface isn't meant literally here: this applies to traits of Rust/Scala and protocols
 of Clojure as well.
 
-The advice of *planning for the interface* is just and solid, but people tend to go to great lengths
-of following this to the extreme. It is not uncommon to see people design a module or class by
-defining its interface first, with an actual implementation following later. 
+The advice of *planning for the interface* is just and solid, but people tend to follow this tip to
+the extreme. It is not uncommon to see people design a module or class by defining its interface
+first, with an actual implementation following later.
 
 One eagerly designs an interface as follows:
 
@@ -113,8 +113,14 @@ One sees that a higher-order function like the above can be just as well represe
 a single method. If you only need that method, you should depend only on that. With a structural
 type system it is easy to decompose types. An alternative is to stack traits, and in languages like
 Scala this is fairly easy. You could as well decompose `Mediator` into `Validator`, `Postponer`, et
-cetera, ideally interfaces should be fairly homogenous in their purpose: if your abstraction defines
-methods for reading, keep it separate from writing, and so forth.
+cetera, ideally interfaces should be fairly homogenous in their purpose: if your interface defines
+methods for reading, keep that interface separate from the writing interface, and if you need read
+and write just compose the interfaces together, and so on.
+
+It also helps if your language is powerful enough to do without excessive DI -- the reason why
+horrors like Spring exist is that Java simply wasn't expressive enough to do dependency injection
+the traditional way without setting your hair on fire. That, and for some odd reason, people thought
+writing constructor arguments was so painful it warranted a gigantic framework for it.
 
 Overall, it's usually a good idea to toy around first with the concrete, and then extract the
 abstraction. Going the other way around is a dangerous swamp. It's certainly something I've used to
