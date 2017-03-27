@@ -1,5 +1,5 @@
 ---
-title: Useless interfaces and interface distillation
+title: Useless interfaces 
 layout: post
 date: 2017-03-23T00:00:00
 disqus: true
@@ -11,16 +11,16 @@ A feature that often irks me in object-oriented code is the prevalence of useles
 interfaces. Interface isn't meant literally here: this applies to traits of Rust/Scala and protocols
 of Clojure as well.
 
-The advice of *planning for the interface* is just and solid, but people tend to go to great lengths
-of following this to the extreme. It is not uncommon to see people design a module or class by
-defining its interface first, with an actual implementation following later. 
+The advice of *planning for the interface* is just and solid, but people tend to follow this tip to
+the extreme. It is not uncommon to see people design a module or class by defining its interface
+first, with an actual implementation following later.
 
 One eagerly designs an interface as follows:
 
 ```scala
 trait Mediator {
   def validate(r: Request): Boolean
-  def postpone(r: Request): Postponed[Request]
+  def postpone(r: Request, d: Duration): Postponed[Request]
   def frobnicate(a: Request, b: Request): Frobnicated[Request]
 }
 ```
@@ -57,22 +57,22 @@ superfluous.
 
 This separation is superfluous when it serves no purpose. You could as well call it dependency
 injection on the toilet. There is no fundamental reason why a class or module like `Mediator`
-warrant an extra interface *when it is likely that you will never provide a second implementation*.
+warrants an interface *when it is likely that there will never be an alternative implementation*.
 
 At a glance, Guy Steele's influential *plan for growth* idea from his "Growing a Language" talk
 seems to contradict what I just said. Shouldn't defining an interface help us plan for future,
-secondary implementations of the `Mediator`? Perhaps a different kind of a `Mediator`? 
+alternative implementations of the `Mediator`? Perhaps a different kind of a `Mediator`? 
 
 Removing the `Mediator` trait and simply renaming its only implementation will still keep the code
 working, with the benefit that there are fewer lines of code now, and it isn't any harder to extend.
 
 This is actually more in line with Steele's idea. It doesn't say anywhere a trait or interface
-cannot be *distilled* from a base implementations. In other words, when our intuition says to plan
-for repetition -- patterns -- we should *identify* them. The Gang of Four book was never a recipe
-book for building great programs. It was a catalog! They observed several kinds of large-scale
-systems and programs and extracted repetetive behaviours in the code, patterns. They never said that
-to do things right, one ought to use the visitor pattern, or this other pattern, otherwise your
-programs will be bad.
+cannot be *distilled* from a set of basic implementations. In other words, when our intuition says
+to *prepare* for repetition, we should *identify* them. The Gang of Four book was never a
+recipe book for building great programs. It was a catalog! They observed several kinds of
+large-scale systems and programs and extracted repetetive behaviours in the code, patterns. They
+never said that to do things right, one ought to use the visitor pattern, or this other pattern,
+otherwise your programs will be bad.
 
 Back to interface distillation. Programming is about getting rid of repetition. The more experienced
 the programmer, the better they get at noticing patterns of repetition. The downside is that this
@@ -113,8 +113,14 @@ One sees that a higher-order function like the above can be just as well represe
 a single method. If you only need that method, you should depend only on that. With a structural
 type system it is easy to decompose types. An alternative is to stack traits, and in languages like
 Scala this is fairly easy. You could as well decompose `Mediator` into `Validator`, `Postponer`, et
-cetera, ideally interfaces should be fairly homogenous in their purpose: if your abstraction defines
-methods for reading, keep it separate from writing, and so forth.
+cetera, ideally interfaces should be fairly homogenous in their purpose: if your interface defines
+methods for reading, keep that interface separate from the writing interface, and if you need read
+and write just compose the interfaces together, and so on.
+
+It also helps if your language is powerful enough to do without excessive DI -- the reason why
+horrors like Spring exist is that Java simply wasn't expressive enough to do dependency injection
+the traditional way without setting your hair on fire. That, and for some odd reason, people thought
+writing constructor arguments was so painful it warranted a gigantic framework for it.
 
 Overall, it's usually a good idea to toy around first with the concrete, and then extract the
 abstraction. Going the other way around is a dangerous swamp. It's certainly something I've used to

@@ -71,7 +71,7 @@ monolith, i.e. there was ever only *one* database it was operating on. Support w
 concurrent access to several (possibly non-finite) databases, and the support had to come quickly.
 
 Turns out the simple solution -- instantiate one `BorksImpl` for each keyspace -- was not available,
-as there could be entities in one *shared* keyspaces mapping to other keyspaces. So, one collection
+as there could be entities in one *shared* keyspace mapping to other keyspaces. So, one collection
 like `BorksImpl` needed to know which keyspaces it was supposed to query, because this information
 is unavailable to the caller.
 
@@ -118,7 +118,7 @@ pathPrefix("borks" / IntNumber) { id =>
 ```
 
 This was fairly simple, but painful, as the `get` methods of collections like `Borks` may have
-called other methods on other collections, nestind calls ever downward, as shown below in the
+called other methods on other collections, nesting calls ever downward, as shown below in the
 example, where `Borks` calls `barks.get` and so forth.  As a result, I had to deal with adding the
 `namespace: String` parameter to *all* methods on all collections. Remember, adding the namespace
 method as a *field* was not an option -- the namespace was an extra parameter to every method
