@@ -20,7 +20,7 @@ One eagerly designs an interface as follows:
 ```scala
 trait Mediator {
   def validate(r: Request): Boolean
-  def postpone(r: Request): Postponed[Request]
+  def postpone(r: Request, d: Duration): Postponed[Request]
   def frobnicate(a: Request, b: Request): Frobnicated[Request]
 }
 ```
@@ -57,22 +57,22 @@ superfluous.
 
 This separation is superfluous when it serves no purpose. You could as well call it dependency
 injection on the toilet. There is no fundamental reason why a class or module like `Mediator`
-warrant an extra interface *when it is likely that you will never provide a second implementation*.
+warrants an interface *when it is likely that there will never be an alternative implementation*.
 
 At a glance, Guy Steele's influential *plan for growth* idea from his "Growing a Language" talk
 seems to contradict what I just said. Shouldn't defining an interface help us plan for future,
-secondary implementations of the `Mediator`? Perhaps a different kind of a `Mediator`? 
+alternative implementations of the `Mediator`? Perhaps a different kind of a `Mediator`? 
 
 Removing the `Mediator` trait and simply renaming its only implementation will still keep the code
 working, with the benefit that there are fewer lines of code now, and it isn't any harder to extend.
 
 This is actually more in line with Steele's idea. It doesn't say anywhere a trait or interface
-cannot be *distilled* from a base implementations. In other words, when our intuition says to plan
-for repetition -- patterns -- we should *identify* them. The Gang of Four book was never a recipe
-book for building great programs. It was a catalog! They observed several kinds of large-scale
-systems and programs and extracted repetetive behaviours in the code, patterns. They never said that
-to do things right, one ought to use the visitor pattern, or this other pattern, otherwise your
-programs will be bad.
+cannot be *distilled* from a set of basic implementations. In other words, when our intuition says
+to *prepare* for repetition, we should *identify* them. The Gang of Four book was never a
+recipe book for building great programs. It was a catalog! They observed several kinds of
+large-scale systems and programs and extracted repetetive behaviours in the code, patterns. They
+never said that to do things right, one ought to use the visitor pattern, or this other pattern,
+otherwise your programs will be bad.
 
 Back to interface distillation. Programming is about getting rid of repetition. The more experienced
 the programmer, the better they get at noticing patterns of repetition. The downside is that this
