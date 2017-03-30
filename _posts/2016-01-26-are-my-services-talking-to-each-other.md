@@ -5,8 +5,6 @@ disqus: true
 date: 2016-01-26
 tags: 
   - architecture
-  - queues
-  - frp
   - distributed
 ---
 

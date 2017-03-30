@@ -3,7 +3,7 @@ layout: post
 disqus: true
 date: 2016-01-08
 tags: 
-- plt
+- programming
 - ocaml
 title: The expression problem as a litmus test 
 ---

@@ -5,9 +5,8 @@ title: "Communicators: Actors with purely functional state"
 summary: "or, why mutable state is dangerous"
 disqus: true
 tags:
+  - programming
   - scala
-  - akka
-  - fp
   - erlang
 ---
 
