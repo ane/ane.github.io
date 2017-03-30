@@ -4,7 +4,7 @@ title: Imprecision and abstraction
 disqus: true
 date: 2016-03-17
 tags: 
-  - fp
+  - programming
   - math
 ---
 

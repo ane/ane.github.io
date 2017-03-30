@@ -5,7 +5,6 @@ title: Start-once software
 summary: Our development tools are transitioning away from batch oriented processing
 disqus: true
 tags:
-  - architecture
   - tools
 ---
 

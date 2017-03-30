@@ -6,8 +6,6 @@ summary: "or, why mutable state is dangerous"
 disqus: true
 tags:
   - scala
-  - akka
-  - fp
   - erlang
 ---
 
