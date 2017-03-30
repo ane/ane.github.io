@@ -1,4 +1,4 @@
-I'm a programmer living in Jyväskylä, Finland. I work at [Qvante](http://www.qvantel.com). This my
+I'm a programmer living in Jyväskylä, Finland. I work at [Qvantel](http://www.qvantel.com). This my
 blog, where I write about programming and other topics that I find interesting.
 
 You if you have any questions you can drop me an [email](mailto:ane@iki.fi) or find me
