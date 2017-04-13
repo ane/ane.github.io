@@ -15,11 +15,14 @@ a {
     }
 }
 
-.content p a, .content li a {
-    border-bottom: 1px solid $linkColor;
-    &:visited {
-        border-bottom: 1px solid $visitedLinkColor;
+nav {
+    li.active a {
+        font-weight: bold;
     }
+}
+
+.content p a, .content li a {
+    text-decoration: underline;
     &:hover {
         border: 0;
         text-decoration: none;

@@ -10,23 +10,30 @@ about: 'about.html'
     {% if paginator.posts.size > 0 %}
     <div class="row">
       <div class="col-sm-12 col-lg-10 offset-lg-1">
-        <h1 class="mb-3">Antoine Kalmbach</h1>
-        <div class="clearfix">
-          <div class="card bg-faded float-sm-right ml-3 mb-2" style="width: 150px">
-            <img title="Reykjavik, Iceland, 2010 and a Romeo y Julieta No. 2." class="card-img" src="/images/me.jpg" style="width: 100%">
+        {% for post in paginator.posts %}
+          <h2><a href="{{post.url}}">{{ post.title }}</a></h2>
+          <p>
+          <time class="post-meta text-muted">{{ post.date | date: "%-d %B %Y" }}</time>
+          </p>
+          <p>
+            {{ post.excerpt | remove: '<p>' | remove: '</p>' }} <strong><a href="{{ post.url }}">More...</a></strong>
+          </p>
+          {% unless forloop.last %}
+            <hr>
+          {% endunless %}
+        {% endfor %}
+        <div class="row mt-5">
+          <div class="col-sm-6">
+            {% if paginator.previous_page %}
+              <a href="{{ paginator.previous_page_path }}">&larr; Newer posts</a>
+            {% endif %}
           </div>
-          {% capture my-include %}{% include me.md %}{% endcapture %}
-          {{ my-include | markdownify }}
+          <div class="col-6 text-sm-right">
+            {% if paginator.next_page %}
+              <a href="{{ paginator.next_page_path }}">Older posts &rarr;</a>
+            {% endif %}
+          </div>
         </div>
-        <h3 class="mb-3">Recent posts</h3>
-        <ul>
-          {% for post in site.posts limit: 5 %}
-          <li><a href="{{ post.url }}">{{ post.title }} <span class="text-muted">&mdash; {{ post.date | date: "%-d %B" }}</span></a></li>
-          {% endfor %}
-        </ul>
-        <p>
-          <a href="/archive.html"><em>more...</em></a>
-        </p>
       </div>
     </div>
     {% else %}

@@ -15,7 +15,7 @@ cope with the sort of change I was going to introduce, and I didn't have much ti
 for time, but compelled by a modicum of professional pride, I didn't want to half-ass the task by
 adding jury-rigged solutions that would have left me feeling dirty and empty inside, at worst,
 leaving a rotting mess to future developers---me.
-
+<!--break-->
 The codebase itself was simple, but large. Its task was more or less to serve as a REST API in front
 of a high-availability, fast database (Cassandra). One part of the program provided abstractions
 called *collections* of database tables. Each collection had a set of methods (such as `get`) that

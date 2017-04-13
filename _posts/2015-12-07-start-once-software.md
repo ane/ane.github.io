@@ -14,7 +14,7 @@ type checkers&mdash;are heading.
 
 The traditional direction is to operate in a *batch* model. Fire up, perform analysis, report
 results, and die. This is a proven method. Batch-oriented software has been around for ages, and it
-works really well if the data you're working with isn't large.
+works really well if the data you're working with isn't large.<!--break-->
 
 The new direction is an *online* model: an analysis tool starts, calculates its
 data, reports results, and then stays *on*, monitoring for changes. When changes

@@ -17,7 +17,7 @@ programming languages.
 
 Using *interfaces* (like in Java) as the datatype example, the problem simply asks whether it is
 possible to derive the interface and add new methods to the interface, without having to recompile
-existing code or to resort to using casts.
+existing code or to resort to using casts.<!--break-->
 
 Obviously, in a OOP language it's easy to derive interfaces, but the problem uncovers the rigidity
 of the type system: you can't modify (i.e. extend) the interface, because you have to modify all the

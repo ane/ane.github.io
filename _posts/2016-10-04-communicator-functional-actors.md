@@ -29,7 +29,7 @@ object Library {
 
 This is a bad idea. There are several reasons for this. First, Scala eschews `var`s, they should
 only be used when absolutely necessary (read: never). There is also an additional need for
-thread-safety for the collection, not because of the `receive` method itself. The `receive` method
+thread-safety for the collection, not because of the `receive` method itself. <!--break-->The `receive` method
 is
 [guaranteed to run inside a single thread](http://doc.akka.io/docs/akka/2.4.11/general/jmm.html). However,
 an unsuspecting user might still launch a `Future` and modify the collection, leading to

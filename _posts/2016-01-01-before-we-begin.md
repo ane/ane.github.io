@@ -15,7 +15,7 @@ Last year, I did not publish anything because I had absurd standards for content
 blog post had to be a thoroughly researched and carefully argued piece, capable of standing the test
 of time.
 
-This was a monumental mistake.
+This was a monumental mistake.<!--break-->
 
 Researching something thoroughly requires an extraordinary amount of time, and writing opinionated
 articles that can stand the test of time requires an extraordinary amount of foresight &mdash; neither

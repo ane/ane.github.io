@@ -17,6 +17,7 @@ behave like them, yet at the base are built using standard full-stack frameworks
 modern JavaScript libraries like React and compilers like Babel while simultaneously avoiding the
 confusing tooling ecosystem and providing a rich and responsive user experience, all the
 while retaining an pleasant developer experience.
+<!--break-->
 
 ## What exactly is wrong with the tooling ecosystem?
 

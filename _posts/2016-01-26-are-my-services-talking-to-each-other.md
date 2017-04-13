@@ -16,6 +16,7 @@ I am faced with an interesting thought experiment, which asks:
 Your first instinct is to *look* at them and *listen*. What if the communication method is
 subtler than that? What if you are, metaphorically speaking, *deaf*, and cannot eavesdrop on their
 conversation?
+<!--break-->
 
 A problem like arises when you have a non-trivial amount of distributed components talking to each
 other, forming a complex network. Let's start from the basics and consider a simple one:

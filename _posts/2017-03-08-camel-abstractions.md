@@ -15,6 +15,7 @@ vary. They can simple local components, like files, or external services like Ac
 services. It has a common language format for the data, so that your data can be
 protocol agnostic, and an intuitive DSL for specifying the connections and how the data should be
 processed between messages.
+<!--break-->
 
 The common language consists of *exchanges* and *messages*. These are translated into
 protocol-specific formats (like a HTTP request) by components, which provide the technical

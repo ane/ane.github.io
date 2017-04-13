@@ -18,7 +18,7 @@ used to mathematical formalisms? Why does it sound so vague?
 
 When approaching abstractions, for educational purposes, it is sometimes easier to think of
 analogies or similes. We can conceptualize the idea of functors of "procedures" that operate on things inside
-"boxes", or we can study relational algebra using Venn diagrams.
+"boxes", or we can study relational algebra using Venn diagrams.<!--break-->
 
 These analogies are dangerous, because they are vague. Formalisms leave no room for interpretation
 because they are exact not whimsically, but because of the pervasive imprecision of the human mind.
