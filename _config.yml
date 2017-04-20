@@ -7,6 +7,7 @@ logo: false
 markdown: kramdown
 mathjax: true
 paginate: 3
+exclude: ["vendor"]
 baseurl: ""
 domain_name: 'http://ane.github.io'
 highlighter: rouge
