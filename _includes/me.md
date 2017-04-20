@@ -1,5 +1,5 @@
 I'm a programmer living in Jyväskylä, Finland. I work as a software architect
-at [Qvantel](http://www.qvantel.com) specializing in systems integration.
+at [Qvantel](http://www.qvantel.com) specializing in distributed systems.
 
 I've been programming since childhood, from games to desktop software, but these days I specialize
 in distributed systems and databases. In the past I've built desktop software, web applications,
