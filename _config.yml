@@ -1,6 +1,6 @@
 name: Antoine Kalmbach
-description: Antoine Kalmbach's Blog
-meta_description: "The personal blog of Antoine Kalmbach, a Finnish-French software engineer."
+description: Tales from software engineering
+meta_description: "The personal blog of Antoine Kalmbach."
 encoding: utf-8
 excerpt_separator: <!--break-->
 logo: false

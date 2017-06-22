@@ -12,14 +12,14 @@ about: 'about.html'
       <div class="col-sm-12 col-lg-10 offset-lg-1">
         {% for post in paginator.posts %}
           <h2><a href="{{post.url}}">{{ post.title }}</a></h2>
-          <p>
-          <time class="post-meta text-muted">{{ post.date | date: "%-d %B %Y" }}</time>
+          <p class="post-meta">
+          <time class="text-muted">{{ post.date | date: "%-d %B %Y" }}</time>
           </p>
           <p>
-            {{ post.excerpt | remove: '<p>' | remove: '</p>' }} <strong><a href="{{ post.url }}">More...</a></strong>
+            {{ post.excerpt }} <a href="{{ post.url }}">More...</a>
           </p>
           {% unless forloop.last %}
-            <hr>
+            <hr class="my-4">
           {% endunless %}
         {% endfor %}
         <div class="row mt-5">
