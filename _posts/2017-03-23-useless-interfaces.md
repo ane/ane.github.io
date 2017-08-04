@@ -5,7 +5,6 @@ date: 2017-03-23T00:00:00
 disqus: true
 tags:
   - programming
-category: programming
 ---
 
 A feature that often irks me in object-oriented code is the prevalence of useless
