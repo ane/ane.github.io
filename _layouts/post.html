@@ -5,38 +5,39 @@ post_class: post-template
 ---
 
 <div class="container">
-    <div class="row">
-        <div class="col-sm-12 col-lg-10 offset-lg-1">
-            {% include post-title.html post=page bip=page.title %}
+  <div class="row">
+    <div class="col-sm-12 col-lg-10 offset-lg-1">
+      <article itemprop="blogPost" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <meta itemprop="keywords" content="{{ page.tags | join: ',' }}" />
+        <meta itemprop="description" content="{{ content | strip_html | truncatewords: 40 }}" />
+        {% include post-title.html post=page bip=page.title %}
+        {{content}}
+      </article>
 
-            <article>
-                {{content}}
-            </article>
+      <hr/>
 
-            <hr/>
+      <div class="clearfix">
+        <span class="pull-left">
+          {% if page.previous.url %}
+            Previous: <a class="prev" href="{{page.previous.url}}">{{page.previous.title}}</a>
+          {% endif %}
+        </span>
+        <span class="pull-right">
+          {% if page.next.url %}
+            Next: <a class="next" href="{{page.next.url}}">{{page.next.title}}</a>
+          {% endif %}
+        </span>
+      </div>
 
-            <div class="clearfix">
-                <span class="pull-left">
-                    {% if page.previous.url %}
-                    Previous: <a class="prev" href="{{page.previous.url}}">{{page.previous.title}}</a>
-                    {% endif %}
-                </span>
-                <span class="pull-right">
-                    {% if page.next.url %}
-                    Next: <a class="next" href="{{page.next.url}}">{{page.next.title}}</a>
-                    {% endif %}
-                </span>
-            </div>
+      <hr/>
 
-            <hr/>
+      <footer class="post-footer">
+        {% if page.disqus %}
+          {% include disqus.html %}
+        {% endif %}
 
-            <footer class="post-footer">
-                {% if page.disqus %}
-                {% include disqus.html %}
-                {% endif %}
-
-                {% include share.html %}
-            </footer>
-        </div>
+        {% include share.html %}
+      </footer>
     </div>
+  </div>
 </div>
