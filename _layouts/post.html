@@ -7,9 +7,7 @@ post_class: post-template
 <div class="container">
   <div class="row">
     <div class="col-sm-12 col-lg-10 offset-lg-1">
-      <article itemprop="blogPost" itemscope="" itemtype="http://schema.org/BlogPosting">
-        <meta itemprop="keywords" content="{{ page.tags | join: ',' }}" />
-        <meta itemprop="description" content="{{ content | strip_html | truncatewords: 40 }}" />
+      <article>
         {% include post-title.html post=page bip=page.title %}
         {{content}}
       </article>
