@@ -13,8 +13,12 @@ about: 'about.html'
           {% for post in paginator.posts %}
             <article itemprop="blogPost" itemscope="" itemtype="http://schema.org/BlogPosting">
               {% include post-title.html post=post bip=post.title %}
+              {% if forloop.first %}
+                <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}"/>
+              {% endif %}
               <meta itemprop="keywords" content="{{ post.tags | join: ',' }}" />
               <meta itemprop="author" content="{{ site.author }}" />
+              <meta itemprop="publisher" content="{{ site.author }}" />
               <meta itemprop="headline" content="{{ post.title }}" />
               <p itemprop="description">
                 {{ post.excerpt }} <a href="{{ post.url }}">More...</a>
