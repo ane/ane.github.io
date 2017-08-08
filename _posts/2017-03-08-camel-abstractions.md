@@ -97,7 +97,7 @@ ActiveMQ component does not accept the host part in the URI. So we need to do so
 ```java
 CamelContext ctx = new DefaultCamelContext();
 ctx.addComponent("activemq", 
-    ActiveMQComponent.activeMQComponent("tcp://USER:PASS@HOSTNAME?broker.persistent=false"))
+    ActiveMQComponent.activeMQComponent("tcp://USER:PASS@HOSTNAME?broker.persistent=false"));
 ```
 
 This makes any `activemq:...` URI in the context `ctx` connect to the parameters configured.
@@ -159,7 +159,7 @@ I'm currently working on a
 [Clojure library](http://github.com/ane/llama) for a Clojure-based routing DSL. It's shaping up to
 be quite nice! Here's an example of the routing DSL:
 
-```clj
+``` clojure
 (route (from "netty4-http:localhost:80/foo")
        (process 
          (comp println body in))
