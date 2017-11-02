@@ -21,7 +21,7 @@ about: 'about.html'
               <meta itemprop="publisher" content="{{ site.author }}" />
               <meta itemprop="headline" content="{{ post.title }}" />
               <p itemprop="description">
-                {{ post.excerpt }} <a href="{{ post.url }}">More...</a>
+                {{ post.content }} 
               </p>
             </article>
             {% unless forloop.last %}
