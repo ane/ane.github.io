@@ -3,7 +3,7 @@
 ---
 
 $headerFont: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-$bodyFont: Georgia, sans-serif;
+$bodyFont: Georgia, serif;
 $preFont: "Source Code Pro Medium", "Droid Sans Mono", "DejaVu Sans Mono", "Consolas", "Monaco", monospace;
 $linkColor: #006688;
 $visitedLinkColor: #443366;
@@ -51,7 +51,7 @@ pre, code, tt {
 }
 
 .content {
-    font-size: 20px;
+    font-size: 18px;
     p {
         -webkit-hyphens: manual;
         -moz-hyphens: manual;
