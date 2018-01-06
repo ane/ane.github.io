@@ -129,17 +129,17 @@ is why I prefer a dumb MVC architecture (or Relay).
 
 So, to put this argument into a more cogent form, I'll summarize them below.
 
-**Lack of emphasis on usability, a myopic focus on adding features.** Why doesn't anyone integrate
-dependency management, module bundling and task running under the same program? Why do we have to
-use three different programs that are getting replaced every year? Tool "monoliths" like SBT may be
-ugly in parts, but they can do package management, compilation, debugging, testing -- even if it's
-DSL is garish and confusing, still, once you're familiar with it, you don't have to master six other
-horrifying DSLs. Just one.
+### 1. Lack of emphasis on usability, a myopic focus on adding features. 
+Why doesn't anyone integrate dependency management, module bundling and task running under the
+same program? Why do we have to use three different programs that are getting replaced every year?
+Tool "monoliths" like SBT may be ugly in parts, but they can do package management, compilation,
+debugging, testing -- even if it's DSL is garish and confusing, still, once you're familiar with it,
+you don't have to master six other horrifying DSLs. Just one.
 
-**Chasing novelty with little care about its impact on maintainability.** Babel lets us
-write JS in eleventy different dialects. While that is a cool thing in itself, it a horror show for
-developers. You ask, who wouldn't want to use `await`, or ES6 classes? Well, how about the person
-who doesn't want to *learn how to use Babel*?
+### 2. Chasing novelty with little care about its impact on maintainability.
+Babel lets us write JS in eleventy different dialects. While that is a cool thing in itself, it a
+horror show for developers. You ask, who wouldn't want to use `await`, or ES6 classes? Well, how
+about the person who doesn't want to *learn how to use Babel*?
 
 With Babel, you can write in any version of JavaScript you want,
 since it all gets compiled down to ES5 anyway. This is great for building your
@@ -147,8 +147,9 @@ flavor-of-the-month hack, but it's also a terrific way of building unmaintainabl
 this zany *hack* to work, you need ~~tra~~compilers that translate your modern code to old code. The
 requirement of that tool is too high a price to pay for some fancy language features.
 
-**Snubbing full-stack frameworks for their want novelty, although they generally feature exemplary
-usability**. Clojure developers have found a way of eschewing frameworks over composable
+### 3. Snubbing full-stack frameworks for their want novelty, although they generally feature exemplary usability
+
+Clojure developers have found a way of eschewing frameworks over composable
 libraries. For some reason, everybody else is really bad at this, so we build frameworks, i.e., sets
 of libraries that govern the design of your program in a certain way. Monolithic frameworks like
 Rails or Django are fundamentally dated --- though this is easily fixed --- but they are
@@ -164,8 +165,9 @@ bin.
 In other words, there is an alternative to the current JavaScript SPA horror show. Using the
 following technologies, as an example:
 
-A REST API built in a scalable and performant language
-:  *Examples: Scala, Haskell, Go, Clojure, Java, Rust, OCaml, Elixir*
+1. **A REST API built in a scalable and performant language**
+
+   *Examples: Scala, Haskell, Go, Clojure, Java, Rust, OCaml, Elixir*
   
    This gives us a clear advantage when scaling and deploying our application. Data access is made
    opaque and is in no way tied to the front-end - which is ultimately just presentation and some
@@ -177,16 +179,17 @@ A REST API built in a scalable and performant language
    
    With these properties, you should be quite comfortable in your back-end development.
   
-Client state, presentation and back-end communication handled using a monolithic framework
-:  *Examples: Ruby on Rails, Django, Pyramid, MeteorJS, Udash, Play*
+2. **Client state, presentation and back-end communication handled using a monolithic framework**
+
+   *Examples: Ruby on Rails, Django, Pyramid, MeteorJS, Udash, Play*
 
    Rails may be dated in some parts --- coupling your front-end with data access is one thing --- but
    as an infrastructure it is functional, mature, easy to understand and *stable*. The Ruby ecosystem
    is large and is well documented, even the secondary documentation (StackOverflow etc.) is abundant.
 
-A wrapper that turns ordinary HTTP page requests into XHRs
+3. **A wrapper that turns ordinary HTTP page requests into XHRs**
 
-:  *Examples: Turbolinks (for Ruby on Rails and Django)*
+   *Examples: Turbolinks (for Ruby on Rails and Django)*
   
    Turbolinks is perhaps a hack but it is clever: any HTTP request that would normally cause a page
    reload, like a link or a form submission, is converted into an XHR. Then, the page redraws itself
