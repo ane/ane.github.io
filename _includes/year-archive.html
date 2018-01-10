@@ -1,34 +1,44 @@
 {% assign collection = include.collection %}
 {% for post in collection %}
-{% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
-{% capture this_month %}{{ post.date | date: "%B" }}{% endcapture %}
-{% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
-{% capture next_month %}{{ post.previous.date | date: "%B" }}{% endcapture %}
+  {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
+  {% capture this_month %}{{ post.date | date: "%B" }}{% endcapture %}
+  {% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
+  {% capture next_month %}{{ post.previous.date | date: "%B" }}{% endcapture %}
 
-{% if forloop.first %}
-<h5 id="{{ this_year }}-ref">{{this_year}}</h5>
-<ul>
-    <li id="{{ this_year }}-{{ this_month }}-ref" class="hilink">{{ this_month }}
-        <ul>
-            {% endif %}
+  {% if forloop.first %}
+    <h3 id="{{ this_year }}-ref">{{this_year}}</h3>
+    <ul class="list-unstyled">
+      <!-- <li id="{{ this_year }}-{{ this_month }}-ref" class="hilink">{{ this_month }} -->
+      <!-- <ul> -->
+  {% endif %}
 
-            <li><a href="{{ post.url }}">{{ post.title }} <span class="text-muted">&mdash; {{ post.date | date: "%-d %B" }}</span></a></li>
+  <li>
+    <div class="row">
+      <div class="col-sm-2">
+        <span class="text-muted">{{  post.date | date: "%d %B" }}</span>
+      </div>
+      <div class="col-sm-10">
+        <a href="{{ post.url }}">{{ post.title }}</a>
+      </div>
+    </div>
+  </li>
 
-            {% if forloop.last %}
-        </ul></li></ul>
-{% else %}
-{% if this_year != next_year %}
-</ul></li></ul>
-<h5 id="{{ next_year }}-ref">{{next_year}}</h5>
-<ul>
-    <li id="{{ next_year }}-{{ next_month }}-ref" class="hilink">{{ next_month }}
-        <ul>
-            {% else %}    
-            {% if this_month != next_month %}
-        </ul>
-        <li id="{{ next_year }}-{{ next_month }}-ref" class="hilink">{{ next_month }}
-            <ul>
-{% endif %}
-{% endif %}
-{% endif %}
+  {% if forloop.last %}
+    </ul></li>
+  {% else %}
+      {% if this_year != next_year %}
+    </ul>
+      </li>
+    <h3 id="{{ next_year }}-ref">{{next_year}}</h3>
+    <ul class="list-unstyled">
+      <!-- <li id="{{ next_year }}-{{ next_month }}-ref" class="hilink">{{ next_month }} -->
+      <!-- <ul> -->
+      {% else %}    
+          {% if this_month != next_month %}
+            <!-- </ul> -->
+            <!-- <li id="{{ next_year }}-{{ next_month }}-ref" class="hilink">{{ next_month }} -->
+            <!-- <ul> -->
+          {% endif %}
+      {% endif %}
+  {% endif %}
 {% endfor %}
