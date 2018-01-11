@@ -42,7 +42,7 @@ p code {
 }
 
 code {
-    font-size: 80%;
+    font-size: 90%;
     padding: .1rem .2rem;
 }
 
@@ -51,11 +51,11 @@ pre, code, tt {
 }
 
 .content {
-    font-size: 18px;
     p {
         -webkit-hyphens: manual;
         -moz-hyphens: manual;
         hyphens: manual;
+        font-size: 18px;
     }
 
     h1 { font-size: 2em; }
@@ -72,8 +72,8 @@ pre, code, tt {
 
 
 pre.highlight {
-    font-size: 80%;
-    padding: 1rem;
+    font-size: 90%;
+    padding: 0 1rem;
 }
 
 header {
