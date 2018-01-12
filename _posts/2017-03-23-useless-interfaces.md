@@ -7,7 +7,7 @@ tags:
   - programming
 ---
 
-A feature that often irks me in object-oriented code is the prevalence of useless
+A feature that often frustrates me in object-oriented code is the prevalence of useless
 interfaces. Interface isn't meant literally here: this applies to traits of Rust/Scala and protocols
 of Clojure as well.
 
