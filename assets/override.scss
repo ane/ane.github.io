@@ -51,11 +51,12 @@ pre, code, tt {
 }
 
 .content {
+    font-size: 18px;
+    line-height: 1.4;
     p {
         -webkit-hyphens: manual;
         -moz-hyphens: manual;
         hyphens: manual;
-        font-size: 18px;
     }
 
     h1 { font-size: 2em; }
@@ -72,7 +73,7 @@ pre, code, tt {
 
 
 pre.highlight {
-    font-size: 90%;
+    font-size: 80%;
     padding: 0 1rem;
 }
 
