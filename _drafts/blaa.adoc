@@ -1,0 +1,37 @@
+= The Joy of Asciidoc
+:page-layout: post
+:revdate: 2018-03-20 10:30:00 -0600
+:toc:
+:page-liquid:
+
+PREEAMBLE
+
+== Blah blah
+
+blah blah blah
+
+== It's not easy being green
+
+[source,ruby]
+----
+puts "Hello, World!"
+----
+
+[source,scala]
+----
+class MediatorImpl extends Mediator {
+  def validate(r: Request): Boolean = { ... }
+  def postpone(r: Request, d: Duration): Postponed[Request] = { ... }
+  def frobnicate(a: Request, b: Request): Frobnicated[Request] = { ... }
+}
+----
+
+=== Some lists
+
+NOTE: Go away
+
+A list
+
+* fap
+* fip
+

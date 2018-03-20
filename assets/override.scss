@@ -123,35 +123,7 @@ blockquote {
     font-size: 30px;
 }
 
-#toc ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
 
-#toc li {
-    margin-bottom: 5px;
-    font-size: 18px;
-    list-style-type: none;
-    border-left: 2px solid transparent;
-}
-
-#toc a {
-    text-decoration: none;
-    display: block;
-}
-
-#toc .toc-h1 {
-    padding-left: 10px;
-}
-
-#toc .toc-h2 {
-    padding-left: 30px;
-}
-
-#toc .toc-active {
-    border-left: 2px solid #337AB7;
-}
 
 
 .full-size {
@@ -200,37 +172,40 @@ blockquote {
     border-top: 1px solid #ccc;
 }
 
-.small-caps {
-    font-variant: small-caps;
-    font-weight: bold;
-}
-
-.essay-meta {
-    margin-bottom: 2rem;
-}
-
-
-.essay {
-    p {
-        margin-bottom: 0em;
-        -webkit-hyphens: manual;
-        -moz-hyphens: manual;
-        hyphens: manual;
-
-        &:first-of-type:first-letter {
-            font-size: 5em;
-            float: left;
-            line-height: 0.5;
-            margin: 0.2em 0.07em 0em 0em;
-        }
-
-        & + p {
-            text-indent: 3em;
-        }
-    }
-
-}
-
 .post-meta {
     margin-top: -0.25em;
+}
+
+span.icon>.fa {
+  cursor: default;
+}
+.admonitionblock td.icon {
+  text-align: center;
+  width: 80px;
+}
+.admonitionblock td.icon [class^="fa icon-"] {
+  font-size: 2.5em;
+  text-shadow: 1px 1px 2px rgba(0,0,0,.5);
+  cursor: default;
+}
+.admonitionblock td.icon .icon-note:before {
+  content: "\f05a";
+  color: #19407c;
+}
+.admonitionblock td.icon .icon-tip:before {
+  content: "\f0eb";
+  text-shadow: 1px 1px 2px rgba(155,155,0,.8);
+  color: #111;
+}
+.admonitionblock td.icon .icon-warning:before {
+  content: "\f071";
+  color: #bf6900;
+}
+.admonitionblock td.icon .icon-caution:before {
+  content: "\f06d";
+  color: #bf3400;
+}
+.admonitionblock td.icon .icon-important:before {
+  content: "\f06a";
+  color: #bf0000;
 }

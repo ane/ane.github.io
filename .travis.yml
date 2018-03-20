@@ -1,0 +1,16 @@
+language: ruby
+rvm:
+  - 2.3.3
+
+script:
+  - bundle exec jekyll build
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN  
+  keep-history: true
+  local-dir: _site
+  target-branch: master
+  on:
+    branch: develop
