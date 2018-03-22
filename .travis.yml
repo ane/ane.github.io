@@ -2,11 +2,10 @@ language: ruby
 cache: bundler
 rvm:
   - 2.3.3
+dist: trusty
 
 addons:
   apt:
-    sources:
-      - ubuntu-trusty
     packages:
       - graphviz
       - plantuml
