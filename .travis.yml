@@ -3,6 +3,11 @@ cache: bundler
 rvm:
   - 2.3.3
 
+addons:
+  apt:
+    packages:
+      - graphviz
+
 script:
   - bundle exec jekyll build
 
