@@ -9,6 +9,8 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     asciidoctor (1.5.6.2)
+    asciidoctor-diagram (1.5.8)
+      asciidoctor (~> 1.5.0)
     coffee-script (2.4.1)
       coffee-script-source
       execjs
@@ -252,6 +254,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  asciidoctor-diagram (~> 1.5.4)
   github-pages
   jekyll-asciidoc
   jekyll-livereload
