@@ -1,0 +1,118 @@
+= The Joy of AsciiDoc
+:page-layout: post
+:revdate: 2018-03-23 01:00:00 -0600
+:page-liquid:
+
+I have always used https://jekyllrb.com/[Jekyll] on
+https://pages.github.com/[Github Pages] to host this site. It's always been very
+pleasant to use, since Github Pages builds your site automatically. On the other
+hand, you can only use https://pages.github.com/versions/[a limited set of
+plugins], so if you want a Jekyll extension, you might be out of luck, as I was
+recently.
+
+I don't min Markdown as an input format, but it's a very limited format. So
+there are several extensions to Markdown like http://commonmark.org/[CommonMark]
+and https://kramdown.gettalong.org/[kramdown] addressing the deficiencies of
+Markdown. Even those extensions have limits.
+
+My solution was to convert to
+https://asciidoctor.org/docs/what-is-asciidoc/[AsciiDoc] -- a much richer text
+markup language. It contains every feature Markdown extensions have and
+more. Tables of contents, admonitions, and *diagrams*! Yes, that includes
+Graphviz, PlantUML and even Ditaa. I use those tools a lot, but so far haven't
+used them that much here.
+
+So the elephant in the room is that AsciiDoc doesn't work on the default Github
+Pages installation since it's not in the plugin whitelist. I had several choices:
+
+A. Switch to another static site generator, manually upload the published HTML
+to github
+B. Do the above but use another hosting system, my own VPS, whatever
+C. Stick with Github pages but build yourself and upload manually -- _ugh!_
+
+I didn't want to switch site generators as I like Jekyll. Support is easy to get
+from the web and it's fairly mature and popular.
+
+I couldn't be bothered to switch hosting systems, so I was to find another way
+around it. I instantly realized that option C can be solved by automating the
+build process. All you're doing is running `bundle exec jekyll build` anyway,
+and uploading `_site` somewhere! This has got to be easy to automate on
+https://travis-ci.org/[Travis].
+
+Turned out Travis did have a
+https://docs.travis-ci.com/user/deployment/pages/[Githug Pages] deployment
+plugin, so that was easy. Hooray, my automation problems were solved!
+
+Well, not so fast.
+
+I wanted the https://asciidoctor.org/docs/asciidoctor-diagram/[Asciidoctor
+diagram plugin] but that required the presence of the diagramming binaries, so
+in order for it to work I had to have the `graphviz`, `plantuml` and `ditaa`
+executables installed on the machine. And here is where I ran into problems.
+Travis (as of 2018) runs Ubuntu Trusty (14.04) on the default container
+platform, and this version of Ubuntu doesn't have `plantuml` as a package.
+
+That package is available in the unstable Debian source list, but that doesn't
+work on Ubuntu anymore given Debian unstable switched over to using `.tar.xz`
+and the apt packager of Ubuntu doesn't understand that.
+
+Unstable builds are unstable. Who knew?
+
+So, the fix was to add `sudo: required` to the `.travis.yml` file, and add a PPA
+that contains plantuml. This worked, but because I'm using sudo, my builds run
+on a virtual machine. Without sudo I could run on a container which build really
+fast. So building the site takes now about two minutes. That's not too bad, but
+with a container based build that could be less than 30 seconds. So finally, I
+ended up with this:
+
+[source,yaml]
+----
+include::../.travis.yml[]
+----
+
+Anyway, after banging my head against the beast that is dependency management, I
+am now happily running my own custom Jekyll build that is fully automated: I
+don't have to do anything except push new content via Git, and there it is.
+
+And I'm using AsciiDoc! Here's a pretty http://ditaa.sourceforge.net/[ditaa]
+picture:
+
+[ditaa]
+....
+                                          +------------------+
+                                          |cEEE              |
+                                     +--->|      Nice!       |
+                                     |    |                  |
+     +-------------------+           |    +------------------+
+     |  Art with text?   +-----------+
+     +---------+---------+
+               ^                             /--------------\
+               |                             |cPNK          |
+               +---------------------------->|   colors!    |
+                                             |              |
+                                             \--------------/
+....
+
+
+Here's the source I used:
+
+[source,asciidoc]
+----
+[ditaa]
+....
+                                          +------------------+
+                                          |cEEE              |
+                                     +--->|      Nice!       |
+                                     |    |                  |
+     +-------------------+           |    +------------------+
+     |  Art with text?   +-----------+
+     +---------+---------+
+               ^                             /--------------\
+               |                             |cPNK          |
+               +---------------------------->|   colors!    |
+                                             |              |
+                                             \--------------/
+....
+----
+
+Neat, huh? It's a beautiful day!
