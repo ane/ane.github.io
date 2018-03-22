@@ -41,6 +41,7 @@ keep_files:
 
 exclude:
   - "*.ditaa"
+  - vendor
 
 asciidoctor:
   base_dir: :docdir
