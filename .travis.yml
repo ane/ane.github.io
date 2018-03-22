@@ -10,6 +10,7 @@ addons:
       - debian-sid
     packages:
       - graphviz
+      - plantuml
       - ditaa
 
 script:
