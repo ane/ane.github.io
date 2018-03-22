@@ -6,7 +6,7 @@ rvm:
 addons:
   apt:
     sources:
-      - ubuntu-precise
+      - ubuntu-trusty
     packages:
       - graphviz
       - plantuml
