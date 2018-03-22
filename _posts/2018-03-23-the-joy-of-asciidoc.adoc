@@ -1,6 +1,6 @@
 = The Joy of AsciiDoc
 :page-layout: post
-:revdate: 2018-03-23 00:00:00
+:revdate: 2018-03-23 00:00:00 +0200G
 :page-liquid:
 
 I have always used https://jekyllrb.com/[Jekyll] on
@@ -10,7 +10,7 @@ hand, you can only use https://pages.github.com/versions/[a limited set of
 plugins], so if you want a Jekyll extension, you might be out of luck, as I was
 recently.
 
-I don't min Markdown as an input format, but it's a very limited format. So
+I don't mind Markdown as an input format, but it's a very limited format. So
 there are several extensions to Markdown like http://commonmark.org/[CommonMark]
 and https://kramdown.gettalong.org/[kramdown] addressing the deficiencies of
 Markdown. Even those extensions have limits.
