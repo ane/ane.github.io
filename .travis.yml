@@ -18,5 +18,6 @@ deploy:
   github-token: $GITHUB_TOKEN  
   local-dir: _site
   target-branch: master
+  verbose: true
   on:
     branch: develop
