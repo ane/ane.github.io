@@ -15,12 +15,14 @@ highlighter: rouge
 url:            'http://ane.github.io'
 author:         'Antoine Kalmbach'
 google_analytics: UA-58162697-1
-gems:
+plugins:
   - jekyll-redirect-from
   - jekyll-sitemap
   - jekyll-feed
   - jekyll-seo-tag
   - jekyll-mentions
+  - asciidoctor-diagram
+  - jekyll-asciidoc
 
 twitter:
   username: anewtf
@@ -34,7 +36,16 @@ kramdown:
   hard_wrap:      false
   footnote_nr:    1
 
+keep_files:
+  - images
+
+exclude:
+  - "*.ditaa"
+
 asciidoctor:
+  base_dir: :docdir
+  safe: unsafe
   attributes:
     source-highlighter: pygments
     icons: font
+    imagesdir: /images

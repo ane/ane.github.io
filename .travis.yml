@@ -7,6 +7,8 @@ addons:
   apt:
     packages:
       - graphviz
+      - plantuml
+      - ditaa
 
 script:
   - bundle exec jekyll build
