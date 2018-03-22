@@ -1,6 +1,6 @@
 = The Joy of AsciiDoc
 :page-layout: post
-:revdate: 2018-03-23 01:00:00 -0600
+:revdate: 2018-03-23 00:00:00
 :page-liquid:
 
 I have always used https://jekyllrb.com/[Jekyll] on
