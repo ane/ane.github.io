@@ -61,7 +61,7 @@ So, the fix was to add `sudo: required` to the `.travis.yml` file, and add a PPA
 that contains plantuml. This worked, but because I'm using sudo, my builds run
 on a virtual machine. Without sudo I could run on a container which build really
 fast. So building the site takes now about two minutes. That's not too bad, but
-with a container based build that could be less than 30 seconds. So finally, I
+with a container-based build that could be less than 30 seconds. So finally, I
 ended up with this:
 
 [source,yaml]
@@ -76,7 +76,7 @@ don't have to do anything except push new content via Git, and there it is.
 And I'm using AsciiDoc! Here's a pretty http://ditaa.sourceforge.net/[ditaa]
 picture:
 
-[ditaa]
+[ditaa,example,svg]
 ....
                                           +------------------+
                                           |cEEE              |
