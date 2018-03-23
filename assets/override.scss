@@ -199,13 +199,37 @@ span.icon>.fa {
     }
 }
 
-.admonitionblock td.icon {
-  text-align: center;
-  width: 80px;
+.admonitionblock {
+    margin: 1rem 0rem;
+}
+
+.admonitionblock {
+    td {
+        padding: 0.5rem;
+        &.content {
+            border-left: 1px solid #ccc;
+            padding-left: 1.5rem;
+
+            .title {
+                color: $linkColor;
+                font-style: italic;
+                margin-bottom: 0.25rem;
+            }
+
+            & > :last-child > :last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+    
+    td.icon {
+        text-align: center;
+        width: 80px;
+    }
 }
 
 .admonitionblock td.icon [class^="fa icon-"] {
-  font-size: 2.5em;
+  font-size: 1.5em;
   text-shadow: 1px 1px 2px rgba(0,0,0,.5);
   cursor: default;
 }
