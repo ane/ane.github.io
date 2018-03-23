@@ -1,0 +1,47 @@
+= Making customizable software
+
+:page-layout: post
+
+Software customization, the ability to provide modifications to existing
+software, is tremendously important when shipping software products.
+
+I have been thinking long and hard about ways to do this properly at a software
+architecture level.  I don't want to claim that I have figured things out
+completely, but I offer what I think is a reasonably concrete abstraction, if
+that makes sense.  I will detail my findings below, but first let's start by
+understanding the _problem_.
+
+[role=text-center]
+.Two products, entirely custom.
+ditaa::../_images/custom0.ditaa[format=svg,separation=false,scale=0.75]
+
+The *primary goal of customization* is to satisfy as many users as possible.  This
+means implementing their requirements into the product.  The *secondary goal* is to
+do this efficiently.  The goal is to not do the same thing twice, but to reuse as
+much as possible.  A bad software product line is characterized by repetition,
+minimal reuse.
+
+[role=text-center]
+.A baseline product (gray), and two custom versions of a baseline product. The square patches represent customizations.
+ditaa::../_images/custom1.ditaa[format=svg,separation=false,scale=0.75]
+
+First, we should get some terminology.  We can call a *product* a shippable
+software unit that isn't custom-built from the ground up.  The notion of a
+product signals a clear intent of reuse.
+
+That reusable unit we can call a *baseline* product.  A *custom version* is
+modified version of the baseline product.  The discrete units of modification are
+*customizations*.
+
+So the goal is to be able to maintain and develop a baseline product _and_ the
+custom versions. This should be done efficiently.  I characterize _efficiency_ as
+follows:
+
+* Customization isn't done using version control, also known as "forking",
+ because it isn't future-proof. As much as people like to pretend that feature
+ branches work, they don't.
+* Customizations should be interchangeable: you should be able to bring
+customizations back to the baseline product, and move the customizations across
+custom versions.
+
+
