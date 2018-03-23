@@ -1,0 +1,97 @@
+= Envisioning a new tracing system
+:page-layout: post
+:page-liquid:
+
+I've begun designing a new kind of tracing system for distributed
+systems. With tracing system I mean something like Zipkin or Prometheus:
+they trace the flow of information in distributed systems.
+
+I think the tool should offer a complementary view on the system, it's
+not going to offer detailed logs or individual traces.
+
+Instead, it's something what I call an overhead monitor, an observatory
+from above. It doesn't track individual elements flowing in the system,
+to put it metaphorically, it lives too high up in order to see
+individual ants in a colony. What it can see is the flow and not-flow of
+ants, and measure their speed.
+
+I'm interested in the big picture. Is information flowing the way it
+should? How fast is it traveling? Is my context propagated correctly?
+How much information is there flowing per second, minute, or hour?
+
+The idea is to monitor rate. It would be a bit like a traffic monitor.
+What you could use it for is to _instantly_ read the amount of
+information flow in the system. The flow would be represented as a
+directed graph.
+
+[[idea]]
+.Something like this.
+[graphviz.text-center,observatory,svg]
+....
+digraph Example {
+    A[label="web-server"];
+    B[label="event-processor"];
+    C[label="journal"];
+    D[label="database"];
+    
+    
+    A->B[color="#00AA00",label="OK(pass=3/3 100%),\nCheck(within=10s,ok=3,warn=0,fail=0)"];
+    B->D[color="#AAAA00",label="WARN(pass=4/5 80%),\nCheck=(within=500ms,ok=3,warn=1,fail=2)"];
+    B->C[color="#AA0000",label="NOK(pass=1/4 25%),\nCheck=(within=1000ms,ok=3,warn=1,fail=0)"];
+}
+....
+
+Earlier last year I sketched a http://ane.github.io/observatory[design
+document], so I won't go into the details too much, if you're interested
+in those, go read it.
+
+So far, I have figured the following design characteristics:
+
+* All you need is to provide the names of nodes in the network, and the
+system will figure out the directions of the information flows.
+* It is optionally possible to design some quality attributes but these
+require manual configuration. For example, you'd have to state that "95%
+of requests from A to B should happen within 200 ms".
+* The system is God; it sees all. That is to say, _all_ the events in
+the network should be fed into the system.
+* Because God systems are terrible and prone to failure, the aim is to
+support distribution, such that you can have multiple observers to which
+you can partition the events. The big picture will be assembled by
+combining the observer data.
+* Configuration should be easy, with a humane syntax like YAML, and the
+possibility to override this.
+
+The system doesn't have to worry about spans, that's for other systems.
+All you need to do is propagate context.
+
+I have thought about
+link:{% post_url 2016-01-26-are-my-services-talking-to-each-other %}[distributed
+tracing previously]. I've found that many of those questions are still
+unanswered. Most tracing systems like Zipkin and Prometheus do very well
+with individual elements and span lengths, but they naturally require
+you to configure the spans in the code.
+
+My aim with the observatory-like approach is to make it extremely simple
+to track flow rates. All you need is the following:
+
+* Propagate context in the system, like a tracing token coupled with a
+timestamp
+* Aggregate logs to the observatory
+
+The second problem is the harder one: if you centralize the system,
+every node in the system will just log events there, and the system is
+prone to failure. My idea is to overcome this limitation by
+decentralizing observation, and then using something like the
+https://en.wikipedia.org/wiki/Gossip_protocol[Gossip protocol] to
+combine the results.
+
+It doesn't need to react immediately (probably within seconds), so the
+slowness of Gossip is not a threat to the design. Observation data is
+also initially ephemeral, I'd most likely prefer using event sourcing to
+build the observation model.
+
+I haven't chosen the technology yet, but most likely it will be written
+in Scala and then event sourcing will most likely based on
+http://kafka.apache.org/[Kafka].
+
+Now only to find the time necessary to build this.

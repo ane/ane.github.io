@@ -24,10 +24,10 @@ used them that much here.
 So the elephant in the room is that AsciiDoc doesn't work on the default Github
 Pages installation since it's not in the plugin whitelist. I had several choices:
 
-A. Switch to another static site generator, manually upload the published HTML
+1. Switch to another static site generator, manually upload the published HTML
 to github
-B. Do the above but use another hosting system, my own VPS, whatever
-C. Stick with Github pages but build yourself and upload manually -- _ugh!_
+2. Do the above but use another hosting system, my own VPS, whatever
+3. Stick with Github pages but build yourself and upload manually -- _ugh!_
 
 I didn't want to switch site generators as I like Jekyll. Support is easy to get
 from the web and it's fairly mature and popular.
@@ -76,7 +76,8 @@ don't have to do anything except push new content via Git, and there it is.
 And I'm using AsciiDoc! Here's a pretty http://ditaa.sourceforge.net/[ditaa]
 picture:
 
-[ditaa,example,svg]
+.A diagram
+[ditaa.text-center,target=example,svg]
 ....
                                           +------------------+
                                           |cEEE              |
@@ -91,7 +92,6 @@ picture:
                                              |              |
                                              \--------------/
 ....
-
 
 Here's the source I used:
 
