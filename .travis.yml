@@ -5,7 +5,8 @@ sudo: required
 
 # asciidoctor diagram dependencies
 before_install:
-  - sudo add-apt-repository -y ppa:jasekpetr/trusty-backports ppa:jonathonf/rustlang
+  - sudo add-apt-repository -y ppa:jasekpetr/trusty-backports
+  - sudo apd-apt-repository -y ppa:jonathonf/rustlang
   - sudo apt-get -qq update
   - rustup
   - cargo install svgbob_cli
