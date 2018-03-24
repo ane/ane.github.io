@@ -3,13 +3,17 @@ rvm:
   - 2.3.3
 sudo: required
 
+# no emails
+notifications:
+  email: false
+
 # asciidoctor diagram dependencies
 before_install:
   - sudo add-apt-repository -y ppa:jasekpetr/trusty-backports
   - sudo add-apt-repository -y ppa:jonathonf/rustlang
   - sudo apt-get -qq update
   - sudo apt-get install rustup
-  - rustup
+  - rustup update
   - cargo install svgbob_cli
   - sudo apt-get install -y graphviz ditaa plantuml
 
