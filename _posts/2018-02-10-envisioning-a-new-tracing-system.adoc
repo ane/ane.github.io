@@ -1,6 +1,7 @@
 = Envisioning a new tracing system
 :page-layout: post
 :page-liquid:
+:page-tags: [distributed, tracing]
 
 I've begun designing a new kind of tracing system for distributed
 systems. With tracing system I mean something like Zipkin or Prometheus:

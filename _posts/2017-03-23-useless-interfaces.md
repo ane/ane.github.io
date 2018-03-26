@@ -5,6 +5,7 @@ date: 2017-03-23T00:00:00
 disqus: true
 tags:
   - programming
+  - scala
 ---
 
 A feature that often frustrates me in object-oriented code is the prevalence of useless
