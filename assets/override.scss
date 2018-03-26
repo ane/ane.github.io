@@ -196,6 +196,7 @@ span.icon>.fa {
         color: #666;
         font-style: italic;
         margin: 1rem 0rem;
+        font-size: 90%;
     }
 }
 
@@ -213,6 +214,7 @@ span.icon>.fa {
             .title {
                 color: $linkColor;
                 font-style: italic;
+                font-size: 90%;
                 margin-bottom: 0.25rem;
             }
 
@@ -263,3 +265,12 @@ span.icon>.fa {
 .mr-neg-5 {
     margin-right: -5rem;
 }
+
+.imageblock {
+    display: block;
+
+    .content {
+        display: inline-block;
+    }
+}
+
