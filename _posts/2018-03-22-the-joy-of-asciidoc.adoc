@@ -1,6 +1,7 @@
 = The Joy of AsciiDoc
 :page-layout: post
 :page-liquid:
+:page-tags: [meta]
 
 I have always used https://jekyllrb.com/[Jekyll] on
 https://pages.github.com/[Github Pages] to host this site. It's always been very

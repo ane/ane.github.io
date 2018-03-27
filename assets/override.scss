@@ -274,3 +274,13 @@ span.icon>.fa {
     }
 }
 
+.content li .faded-tags {
+    a {
+        color: #ccc;
+        text-decoration: none;
+
+        &:hover {
+            color: #777;
+        }
+    }
+}
