@@ -11,11 +11,9 @@ understanding the _problem_.
 
 The *primary goal of software customization* is to satisfy the needs of its
 users.  This means implementing their requirements into the product.  The
-*secondary goal* is to do this efficiently.  The goal is to not do the same
-thing twice, but to reuse as much as possible.  Needless repetition is what
+*secondary goal* is to do this efficiently.  Needless repetition is what
 characterizes a bad software product line.  <<two-versions>> illustrates this
-problem: two teams build a product twice, and it looks like the two are
-different products altogether.
+problem: two teams are building a similar twice from scratch.
 
 [[two-versions]]
 [role="text-center ml-sm-3 float-sm-right"]
@@ -102,11 +100,8 @@ ditaa::../_images/custom1.ditaa[format=svg,separation=false,scale=0.75]
 
 What is more, people don't _want_ to do branching customization but they're
 often *forced* to, because the software wasn't designed for customization from
-the get-go.  The is the heart of the issue: it is important to design for
+the get-go.  The is the heart of the issue. it is important to design for
 customization from the beginning. You cannot add it later.
-
-[role=text-center]
-svgbob::../_images/custom3.svgbob[format=svg]
 
 To program for customization, there are numerous approaches, more than I can
 count.  One of the easiest, and probably the least complicated solution, is to
