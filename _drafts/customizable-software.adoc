@@ -30,19 +30,22 @@ the baseline creates _custom versions_.  The discrete units of modifications are
 _customizations_. I define customization loosely here, a customization is any
 sort of modification altering the baseline.
 
-== Baselines
-
 From a product management perspective, the baseline is the _product_. Yet, from
 a business perspective, nobody sells a baseline product. Customers always
 require some modifications, and won't accept an unmodified baseline. So what is
 the business value of the baseline? Is there any value in keeping it alive? Why
 not always do custom versions from scratch?
 
-The answer is _scale_. It depends. If the deliverable units are small, then it
+The answer is _*scale_. It depends. If the deliverable units are small, then it
 might actually be easier to do complete customization. This approach will
 eventually prove unscalable: there comes a limit where it is more advantageous
 to start sharing technology by establishing a baseline. <<many-teams>> shows a
 situation where there are parallel teams building the same product in isolation.
+
+[[many-teams]]
+[role="text-sm-center"]
+.Repetition can indicate the need for a baseline.
+ditaa::../_images/custom4.ditaa[format=svg,separation=false]
 
 Sometimes it is wise to go fully custom, even with a lot teams. If the teams are
 small and building different things, it is natural, since the things they build
@@ -53,10 +56,6 @@ sense. This is often the case in product development, so it is also the case in
 which I will focus here. Let's ignore the cases where the products are
 different, like in <<dissimilar>>.
 
-[[many-teams]]
-[role="text-sm-center"]
-.Repetition can indicate the need for a baseline.
-ditaa::../_images/custom4.ditaa[format=svg,separation=false]
 
 From an engineering perspective, the biggest hurdle of all is how to keep the
 baseline clean.  Nobody wants to have customization artifacts, the customizations
@@ -77,23 +76,35 @@ product, this says that there are a lot of issues with the architecture.
 .Establishing a baseline can be hard.
 ditaa::../_images/custom5.ditaa[format=svg,scale=0.8]
 
-== The importance of efficiency
+== Software must not be a palimpsest
+
+When I think of customization gone wrong, I think of
+_palimpsests_. Palimpsest derives from Ancient Greek _palímpsēstos_,
+meaning "again scraped". Palimpsests were manuscript pages that were
+erased so that they could be reused for writing new
+documents. Palimpsests were feasible when the raw material for
+parchment was expensive. It was more economical to erase and reuse a
+piece of parchment instead of getting a new one.
+
+This process is eerily similar to a failed software customization
+process. It is extremely weird that the industry treats software
+simultaneously as too expensive to throw out (the sunk-cost fallacy)
+and cheap enough to warrant continuous rewrites (the disposability
+fallacy).
+
+That cognitive dissonance arises from the 
 
 So the goal is to be able to maintain and develop a baseline product _and_ the
-custom versions.  This process should be efficient
-
-* Customization isn't done using version control, also known as "forking",
- because it isn't future-proof.  As much as people like to pretend that feature
- branches work, they don't.
-* Customizations should be interchangeable: you should be able to bring
-customizations back to the baseline product, and move the customizations across
-custom versions.
+custom versions.  This process should be as efficient as possible.
+There should be zero rewriting.  Most of the time should be spent on
+_installing_ the customizations.  This part of the customization I
+call _wiring_.
 
 Customization using version control, also known as _branching_ or _forking_,
 is antithetical to the idea of proper customization.  I find that most
 branching-based customization is just overwriting existing functionality, as
 seen in <<branching>>.  Properly done, customization should not involve any
-*overwriting*.  Customization shouldn't turn software into a palimpsest.
+*overwriting*. 
 
 [[branching]]
 [role="text-center ml-sm-3 float-sm-right"]
@@ -122,15 +133,6 @@ particular medium for configuration, it can be text files, databases, a remote
 server.  The important part is that it is somehow structured and human-readable,
 and that it can *configure the application*.
 
-Environmental configuration, as in things like `production.conf`,
-`development.conf`, and so on, is the one customization that really isn't
-customization anymore.  It is expected that applications behave differently in
-different environments.  A system testing environment might have fake auxiliary
-systems that beep and boop like the real ones, whereas the production system is
-the real thing.  Boot-time configuration is used to look up an external
-configuration system, and the configurations of customizations can be stored
-there.  It is possible to use boot-time configuration to 
-
 Configuration alone isn't going to solve the problem.  Progamming the
 customizations into the baseline product and selecting them at run-time makes
 the product bigger.  A larger product is harder to maintain.
@@ -140,7 +142,11 @@ overwrite existing functionality, the baseline product should lend itself to
 extension.  But piling customizations together and selecting a feature set in
 order to avoid overwriting just makes the product bigger.
 
-It's now obvious that the product should be designed for modularity.
+It's now obvious that the product should be designed to be _extended_
+so that no part is is overwritten.  Parts can be replaced, added,
+removed or altered.  The customization process should feel like
+drawing on an outline, instead of using an eraser to blank a canvas to
+draw something new.
 
 
 
