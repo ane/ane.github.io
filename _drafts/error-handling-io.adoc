@@ -1,0 +1,158 @@
+= Error handling in Cats' IO
+
+:page-layout: post
+:page-tags: [scala]
+:xrefstyle: short
+
+https://typelevel.org/cats-effect[cats-effect] is an
+https://en.wikipedia.org/wiki/Monad_(functional_programming)#The_I/O_monad[IO
+monad] for Scala. It's not the only one of its kind, there's also
+https://github.com/scalaz/scalaz/blob/scalaz-seven/concurrent/src/main/scala/scalaz/concurrent/Task.scala[`scalaz.concurrent.Task`].
+`cats-effect` consists of two parts: a typeclass hierarchy for side-effectful
+computations and a set of data types implementing those type classes.
+
+`cats.effect.IO` is not the only data type that implements them, there's also
+https://monix.io/docs/3x/eval/task.html[Monix Task] that also implements the
+same hierarchy.
+
+If, like me, you have worked a lot with `scala.concurrent.Future`, typically you
+would have preferred to use something like:
+
+[source,scala]
+----
+def riskyFunction(...): Future[Either[Rejection, Result]]
+----
+
+The `Rejection` class is an ADT represting _logical_ failures in the program:
+
+[source,scala]
+----
+// our failure ADT
+sealed trait Rejection
+case object TokenMissing                extends Rejection
+case class  Unqualified(reason: String) extends Rejection
+case object Timeout                     extends Rejection
+// more...
+----
+
+`Future[Either[_, _]]` is generally better than using `Future.failed` for error
+handling since it's easier to work with `Either` than it is to handle errors
+than to use Future's `.recoverWith` or `.recover` methods.
+
+On the other hand, working with nested types is annoying, so we are likely to
+use a monad transformer like `EitherT`, but using _that_ is also annoying, since
+it introduces a lot of boilerplate, especially if you try to cram it into a
+for comprehension:
+
+[source,scala]
+----
+// Status is an ADT representing something, may return Left(Timeout)
+def checkQualification(...): Future[Either[Rejection, Status]]
+
+// check the validity of something
+def getValidity(...): Either[Rejection, Boolean]
+
+def someToken: Option[String]
+
+val program =
+  for {
+    token      <- EitherT.fromOption[Future](someToken, TokenMissing)
+    validToken <- EitherT.liftF[Future](getValidity(token))
+    quali      <- EitherT(checkQualification(valid))
+  } yield quali
+
+// elsewhere
+
+program.value map { result =>
+  result match {
+    case Right(...)      => ??? // success!
+    case Left(rejection) => ??? // oh no!
+  }
+}
+----
+
+All of those `.toEitherT`, `EitherT.liftF`, and `EitherT`, is just syntactic
+noise for working with the many levels of abstraction monad transformers
+provide. We could make it shorter by using a finally tagless style and alias the
+effect type Future as F, but that _still_ has us calling different methods of
+EitherT, and it's rather verbose. Aside from switching over to Haskell, how to
+make this more succinct?
+
+The alternative would be to have `Rejection` inherit `Exception`, and just use
+`Future.failed` and throw Exceptions.
+
+...
+
+No, that's a terrible idea! Futures are eager and they violate the monad
+laws. Let's, however, try to see what that code would look like.
+
+[source,scala]
+----
+// Either layer dropped
+def checkQualification(...): Future[Status]
+// changed from Either to Future!
+def getValidity(...): Future[Boolean]
+
+def someToken: Option[String]
+
+val program =
+  for {
+    token      <- token.map(Future.successful(_)).getOrElse(Future.failed(TokenMissing))
+    validToken <- getValidity(token)
+    quali      <- checkQualification(validToken)
+  } yield quali
+
+// elsewhere...
+
+program map { result =>
+  ??? // success
+} recover {
+  case x: Rejection => ??? // logical failure
+  case NonFatal(ex) => ??? // something else
+}
+----
+
+I squished the the `EitherT` layer out, and while the for comprehensions became
+more readable, we've now lost referential transparency -- although, due to
+Future violating monad laws, we never had it to begin with -- and we have to
+resort to the `recover` method of Future. Making our `Rejection` class inherit
+`Exception` also forces us to distinguish between logical errors and other
+exceptions. Inheriting `Exception` is a contentious design choice. It makes
+sense to box your logical failures like in <<boxed>>.
+
+[[boxed]]
+.A hierarchy of errors.
+[ditaa.text-center.float-sm-right.ml-3,format=svg,separation=false]
+----
++--------------------+
+|cB64  Exception     |
+|+------------------+|
+||     Rejection    ||
+||c088              ||
+|+------------------+|
++--------------------+
+----
+
+This is not a bad approach in itself, though we now have to check whether any
+exception thrown inside the program was a `Rejection` or any other
+`Exception`.
+
+The problem now is that Future is eager and referentially transparent.  It would
+be nice to have an asynchronous I/O construct with built-in error handling while
+being referentially transparent.
+
+Well, it turns out the cats-effect type class hierarchy is represented at the
+bottom by `MonadError[F[\_], Throwable]`. `MonadError` itself derives from
+`ApplicativeError[F[_], E]` where `E` is some error value, and the IO data type
+fixes this to be a subtype of Throwable.
+
+For any `F, E` for which there is an `ApplicativeError[F, E]`, we get,
+
+* `F.raiseError(E)` -- raise an error
+* `F.handleError[A](fa: F[A])(f: E => A): F[A]` -- handle any errors
+* `F.handleErrorWith[A](fa: F[A])(f: E => F[A]): F[A]` -- handle an error with a
+  new `F[A]`
+* `F.attempt[A](fa: F[A]): F[Either[E, A]]` -- convert the result by turning it
+  into an `Either`
+  
+These are all 
