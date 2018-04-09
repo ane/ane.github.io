@@ -1,7 +1,8 @@
-= Making customizable software
+= Software customization is really hard
 
 :page-layout: post
 :xrefstyle: short
+:sectanchors:
 
 I have been thinking long and hard about ways to do software customization
 properly at a software architecture level.  I don't want to claim that I have
@@ -9,9 +10,9 @@ figured things out, but I offer what I think is a reasonably abstract solution,
 if that makes sense.  I will detail my findings below, but first let's start by
 understanding the _problem_.
 
-The *primary goal of software customization* is to satisfy the needs of its
-users.  This means implementing their requirements into the product.  The
-*secondary goal* is to do this efficiently.  Needless repetition is what
+The _primary_ goal of software customization is to _satisfy the needs of its
+users_.  This means implementing their requirements into the product.  The
+_secondary_ goal is to do this efficiently.  Needless repetition is what
 characterizes a bad software product line.  <<two-versions>> illustrates this
 problem: two teams are building a similar twice from scratch.
 
@@ -20,43 +21,55 @@ problem: two teams are building a similar twice from scratch.
 .Two custom versions of the same product.
 ditaa::../_images/custom0.ditaa[format=svg,separation=false,scale=0.75]
 
-The reusability and extensibility of software is what defines its customization
-potential.  Software that is impossible to modify is hard to customize.  It is
-likely that such software must be rebuilt for it to support custom
-modifications.  This uncustomized version is a _baseline_ product.  Modifying
-the baseline creates _custom versions_.  The discrete units of modifications are
-_customizations_. I define customization loosely here, a customization is any
-sort of modification altering the baseline.
+Customization is, at heart, modification. By modifying a certain basic version
+of a product, one creates a _new_ product that behaves differently, works
+differently, looks different---it's not the same product anymore.
 
-From a product management perspective, the baseline is the _product_. Yet, from
-a business perspective, nobody sells a baseline product. Customers always
-require some modifications, and won't accept an unmodified baseline. So what is
-the business value of the baseline? Is there any value in keeping it alive? Why
-not always do custom versions from scratch?
+The extent and size of modifications defines the difficulty of customization. A
+product can be easily customizable for different reasons. The modifications
+required to build a custom product might be small. Or there might be a lot of
+them, but they are easy to implement. It's not always a game of numbers.
 
-The answer is _*scale_. It depends. If the deliverable units are small, then it
+When creating a custom product, we look back to what we are customizing. The
+base product that requires modification is a _baseline_ product. This baseline
+product establishes the *reference implementation* from which we create custom
+products. The modifications, when split into discrete parts, are
+_customizations_. Together, a _customized reference_ is a _custom version_ or a
+_custom product_.
+
+From a product management perspective, the reference is _a_ product. Yet, from a
+business perspective, nobody sells a reference product. Customers always require
+some modifications, and won't accept an unmodified reference implementation. So
+what is the business value of the reference? Is there any value in keeping it
+alive? Why not always do custom versions from scratch?
+
+The answer is _scale_. It depends. If the deliverable units are small, then it
 might actually be easier to do complete customization. This approach will
 eventually prove unscalable: there comes a limit where it is more advantageous
-to start sharing technology by establishing a baseline. <<many-teams>> shows a
+to start sharing technology by establishing a reference implementation. <<many-teams>> shows a
 situation where there are parallel teams building the same product in isolation.
 
 [[many-teams]]
 [role="text-sm-center"]
-.Repetition can indicate the need for a baseline.
+.Repetition can indicate the need for a reference product.
 ditaa::../_images/custom4.ditaa[format=svg,separation=false]
 
 Sometimes it is wise to go fully custom, even with a lot teams. If the teams are
 small and building different things, it is natural, since the things they build
 are not related.  There can always be some technology sharing in such a
 scenario. If, however, the units are building the same thing with slight
-differences, breaking the development process into a baseline model makes
+differences, breaking the development process into a reference implementation makes
 sense. This is often the case in product development, so it is also the case in
 which I will focus here. Let's ignore the cases where the products are
 different, like in <<dissimilar>>.
 
+[[dissimilar]]
+[role="text-center float-sm-right"]
+.Establishing a reference can be hard.
+ditaa::../_images/custom5.ditaa[format=svg,scale=0.8]
 
 From an engineering perspective, the biggest hurdle of all is how to keep the
-baseline clean.  Nobody wants to have customization artifacts, the customizations
+reference clean.  Nobody wants to have customization artifacts, the customizations
 themselves, sticking out jaggedly in the code.  It is much more advantageous to
 have a plug-in approach, whereby the architecture isolates customizable units in
 such a way that it does not make the product inflexible.  If the code looks like
@@ -64,78 +77,49 @@ it's full of switches and toggles for customization specific installations, it
 can be really hard to reason about, to maintain and to understand.
 
 Customization has to be efficient. Most of the effort in the product development
-process should *always* be in the baseline. The customizations come later, they
+process should *always* be in the reference. The customizations come later, they
 are modifications, they are not a new product. If a product team spends more
-time in producing the user-facing custom versions than the actual baseline
+time in producing the user-facing custom versions than the actual reference
 product, this says that there are a lot of issues with the architecture.
-
-[[dissimilar]]
-[role="text-center float-sm-right"]
-.Establishing a baseline can be hard.
-ditaa::../_images/custom5.ditaa[format=svg,scale=0.8]
 
 == Software must not be a palimpsest
 
-When I think of customization gone wrong, I think of
-_palimpsests_. Palimpsest derives from Ancient Greek _palímpsēstos_,
-meaning "again scraped". Palimpsests were manuscript pages that were
-erased so that they could be reused for writing new
+When I think of customization gone wrong, I think of the word
+_palimpsest_. Palimpsest derives from Ancient Greek _palímpsēstos_,
+meaning "again scraped". Palimpsests were manuscript pages created by 
+erasing them so that they could be reused for writing new
 documents. Palimpsests were feasible when the raw material for
 parchment was expensive. It was more economical to erase and reuse a
-piece of parchment instead of getting a new one.
+piece of parchment than getting new parchment.
 
-This process is eerily similar to a failed software customization
-process. It is extremely weird that the industry treats software
-simultaneously as too expensive to throw out (the sunk-cost fallacy)
-and cheap enough to warrant continuous rewrites (the disposability
-fallacy).
+A palimpsest is eerily similar to a failed software customization
+process. In a failed customization, the reference is written over to create a
+custom product. This is not efficient. If the reference product is developed in
+parallel by a separate team, every time they introduce a new feature, the
+customizing team is impacted. They must either figure out how to bring this new
+feature in the custom product, or worse, remove it entirely. Either way, this is
+_negative_ work: work is done to _undo_ work done by others.
 
-That cognitive dissonance arises from the 
-
-So the goal is to be able to maintain and develop a baseline product _and_ the
-custom versions.  This process should be as efficient as possible.
-There should be zero rewriting.  Most of the time should be spent on
-_installing_ the customizations.  This part of the customization I
-call _wiring_.
-
-Customization using version control, also known as _branching_ or _forking_,
-is antithetical to the idea of proper customization.  I find that most
-branching-based customization is just overwriting existing functionality, as
-seen in <<branching>>.  Properly done, customization should not involve any
-*overwriting*. 
+This inefficiency will eventuall sink the teams. For every new feature
+potentially a new _anti-feature_ is made. In an ideal development process,
+reference features flow seamlessly in the custom versions. It does not create
+conflicts. 
 
 [[branching]]
 [role="text-center ml-sm-3 float-sm-right"]
-.Overwritten custom versions of a baseline product (grey).
+.Overwritten custom versions of a reference product (grey).
 ditaa::../_images/custom1.ditaa[format=svg,separation=false,scale=0.75]
+
+Overwriting is particularly prominent in version control customization.
+Customization using version control, also known as _branching_ or _forking_,
+is antithetical to the idea of proper customization.  I find that most
+branching-based customization is just overwriting existing functionality, as
+seen in <<branching>>.  
 
 What is more, people don't _want_ to do branching customization but they're
 often *forced* to, because the software wasn't designed for customization from
 the get-go.  The is the heart of the issue. it is important to design for
 customization from the beginning. You cannot add it later.
-
-To program for customization, there are numerous approaches, more than I can
-count.  One of the easiest, and probably the least complicated solution, is to
-use plain if statements to toggle custom logic.  The switches are turned on or
-off using run-time configuration.  The application reads the configuration at
-runtime and determines its behavior based on the configuration.
-
-At this point I have to make a distinction between configuration and
-application.  It is easy to overlook but the detail is important.  Configuration
-is something that's metadata which governs the behavior of an application, the
-application itself is an implementation of the behavior.  I won't specify any
-particular medium for configuration, it can be text files, databases, a remote
-server.  The important part is that it is somehow structured and human-readable,
-and that it can *configure the application*.
-
-Configuration alone isn't going to solve the problem.  Progamming the
-customizations into the baseline product and selecting them at run-time makes
-the product bigger.  A larger product is harder to maintain.
-
-So what is it then?  By now it is apparent that customizations should not
-overwrite existing functionality, the baseline product should lend itself to
-extension.  But piling customizations together and selecting a feature set in
-order to avoid overwriting just makes the product bigger.
 
 It's now obvious that the product should be designed to be _extended_
 so that no part is is overwritten.  Parts can be replaced, added,
@@ -143,6 +127,156 @@ removed or altered.  The customization process should feel like
 drawing on an outline, instead of using an eraser to blank a canvas to
 draw something new.
 
+== Efficiency is paramount
 
+So the goal is to be able to maintain and develop a reference product _and_ the
+custom versions.  This process should be as efficient as possible.
+There should be zero rewriting.  Most of the time should be spent on
+_installing_ the customizations.  This part of the customization I
+call _wiring_.
 
+There are many ways to do wiring.  One of the easiest, and probably the least
+complicated solution, is to use plain if statements to toggle custom logic.  The
+switches are turned on or off using run-time configuration.  The application
+reads the configuration at runtime and determines its behavior based on the
+configuration.
 
+At this point I have to make a distinction between configuration and
+application.  It is easy to overlook but the detail is important.  Configuration
+is something that's metadata which governs the behavior of an application, the
+application itself is an implementation of the behavior.  I won't specify any
+particular medium for configuration, it can be text files, databases, a remote
+server.  The important part is that it is somehow structured and human-readable,
+and that it can *alter the application behavior*.
+
+Configuration alone isn't going to solve the problem.  Progamming the
+customizations into the reference product and selecting them at run-time makes
+the product bigger.  A larger product is harder to maintain.
+
+[[bigline]]
+[role="text-center ml-sm-3 float-sm-right"]
+.Custom versions (A, B, C) are just subsets of the reference.
+ditaa::../_images/custom6.ditaa[format=svg,separation=false]
+
+So what is it then?  By now it is apparent that customizations should not
+overwrite existing functionality, the reference product should lend itself to
+extension.  On the other hand, piling customizations together and selecting a subset of them
+to create a custom version can make the product really big. What if there are
+five different implementations of the same reference functionality, and this is
+true for five other features? Now you have 25 permutations to choose from!
+<<bigline>> illustrates a big reference product. Customs versions originate from
+subsets of a large reference.
+
+Different languages give different tools for doing customization tricks. Perhaps
+the most basic one of them after branching logic--if's and else's--is trying to
+use inheritance from object oriented programming.
+
+You *really* don't want to do customization using inheritance.
+
+== Inheritance is not a solution
+
+Another troublemaker is to use inheritance from object-oriented programming to
+do customization. This is extremely dangerous because it doing so tends to break
+the https://en.wikipedia.org/wiki/Liskov_substitution_principle[Liskov
+substitution principle].  With inheritance, customization is created by
+overriding behavior in a reference class.  While this makes sense for simple
+behavioral subtyping scenarios, where an abstract entity is _implemented_ using
+inheritance, the customization approach tends to inherit the _implementation_,
+providing the custom implementation.
+
+This is particularly harmful because the Liskov substitution principle asserts
+that
+
+[.text-center]
+Let latexmath:[q(x)] be a property provable about objects latexmath:[x] of type
+latexmath:[T]. Then latexmath:[q(y)] should be provable for objects
+latexmath:[y] of type latexmath:[S], where latexmath:[S] is subtype of
+latexmath:[T].footnote:[https://en.wikipedia.org/wiki/Liskov_substitution_principle[Liskov
+substitution principle]. On Wikipedia, retrieved
+7th April 2018.]
+
+To paraphrase Wikipedia, this means that objects of type latexmath:[T] should be
+replaceable by objects of type latexmath:[S], without altering the behavior of
+the program. In the principle any latexmath:[S] behaves the same way as any
+latexmath:[T]. Substituting one with the other has no overall effect on the
+program.
+
+This is where the principle collides with inheritance-based customization. The
+whole point of customization is to alter program behavior, using inheritance to
+do customization decidedly violates the substitution principle!
+
+Of course it is possible to ignore the principle, but to me, it is a valuable
+property of any object-oriented design. By obeying the principle, we gain
+composability, since we can replace any latexmath:[T] with a latexmath:[S], and
+we can expect the same invariants to hold. To me, behavioral subtyping is the
+_only_ principle of object-oriented programming that makes sense and is useful.
+
+== Plug-ins are not a panacea
+
+Let's address the elephant in the room. By now, astute readers might have
+guessed that the we should be using modules and build a _plug-in architecture_
+to get easy customization.
+
+A plug-in architecture is obviously _a_ solution to customization. The process
+is as follows. We take the core product and inspect it and determine parts that
+are customizable. We then build the product in such a fashion that swapping out
+these parts is easy. Each part has alternatives, at least one. 
+
+In engineering lingo, these parts are _modules_, and a product engineered like
+this is a _modular_ product. The idea is to have a mechanism that can support
+different implementations of the same thing, built in such a way that the
+changing of implementations is easy. 
+
+To create a customized version, we take the core product and choose our set of
+parts. A custom version, voilà ! Now the customization process becomes a
+part-picking experience, by taking features off the shelf.
+
+The reaily is _somewhat_ darker than this. By emphasizing _somewhat_ I mean _a
+lot_ darker than this. The preceding paragraphs described the _ideal_ scenario
+of a modular architecture.
+
+[emmental.float-sm-right.ml-sm-3]
+.Emmental cheese.
+image::emmental.jpg[width=300]
+
+Building modularity properly is _tremendously_ difficult. You not only have to
+plan for the _known_ use cases--the custom scenarios--you also have to plan for
+the _unknown_ use cases. If your universal interface stops working because you
+didn't consider a case where the customization explicitly requires
+_non-universality_, tough shit! Maybe you didn't enforce the Liskov substitution
+principle, and your messaging system was co-opted into a customer profiling
+engine, and then the GDPR kicked in, and now your data protection officer wants
+a word with you!
+
+== A strong reference
+
+A rather typical nightmare scenario is that the reference is like a block of
+emmental, only the holes are too big, or there are too many of them. This is
+usually a symptom of insufficient reference engineering, that is, the reference is
+not given the attention it deserves. This is the _thin reference_ scenario. In
+the thin reference scenario, the reference is not a viable product, because the
+customizations, not the reference itself, received the brunt of engineering
+focus.
+
+It is often the case that the reference product is never a viable product, but it
+should be viable _enough_. The reference needs to be concrete enough to build a
+model of what the application is.  <<too-many-holes>> illustrates a modular
+architecture where most of the implementation is in the modules. While this
+approach can be viable, if the modules lack strong defaults, it might be hard to
+say what the reference does.
+
+[[too-many-holes]]
+[role="text-center"]
+.An extremely modular architecture.
+ditaa::../_images/custom7.ditaa[format=svg,separation=false]
+
+If the reference implementations of the modules are poorly done or unusuable, it
+will be hard to say what the reference product does.  This makes customization
+difficult, since the only actual product instances are the customized ones.
+This creates an awkward situation where the reference serves no purpose but to
+act as a _template_ for customizations, but the reference isn't a template!
+
+A strong reference product is also useful for quality purposes. If any module
+has a reference implementation, the custom implementation can be _verified_
+against the reference implementation. If the reference implementation doesn't
+exist, one must implement new quality checks for the custom implementation.
