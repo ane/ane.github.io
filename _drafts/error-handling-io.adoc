@@ -29,9 +29,9 @@ The `Rejection` class is an ADT represting _logical_ failures in the program:
 ----
 // our failure ADT
 sealed trait Rejection
-case object TokenMissing                extends Rejection
-case class  Unqualified(reason: String) extends Rejection
-case object Timeout                     extends Rejection
+case object TokenMissing                 extends Rejection
+case class  InvalidToken(reason: String) extends Rejection
+case object Timeout                      extends Rejection
 // more...
 ----
 
@@ -52,14 +52,14 @@ def checkQualification(...): Future[Either[Rejection, Status]]
 // check the validity of something
 def getValidity(...): Either[Rejection, Boolean]
 
-def someToken: Option[String]
+def getToken(): Future[]
 
-val program =
+val program(token: Token) =
   for {
-    token      <- EitherT.fromOption[Future](someToken, TokenMissing)
-    validToken <- EitherT.liftF[Future](getValidity(token))
-    quali      <- EitherT(checkQualification(valid))
-  } yield quali
+    token      <- readToken
+    validToken <- EitherT.liftF[Future](validate(token))
+    qualified  <- EitherT(qualify(valid))
+  } yield qualified
 
 // elsewhere
 
@@ -92,8 +92,6 @@ laws. Let's, however, try to see what that code would look like.
 def checkQualification(...): Future[Status]
 // changed from Either to Future!
 def getValidity(...): Future[Boolean]
-
-def someToken: Option[String]
 
 val program =
   for {

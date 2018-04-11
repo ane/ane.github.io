@@ -65,7 +65,7 @@ different, like in <<dissimilar>>.
 
 [[dissimilar]]
 [role="text-center float-sm-right"]
-.Establishing a reference can be hard.
+.Establishing a reference can be hard if product instances aren't alike.
 ditaa::../_images/custom5.ditaa[format=svg,scale=0.8]
 
 From an engineering perspective, the biggest hurdle of all is how to keep the
@@ -280,3 +280,71 @@ A strong reference product is also useful for quality purposes. If any module
 has a reference implementation, the custom implementation can be _verified_
 against the reference implementation. If the reference implementation doesn't
 exist, one must implement new quality checks for the custom implementation.
+
+Having a strong reference will prove problematic when the reference is extremely
+modular. A modular architecture _enables_ customization. A modular architecture
+isn't a goal in itself. The problem with an extremely modular architecture is
+you now need to maintain a reference product. That can get onerous if the
+amount of modularity is large, because now every customizable module has to be
+built and validated twice.
+
+== Reintegration
+
+Organizing the customization into a smaller set of modules makes maintaining the
+modular architecture easier. If we rearrange the modules of <<too-many-holes>>
+and group them together as a customization layer, we get something like in
+<<layer1>>. The idea is to organize the architecture into the static,
+non-customizable parts into a separate unit, and the customizable part as the
+customizable unit.
+
+[[layer1]]
+[role="text-center"]
+.Grouping the customizations as extensions on top of a base layer.
+ditaa::../_images/custom8.ditaa[format=svg,separation=false]
+
+In <<layer1>> we see that the area marked _Default_ is the reference
+implementation of the customization part. The architecture is now easier to
+understand from this picture. Customizable plugin belong to the customizable
+layer and the non-customizable parts are in the static layer.
+
+[[reintegr]]
+[role="text-center float-sm-right ml-3"]
+.Identifying a reusable part.
+ditaa::../_images/custom9.ditaa[format=svg,separation=false]
+
+It is a question of architectural _taste_ how big the customizable area of the
+product should be. Some applications like https://www.eclipse.org[Eclipse] are
+completelyfootnoteref:[eclipse-plugin,link:https://www.ibm.com/developerworks/library/os-ecplug/[Developing Eclipse plug-ins], retrieved 11th April 2018.]
+modular. The inverse of a completely modular architecture is an non-modular
+architecture. By now it is clear that a non-modular architecture is not good for
+customization. On the other hand, when working with a totally modular
+architecture, if the development team is willing to put with maintaining a
+strong reference product _and_ separate custom versions, a totally modular
+architecture might be fine.
+
+Sometimes customizations can be seen as reusable assets that should exist in
+_all_ versions, in the reference product. This is the _reintegration_ process
+where custom features are made a part of the reference product. There are two
+approaches to reintegration. Once the reusable part is identified in a
+customization (see <<reintegr>>), we can choose whether it should be a _global_
+customization. A global customization means that this is a customization point
+in every version. So the feature is made a module in the reference and custom
+versions.
+
+[[approachA]]
+[role="text-center float-sm-right"]
+.X becomes a custom feature for all versions.
+ditaa::../_images/custom10.ditaa[format=svg,separation=false]
+
+What if the feature is not seen as a customization, just as a feature that
+should be made a static part of the reference? In this case we make the feature
+a non-customizable part of the reference product. This is the static
+reintegration process: a custom asset, from a custom version, is made part of
+the reference product. This happens when the customization is not really a
+customizable thing, it's something every instance of the product benefits from.
+
+[[approachB]]
+[role="text-center float-sm-right"]
+.Static reintegration. X is made a non-custom part of the reference.
+ditaa::../_images/custom11.ditaa[format=svg,separation=false]
+

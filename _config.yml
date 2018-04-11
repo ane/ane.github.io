@@ -48,5 +48,4 @@ asciidoctor:
   safe: unsafe
   attributes:
     source-highlighter: pygments
-    icons: font
     imagesdir: /images

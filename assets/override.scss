@@ -162,19 +162,16 @@ blockquote {
     text-align: center;
 }
 
-.footnotes:before {
-    content: "Footnotes";
-    font-variant: small-caps;
-    color: #aaa;
-    border-bottom: 1px solid #aaa;
-    margin-bottom: 1em;
-    display: inline-block;
-}
-
-.footnotes {
+#footnotes, .footnotes {
     padding-top: 1rem;
     font-size: 90%;
-    border-top: 1px solid #ccc;
+
+    &:before {
+        content: "Footnotes";
+        font-variant: small-caps;
+        color: #aaa;
+        display: inline-block;
+    }
 }
 
 .post-meta {
@@ -194,8 +191,11 @@ span.icon>.fa {
     .title {
         color: #666;
         font-style: italic;
-        margin: 1rem 0rem;
-        font-size: 90%;
+        margin: 0px auto;
+        font-size: 80%;
+        max-width: 75%;
+        display: flex;
+        flex-direction: column;
     }
 }
 
@@ -211,7 +211,6 @@ span.icon>.fa {
             padding-left: 1.5rem;
 
             .title {
-                color: $linkColor;
                 font-style: italic;
                 font-size: 90%;
                 margin-bottom: 0.25rem;
@@ -229,36 +228,40 @@ span.icon>.fa {
     }
 }
 
-.admonitionblock td.icon [class^="fa icon-"] {
-  font-size: 1.5em;
-  text-shadow: 1px 1px 2px rgba(0,0,0,.5);
-  cursor: default;
+.admonitionblock .title {
+    text-transform: uppercase;
+    font-size: 90%;
 }
 
-.admonitionblock td.icon .icon-note:before {
-  content: "\f05a";
-  color: #19407c;
+
+.admonitionblock.note {
+  .icon > .title, .content > .title {
+      color: $linkColor;
+  }
 }
 
-.admonitionblock td.icon .icon-tip:before {
-  content: "\f0eb";
-  text-shadow: 1px 1px 2px rgba(155,155,0,.8);
-  color: #111;
+.admonitionblock.tip {
+  .icon > .title, .content > .title {
+      color: #111;
+  }
 }
 
-.admonitionblock td.icon .icon-warning:before {
-  content: "\f071";
-  color: #bf6900;
+.admonitionblock.warning {
+  .icon > .title, .content > .title {
+      color: #bf6900;
+  }
 }
 
-.admonitionblock td.icon .icon-caution:before {
-  content: "\f06d";
-  color: #bf3400;
+.admonitionblock.caution {
+  .icon > .title, .content > .title {
+      color: #bf3400;
+  }
 }
 
-.admonitionblock td.icon .icon-important:before {
-  content: "\f06a";
-  color: #bf0000;
+.admonitionblock.important {
+  .icon > .title, .content > .title {
+      color: #bf0000;
+  }
 }
 
 .mr-neg-5 {
