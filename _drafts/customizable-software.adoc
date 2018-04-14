@@ -68,13 +68,14 @@ different, like in <<dissimilar>>.
 .Establishing a reference can be hard if product instances aren't alike.
 ditaa::../_images/custom5.ditaa[format=svg,scale=0.8]
 
-From an engineering perspective, the biggest hurdle of all is how to keep the
-reference clean.  Nobody wants to have customization artifacts, the customizations
-themselves, sticking out jaggedly in the code.  It is much more advantageous to
-have a plug-in approach, whereby the architecture isolates customizable units in
-such a way that it does not make the product inflexible.  If the code looks like
-it's full of switches and toggles for customization specific installations, it
-can be really hard to reason about, to maintain and to understand.
+From an engineering perspective, the biggest challenge in customization is how
+to keep the reference clean.  Nobody wants to have customization artifacts, the
+customizations themselves, sticking out jaggedly in the code.  It is much more
+advantageous to have a plug-in approach, whereby the architecture isolates
+customizable units in such a way that it does not make the product inflexible.
+If the code looks like it's full of switches and toggles for customization
+specific installations, it can be really hard to reason about, to maintain and
+to understand.
 
 Customization has to be efficient. Most of the effort in the product development
 process should *always* be in the reference. The customizations come later, they
@@ -155,7 +156,7 @@ the product bigger.  A larger product is harder to maintain.
 
 [[bigline]]
 [role="text-center ml-sm-3 float-sm-right"]
-.Custom versions (A, B, C) are just subsets of the reference.
+.Custom versions (A, B, C) are just subsets of a large reference product. 
 ditaa::../_images/custom6.ditaa[format=svg,separation=false]
 
 So what is it then?  By now it is apparent that customizations should not
@@ -299,7 +300,7 @@ customizable unit.
 
 [[layer1]]
 [role="text-center"]
-.Grouping the customizations as extensions on top of a base layer.
+.Visualizing the customizations as extensions on top of a base layer. This is most likely not how the customizations are organized concretely.
 ditaa::../_images/custom8.ditaa[format=svg,separation=false]
 
 In <<layer1>> we see that the area marked _Default_ is the reference
@@ -339,7 +340,7 @@ ditaa::../_images/custom10.ditaa[format=svg,separation=false]
 What if the feature is not seen as a customization, just as a feature that
 should be made a static part of the reference? In this case we make the feature
 a non-customizable part of the reference product. This is the static
-reintegration process: a custom asset, from a custom version, is made part of
+extension process: a custom asset, from a custom version, is made part of
 the reference product. This happens when the customization is not really a
 customizable thing, it's something every instance of the product benefits from.
 
@@ -348,3 +349,79 @@ customizable thing, it's something every instance of the product benefits from.
 .Static reintegration. X is made a non-custom part of the reference.
 ditaa::../_images/custom11.ditaa[format=svg,separation=false]
 
+The problem with reintegration is the architecture might not allow to do any of
+this. The extraction of the reusable part might be impossible (<<reintegr>>)
+because the feature too tightly coupled to the customized product. It might also
+be impossible to bring new features into the reference product because it wasn't
+built to support static extension. This forces the hand of the design to try the
+global customization approach.
+
+Any of the aforementioned scenarios are time-consuming and risky solutions to an
+underlying design failure.  These scenarios are symptoms. They are artifacts of
+a design process gone wrong. The architectural design of the product has failed.
+
+Perhaps the most important part of customization is to _design_ for it, to
+anticipate it. But that's the hardest part of all!
+
+== No easy wins
+
+The unfortunate truth is that you can always prepare for customization but you
+can never prepare for it perfectly. Either one is _too_ prepared with an
+over-engineered product or one is not prepared enough. These are the usual
+judgements laid a posteriori of a customization scenario.
+
+I have observed that we are just as likely to overengineer than to
+underengineer. This factoid is based on my idea that people tend to place too
+much emphasis on the things they _do_ know and too little emphasis on the things
+that they _don't_ know, and these estimation errors tend to be usually
+equal in measure. The things that we do know characterize our design with a vision of
+"holes" or "modules", the actual customization points, and the things that we
+don't know _add_ new places for these modules.
+
+Each step towards implementing a requirement, a product feature, always creates
+an inflexibility of sorts. After all, a product is the sum of the
+features. To create a customizable feature, one must imagine the product with
+the feature removed or significantly altered. Omit _that_ step, and you will
+have a difficulty customizing it!
+
+But this step can be taken to extremes. Exercising caution when planning for
+customization is necessary, because overengineering a product for customizations
+delays the time to market. Creating a minimum viable product will take
+significantly longer by planning too much for customization.  The flip side is
+that underengineering makes customization difficult, because you're forced to
+take the product apart and redesign for customization.
+
+It varies on a case-by-case basis which one takes the least time or other
+resources. If you don't overengineer _too much_, your investment might pay off
+in the end, since adding new features will be easy. Conversely, going over the
+top might have made the product too expensive. 
+
+I have observed some heuristical approaches towards finding a good
+synthesis. One of them is a rule of thumb to never build customization on the
+first iteration. Then on the second instance, when the customization becomes
+necessary, customizability is added. I think this is a very brutalistic
+approach, but it is feasible, if the process is done correctly. It eliminates
+the risk for overengineering customization, but it creates a need for effort
+when the customization is necessary. It is obvious that this heuristic is only
+feasible when the planned customization requirements aren't certain. If they're
+certain, this approach is harder to justify.
+
+By now I would say that the question of how much engineering should be done
+towards customization depends on the following factors:
+
+1. The size and scope of the product itself. What is the product, what does it do?
+2. The size and scope of the customizations. What can be customized? How hard is
+it do a customization?
+2. The foreseeable necessity of customizations. How is going to be customized,
+if at all?
+
+And therefore it's necessary to evaluate all three carefully before choosing the
+right amount of customization. But there's no universal heuristic. You always
+aim too high or too low. This may sound a little fatalistic, but I think it's
+possible to improve the accuracy of this process as one learns to estimate the
+above points.
+
+== Engineering for customization
+
+The _pièce de résistance_ of my post is the _how_ part of customization. How
+should one prepare for it? 
