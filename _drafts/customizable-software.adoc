@@ -421,7 +421,11 @@ aim too high or too low. This may sound a little fatalistic, but I think it's
 possible to improve the accuracy of this process as one learns to estimate the
 above points.
 
-== Engineering for customization
+== Building customizable software
 
-The _pièce de résistance_ of my post is the _how_ part of customization. How
-should one prepare for it? 
+Programming languages in all their variety offer tons of ways to build
+customizable software. From extensible classes to monkey patching to typeclasses
+and run-time class loading, there are many tools out there. I think the
+programming part of building customizability is just one part of the process,
+and while it's an important part, it's not the only part, as you have probably
+read now.
