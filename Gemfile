@@ -3,6 +3,7 @@ gem 'github-pages', group: :jekyll_plugins
 
 group :jekyll_plugins do
   gem 'asciidoctor-diagram', '~> 1.5.4'
+  gem 'asciidoctor-bibliography'
   gem 'jekyll-livereload'
   gem 'jekyll-asciidoc'
 end

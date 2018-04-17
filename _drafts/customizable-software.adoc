@@ -18,8 +18,8 @@ problem: two teams are building a similar twice from scratch.
 
 [[two-versions]]
 [role="text-center ml-sm-3 float-sm-right"]
-.Two custom versions of the same product.
-ditaa::../_images/custom0.ditaa[format=svg,separation=false,scale=0.75]
+.Two custom versions of the same product, differring in shape and color.
+ditaa::_images/custom0.ditaa[format=svg,separation=false,scale=0.75]
 
 Customization is, at heart, modification. By modifying a certain basic version
 of a product, one creates a _new_ product that behaves differently, works
@@ -52,7 +52,7 @@ situation where there are parallel teams building the same product in isolation.
 [[many-teams]]
 [role="text-sm-center"]
 .Repetition can indicate the need for a reference product.
-ditaa::../_images/custom4.ditaa[format=svg,separation=false]
+ditaa::_images/custom4.ditaa[format=svg,separation=false]
 
 Sometimes it is wise to go fully custom, even with a lot teams. If the teams are
 small and building different things, it is natural, since the things they build
@@ -66,7 +66,7 @@ different, like in <<dissimilar>>.
 [[dissimilar]]
 [role="text-center float-sm-right"]
 .Establishing a reference can be hard if product instances aren't alike.
-ditaa::../_images/custom5.ditaa[format=svg,scale=0.8]
+ditaa::_images/custom5.ditaa[format=svg,scale=0.8]
 
 From an engineering perspective, the biggest challenge in customization is how
 to keep the reference clean.  Nobody wants to have customization artifacts, the
@@ -83,7 +83,7 @@ are modifications, they are not a new product. If a product team spends more
 time in producing the user-facing custom versions than the actual reference
 product, this says that there are a lot of issues with the architecture.
 
-== Software must not be a palimpsest
+== On palimpsests
 
 When I think of customization gone wrong, I think of the word
 _palimpsest_. Palimpsest derives from Ancient Greek _palímpsēstos_,
@@ -109,7 +109,7 @@ conflicts.
 [[branching]]
 [role="text-center ml-sm-3 float-sm-right"]
 .Overwritten custom versions of a reference product (grey).
-ditaa::../_images/custom1.ditaa[format=svg,separation=false,scale=0.75]
+ditaa::_images/custom1.ditaa[format=svg,separation=false,scale=0.75]
 
 Overwriting is particularly prominent in version control customization.
 Customization using version control, also known as _branching_ or _forking_,
@@ -157,7 +157,7 @@ the product bigger.  A larger product is harder to maintain.
 [[bigline]]
 [role="text-center ml-sm-3 float-sm-right"]
 .Custom versions (A, B, C) are just subsets of a large reference product. 
-ditaa::../_images/custom6.ditaa[format=svg,separation=false]
+ditaa::_images/custom6.ditaa[format=svg,separation=false]
 
 So what is it then?  By now it is apparent that customizations should not
 overwrite existing functionality, the reference product should lend itself to
@@ -269,7 +269,7 @@ say what the reference does.
 [[too-many-holes]]
 [role="text-center"]
 .An extremely modular architecture.
-ditaa::../_images/custom7.ditaa[format=svg,separation=false]
+ditaa::_images/custom7.ditaa[format=svg,separation=false]
 
 If the reference implementations of the modules are poorly done or unusuable, it
 will be hard to say what the reference product does.  This makes customization
@@ -301,7 +301,7 @@ customizable unit.
 [[layer1]]
 [role="text-center"]
 .Visualizing the customizations as extensions on top of a base layer. This is most likely not how the customizations are organized concretely.
-ditaa::../_images/custom8.ditaa[format=svg,separation=false]
+ditaa::_images/custom8.ditaa[format=svg,separation=false]
 
 In <<layer1>> we see that the area marked _Default_ is the reference
 implementation of the customization part. The architecture is now easier to
@@ -311,7 +311,7 @@ layer and the non-customizable parts are in the static layer.
 [[reintegr]]
 [role="text-center float-sm-right ml-3"]
 .Identifying a reusable part.
-ditaa::../_images/custom9.ditaa[format=svg,separation=false]
+ditaa::_images/custom9.ditaa[format=svg,separation=false]
 
 It is a question of architectural _taste_ how big the customizable area of the
 product should be. Some applications like https://www.eclipse.org[Eclipse] are
@@ -335,7 +335,7 @@ versions.
 [[approachA]]
 [role="text-center float-sm-right"]
 .X becomes a custom feature for all versions.
-ditaa::../_images/custom10.ditaa[format=svg,separation=false]
+ditaa::_images/custom10.ditaa[format=svg,separation=false]
 
 What if the feature is not seen as a customization, just as a feature that
 should be made a static part of the reference? In this case we make the feature
@@ -347,7 +347,7 @@ customizable thing, it's something every instance of the product benefits from.
 [[approachB]]
 [role="text-center float-sm-right"]
 .Static reintegration. X is made a non-custom part of the reference.
-ditaa::../_images/custom11.ditaa[format=svg,separation=false]
+ditaa::_images/custom11.ditaa[format=svg,separation=false]
 
 The problem with reintegration is the architecture might not allow to do any of
 this. The extraction of the reusable part might be impossible (<<reintegr>>)
@@ -389,7 +389,7 @@ customization is necessary, because overengineering a product for customizations
 delays the time to market. Creating a minimum viable product will take
 significantly longer by planning too much for customization.  The flip side is
 that underengineering makes customization difficult, because you're forced to
-take the product apart and redesign for customization.
+take the product apart and redesign for customization. 
 
 It varies on a case-by-case basis which one takes the least time or other
 resources. If you don't overengineer _too much_, your investment might pay off
@@ -412,7 +412,7 @@ towards customization depends on the following factors:
 1. The size and scope of the product itself. What is the product, what does it do?
 2. The size and scope of the customizations. What can be customized? How hard is
 it do a customization?
-2. The foreseeable necessity of customizations. How is going to be customized,
+3. The foreseeable necessity of customizations. How is going to be customized,
 if at all?
 
 And therefore it's necessary to evaluate all three carefully before choosing the
@@ -421,11 +421,86 @@ aim too high or too low. This may sound a little fatalistic, but I think it's
 possible to improve the accuracy of this process as one learns to estimate the
 above points.
 
-== Building customizable software
+== Towards a software customization framework
 
-Programming languages in all their variety offer tons of ways to build
+Programming languages in all their variety offer tons of techniques for building
 customizable software. From extensible classes to monkey patching to typeclasses
 and run-time class loading, there are many tools out there. I think the
 programming part of building customizability is just one part of the process,
 and while it's an important part, it's not the only part, as you have probably
 read now.
+
+As I stated at the start, I'm not interested in offering an end-it-all solution
+or programming technique to tackle the issue of software customization. What I'm
+interested in is building a framework, in the methodology sense, towards doing
+customization. This post is just the beginning. 
+
+That said, I'm not going to just write a post that is basically just a brain
+dump of the things that I find difficult on the topic.  So at the start I said
+that I have developed some rough ideas on how to address the issue of
+customization.  This lays the groundwork on what the framework I mentioned above
+is going to solve.
+
+A strong reference implementation is necessary::
+
+When building a product that is going to have multiple custom instances, it is
+important to have some sort of a reference to which the instances can be
+compared. Not only this makes quality assurance easier, because you can validate
+the instance against the reference, it also makes it easier to separate what is
+custom and what isn't. The reference product _is_ the product itself, the custom
+instances are just extensions of it. Furthermore, custom instances can produce
+features that are desirable in the core product or other customizations, and the
+reference product is a channel for adding new features to the product.
+
+Identifying the necessity of customization::
+
+It is important to known in advance whether the product is going to have custom
+instances or not. This makes it easier to know which parts will require
+customization and which parts are more static. That said, it is often difficult
+to anticipate what parts will require customization. So the architecture should
+be flexible enough to permit adding customizability as easily as possible.
+
+The quantity of architectural design::
+
+In anticipating the customizations, it is just as easy to overengineer for
+_every_ customization as it is to underengineer for _no_ customization. It can
+be said that for every known requirement for customization another _unknown_
+customization requirement is going to materialize eventually. Creating an overly
+composable, supremely modular architecture is not a good idea; conversely
+creating a rigid and static architecture is equally a bad idea. In my view,
+there are no universal heuristics on just how much is necessary. It requires
+judgement on a case-by-case basis.
+
+== Conclusion
+
+This post became _way_ longer than I originally intended to. I originally wanted
+to present a particular customization technique using the tricks of one
+particular programming language and programming environment, but as it grew
+larger I wanted to give the topic a broader treatment. But this barely even
+scratches the surface. I have not even spoken on how to do customization in
+practice at all.
+
+I suppose at this point this post is a beginning in a series of longer ones,
+treating the individual elements of the previous list in a more profound
+manner. This is a very large topic in general, as it broaches fields from
+software architecture to product management to requirements engineering to
+actual programming.
+
+That is not to say I plan to devote the whole blog towards software product
+engineering, let alone write a book about it (though that would be interesting),
+but as I deal with these topics daily in my job, it's a very interesting topic
+_to me_. So interested readers can possibly expect more of the subject!
+
+To those interested in software product engineering in general I can recommend
+_Software Reuse: Architecture, Process and Organization for Business Success_ by
+citet:[perkele]. A recurring theme in working with software product
+engineering is the idea of _software product lines_. For an introduction to the
+topic I recommend _Software Product Lines: Practices and Patterns_ by
+citet:[clements2002software] and _Software Product Line Engineering: Foundations,
+Principles and Techniques_ by citet:[pohl2005software].
+
+[bibliography]
+== References
+
+bibliography::[]
+
