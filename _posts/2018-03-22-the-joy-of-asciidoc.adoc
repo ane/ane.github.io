@@ -67,7 +67,7 @@ ended up with this:
 
 [source,yaml]
 ----
-include::../.travis.yml[]
+include::.travis.yml[]
 ----
 
 Anyway, after banging my head against the beast that is dependency management, I
