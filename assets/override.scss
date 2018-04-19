@@ -41,9 +41,6 @@ p code {
     color: #333;
 }
 
-code {
-    font-size: 90%;
-}
 
 pre, code, tt {
     font-family: $preFont;
@@ -51,7 +48,7 @@ pre, code, tt {
 
 
 .content {
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.4;
     p {
         -webkit-hyphens: manual;
