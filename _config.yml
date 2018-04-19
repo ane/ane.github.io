@@ -1,4 +1,4 @@
-name: Antoine Kalmbach
+title: Antoine Kalmbach
 description: "The personal blog of Antoine Kalmbach."
 encoding: utf-8
 excerpt_separator: <!--break-->
@@ -22,6 +22,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-mentions
   - asciidoctor-diagram
+  - asciidoctor-bibliography
   - jekyll-asciidoc
 
 twitter:
@@ -44,8 +45,9 @@ exclude:
   - vendor
 
 asciidoctor:
-  base_dir: :docdir
+  base_dir: :source
   safe: unsafe
   attributes:
     source-highlighter: pygments
     imagesdir: /images
+    bibliography-database: blog.bib
