@@ -10,7 +10,6 @@ notifications:
 # asciidoctor diagram dependencies
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install rustup
   - sudo apt-get install -y graphviz ditaa plantuml
 
 # build the site
