@@ -1,10 +1,9 @@
 = Software customization is really hard
-
 :page-layout: post
 :xrefstyle: short
 :sectanchors:
 
-I have been thinking long and hard about ways to do software customization
+I have been thinking long and hard about how to do software customization
 properly at a software architecture level.  I don't want to claim that I have
 figured things out, but I offer what I think is a reasonably abstract solution,
 if that makes sense.  I will detail my findings below, but first let's start by
@@ -18,7 +17,7 @@ problem: two teams are building a similar twice from scratch.
 
 [[two-versions]]
 [role="text-center ml-sm-3 float-sm-right"]
-.Two custom versions of the same product, differring in shape and color.
+.Two custom versions of the same product, differing in shape and color.
 ditaa::_images/custom0.ditaa[format=svg,separation=false,scale=0.75]
 
 Customization is, at heart, modification. By modifying a certain basic version
@@ -101,14 +100,14 @@ customizing team is impacted. They must either figure out how to bring this new
 feature in the custom product, or worse, remove it entirely. Either way, this is
 _negative_ work: work is done to _undo_ work done by others.
 
-This inefficiency will eventuall sink the teams. For every new feature
+This inefficiency will eventually sink the teams. For every new feature
 potentially a new _anti-feature_ is made. In an ideal development process,
 reference features flow seamlessly in the custom versions. It does not create
 conflicts. 
 
 [[branching]]
 [role="text-center ml-sm-3 float-sm-right"]
-.Overwritten custom versions of a reference product (grey).
+.Overwritten custom versions of a reference product (gray).
 ditaa::_images/custom1.ditaa[format=svg,separation=false,scale=0.75]
 
 Overwriting is particularly prominent in version control customization.
@@ -139,7 +138,7 @@ call _wiring_.
 There are many ways to do wiring.  One of the easiest, and probably the least
 complicated solution, is to use plain if statements to toggle custom logic.  The
 switches are turned on or off using run-time configuration.  The application
-reads the configuration at runtime and determines its behavior based on the
+reads the configuration at run-time and determines its behavior based on the
 configuration.
 
 At this point I have to make a distinction between configuration and
@@ -150,7 +149,7 @@ particular medium for configuration, it can be text files, databases, a remote
 server.  The important part is that it is somehow structured and human-readable,
 and that it can *alter the application behavior*.
 
-Configuration alone isn't going to solve the problem.  Progamming the
+Configuration alone isn't going to solve the problem.  Programming the
 customizations into the reference product and selecting them at run-time makes
 the product bigger.  A larger product is harder to maintain.
 
@@ -232,7 +231,7 @@ To create a customized version, we take the core product and choose our set of
 parts. A custom version, voilà ! Now the customization process becomes a
 part-picking experience, by taking features off the shelf.
 
-The reaily is _somewhat_ darker than this. By emphasizing _somewhat_ I mean _a
+The reality is _somewhat_ darker than this. By emphasizing _somewhat_ I mean _a
 lot_ darker than this. The preceding paragraphs described the _ideal_ scenario
 of a modular architecture.
 
@@ -252,7 +251,7 @@ a word with you!
 == A strong reference
 
 A rather typical nightmare scenario is that the reference is like a block of
-emmental, only the holes are too big, or there are too many of them. This is
+Emmental, only the holes are too big, or there are too many of them. This is
 usually a symptom of insufficient reference engineering, that is, the reference is
 not given the attention it deserves. This is the _thin reference_ scenario. In
 the thin reference scenario, the reference is not a viable product, because the
@@ -368,10 +367,10 @@ anticipate it. But that's the hardest part of all!
 The unfortunate truth is that you can always prepare for customization but you
 can never prepare for it perfectly. Either one is _too_ prepared with an
 over-engineered product or one is not prepared enough. These are the usual
-judgements laid a posteriori of a customization scenario.
+judgments laid a posteriori of a customization scenario.
 
-I have observed that we are just as likely to overengineer than to
-underengineer. This factoid is based on my idea that people tend to place too
+I have observed that we are just as likely to over-engineer than to
+under-engineer. This factoid is based on my idea that people tend to place too
 much emphasis on the things they _do_ know and too little emphasis on the things
 that they _don't_ know, and these estimation errors tend to be usually
 equal in measure. The things that we do know characterize our design with a vision of
@@ -385,23 +384,23 @@ the feature removed or significantly altered. Omit _that_ step, and you will
 have a difficulty customizing it!
 
 But this step can be taken to extremes. Exercising caution when planning for
-customization is necessary, because overengineering a product for customizations
+customization is necessary, because over-engineering a product for customizations
 delays the time to market. Creating a minimum viable product will take
 significantly longer by planning too much for customization.  The flip side is
-that underengineering makes customization difficult, because you're forced to
+that under-engineering makes customization difficult, because you're forced to
 take the product apart and redesign for customization. 
 
 It varies on a case-by-case basis which one takes the least time or other
-resources. If you don't overengineer _too much_, your investment might pay off
+resources. If you don't over-engineer _too much_, your investment might pay off
 in the end, since adding new features will be easy. Conversely, going over the
 top might have made the product too expensive. 
 
 I have observed some heuristical approaches towards finding a good
 synthesis. One of them is a rule of thumb to never build customization on the
 first iteration. Then on the second instance, when the customization becomes
-necessary, customizability is added. I think this is a very brutalistic
+necessary, customizability is added. I think this is a very Brutalist
 approach, but it is feasible, if the process is done correctly. It eliminates
-the risk for overengineering customization, but it creates a need for effort
+the risk for over-engineering customization, but it creates a need for effort
 when the customization is necessary. It is obvious that this heuristic is only
 feasible when the planned customization requirements aren't certain. If they're
 certain, this approach is harder to justify.
@@ -424,7 +423,7 @@ above points.
 == Towards a software customization framework
 
 Programming languages in all their variety offer tons of techniques for building
-customizable software. From extensible classes to monkey patching to typeclasses
+customizable software. From extensible classes to monkey patching to type classes
 and run-time class loading, there are many tools out there. I think the
 programming part of building customizability is just one part of the process,
 and while it's an important part, it's not the only part, as you have probably
@@ -436,7 +435,7 @@ interested in is building a framework, in the methodology sense, towards doing
 customization. This post is just the beginning. 
 
 That said, I'm not going to just write a post that is basically just a brain
-dump of the things that I find difficult on the topic.  So at the start I said
+dump of the things that I find difficult on the topic.  I said in the beginning
 that I have developed some rough ideas on how to address the issue of
 customization.  This lays the groundwork on what the framework I mentioned above
 is going to solve.
@@ -456,20 +455,24 @@ Identifying the necessity of customization::
 
 It is important to known in advance whether the product is going to have custom
 instances or not. This makes it easier to know which parts will require
-customization and which parts are more static. That said, it is often difficult
-to anticipate what parts will require customization. So the architecture should
-be flexible enough to permit adding customizability as easily as possible.
+customization and which parts are more static.  That said, it is often difficult
+to anticipate what parts will require customization.  The architecture should be
+flexible enough to permit adding customizability as easily as possible. The
+architecture should also understand that some requirements may be missing
+entirely, so in one sense, the architecture must always anticipate some
+customization or redesigning.
 
 The quantity of architectural design::
 
-In anticipating the customizations, it is just as easy to overengineer for
-_every_ customization as it is to underengineer for _no_ customization. It can
+In anticipating the customizations, it is just as easy to over-engineer for
+_every_ customization as it is to under-engineer for _no_ customization. It can
 be said that for every known requirement for customization another _unknown_
 customization requirement is going to materialize eventually. Creating an overly
 composable, supremely modular architecture is not a good idea; conversely
 creating a rigid and static architecture is equally a bad idea. In my view,
 there are no universal heuristics on just how much is necessary. It requires
-judgement on a case-by-case basis.
+judgment on a case-by-case basis, especially by taking the previous two points
+into account.
 
 == Conclusion
 
@@ -491,16 +494,19 @@ engineering, let alone write a book about it (though that would be interesting),
 but as I deal with these topics daily in my job, it's a very interesting topic
 _to me_. So interested readers can possibly expect more of the subject!
 
+These ideas are just materializations of my recurring thoughts while designing
+software products, and most of them are not new. A step in _any_ direction is
+going to lead one towards what is known as _software product line engineering_,
+that is, recognizing that the creation of software _products_ can be understood
+using _product lines_. 
+
 To those interested in software product engineering in general I can recommend
 _Software Reuse: Architecture, Process and Organization for Business Success_ by
-citet:[perkele]. A recurring theme in working with software product
-engineering is the idea of _software product lines_. For an introduction to the
-topic I recommend _Software Product Lines: Practices and Patterns_ by
-citet:[clements2002software] and _Software Product Line Engineering: Foundations,
-Principles and Techniques_ by citet:[pohl2005software].
-
-[bibliography]
-== References
-
-bibliography::[]
+Ivar Jacobson, Martin Griss and Patrik Jonsson (Addison-Wesley, 1997). A
+recurring theme in working with software product engineering is the idea of
+_software product lines_. For an introduction to the topic I recommend _Software
+Product Lines: Practices and Patterns_ by Klaus Pohl, Günter Böckle and Frank
+J. van der Linden (Springer, 2005) and _Software Product Line Engineering:
+Foundations, Principles and Techniques_ by Paul Clements and Linda Northrop
+(Addison-Wesley, 2002).
 
