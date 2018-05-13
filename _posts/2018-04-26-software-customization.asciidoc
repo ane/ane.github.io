@@ -72,15 +72,15 @@ to keep the reference clean.  Nobody wants to have customization artifacts, the
 customizations themselves, sticking out jaggedly in the code.  It is much more
 advantageous to have a plug-in approach, whereby the architecture isolates
 customizable units in such a way that it does not make the product inflexible.
-If the code looks like it's full of switches and toggles for customization
-specific installations, it can be really hard to reason about, to maintain and
-to understand.
+If the code looks like it's full of switches and toggles for customizationz
+the code can be really hard to reason about and maintain.
 
-Customization has to be efficient. Most of the effort in the product development
-process should *always* be in the reference. The customizations come later, they
-are modifications, they are not a new product. If a product team spends more
-time in producing the user-facing custom versions than the actual reference
-product, this says that there are a lot of issues with the architecture.
+On the other hand, customization has to be efficient. Most of the effort in the
+product development process should *always* be in the reference product. The
+customizations come later, they are modifications, they are not a new
+product. If a product team spends more time in producing the user-facing custom
+versions than the actual reference product, this says that there are a lot of
+issues with the architecture.
 
 == On palimpsests
 
@@ -500,13 +500,13 @@ going to lead one towards what is known as _software product line engineering_,
 that is, recognizing that the creation of software _products_ can be understood
 using _product lines_. 
 
-To those interested in software product engineering in general I can recommend
-_Software Reuse: Architecture, Process and Organization for Business Success_ by
-Ivar Jacobson, Martin Griss and Patrik Jonsson (Addison-Wesley, 1997). A
-recurring theme in working with software product engineering is the idea of
-_software product lines_. For an introduction to the topic I recommend _Software
-Product Lines: Practices and Patterns_ by Klaus Pohl, Günter Böckle and Frank
-J. van der Linden (Springer, 2005) and _Software Product Line Engineering:
-Foundations, Principles and Techniques_ by Paul Clements and Linda Northrop
-(Addison-Wesley, 2002).
+Fundamentally, the art of customization is about software reuse. For a deeper
+introduction to the idea of reuse I recommend the book _Software Reuse:
+Architecture, Process and Organization for Business Success_ by Ivar Jacobson,
+Martin Griss and Patrik Jonsson (Addison-Wesley, 1997). From this is is easy to
+make the transition to the idea of software product lines. A good introduction
+to the subject are the books _Software Product Lines: Practices and Patterns_ by
+Klaus Pohl, Günter Böckle and Frank J. van der Linden (Springer, 2005) and
+_Software Product Line Engineering: Foundations, Principles and Techniques_ by
+Paul Clements and Linda Northrop (Addison-Wesley, 2002).
 
