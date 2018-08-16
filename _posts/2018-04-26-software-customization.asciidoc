@@ -15,10 +15,6 @@ _secondary_ goal is to do this efficiently.  Needless repetition is what
 characterizes a bad software product line.  <<two-versions>> illustrates this
 problem: two teams are building a similar twice from scratch.
 
-[[two-versions]]
-[role="text-center ml-sm-3 float-sm-right"]
-.Two custom versions of the same product, differing in shape and color.
-ditaa::_images/custom0.ditaa[format=svg,separation=false,scale=0.75]
 
 Customization is, at heart, modification. By modifying a certain basic version
 of a product, one creates a _new_ product that behaves differently, works
@@ -35,6 +31,11 @@ product establishes the *reference implementation* from which we create custom
 products. The modifications, when split into discrete parts, are
 _customizations_. Together, a _customized reference_ is a _custom version_ or a
 _custom product_.
+
+[[two-versions]]
+[role="text-center"]
+.Two custom versions of the same product, differing in shape and color.
+ditaa::_images/custom0.ditaa[format=svg,separation=false,scale=0.75]
 
 From a product management perspective, the reference is _a_ product. Yet, from a
 business perspective, nobody sells a reference product. Customers always require
@@ -62,11 +63,6 @@ sense. This is often the case in product development, so it is also the case in
 which I will focus here. Let's ignore the cases where the products are
 different, like in <<dissimilar>>.
 
-[[dissimilar]]
-[role="text-center float-sm-right"]
-.Establishing a reference can be hard if product instances aren't alike.
-ditaa::_images/custom5.ditaa[format=svg,scale=0.8]
-
 From an engineering perspective, the biggest challenge in customization is how
 to keep the reference clean.  Nobody wants to have customization artifacts, the
 customizations themselves, sticking out jaggedly in the code.  It is much more
@@ -81,6 +77,11 @@ customizations come later, they are modifications, they are not a new
 product. If a product team spends more time in producing the user-facing custom
 versions than the actual reference product, this says that there are a lot of
 issues with the architecture.
+
+[[dissimilar]]
+[role="text-center float-sm-right"]
+.Establishing a reference can be hard if product instances aren't alike.
+ditaa::_images/custom5.ditaa[format=svg,scale=0.8]
 
 == On palimpsests
 
@@ -154,7 +155,7 @@ customizations into the reference product and selecting them at run-time makes
 the product bigger.  A larger product is harder to maintain.
 
 [[bigline]]
-[role="text-center ml-sm-3 float-sm-right"]
+[role="text-center float-sm-right"]
 .Custom versions (A, B, C) are just subsets of a large reference product. 
 ditaa::_images/custom6.ditaa[format=svg,separation=false]
 
@@ -322,6 +323,11 @@ architecture, if the development team is willing to put with maintaining a
 strong reference product _and_ separate custom versions, a totally modular
 architecture might be fine.
 
+[[approachB]]
+[role="text-center float-sm-right"]
+.Static reintegration. X is made a non-custom part of the reference.
+ditaa::_images/custom11.ditaa[format=svg,separation=false]
+
 Sometimes customizations can be seen as reusable assets that should exist in
 _all_ versions, in the reference product. This is the _reintegration_ process
 where custom features are made a part of the reference product. There are two
@@ -331,10 +337,6 @@ customization. A global customization means that this is a customization point
 in every version. So the feature is made a module in the reference and custom
 versions.
 
-[[approachA]]
-[role="text-center float-sm-right"]
-.X becomes a custom feature for all versions.
-ditaa::_images/custom10.ditaa[format=svg,separation=false]
 
 What if the feature is not seen as a customization, just as a feature that
 should be made a static part of the reference? In this case we make the feature
