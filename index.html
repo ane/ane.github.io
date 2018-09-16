@@ -7,6 +7,42 @@ about: 'about.html'
 
 <div class="container">
   <div>
+    <div class="row">
+      <div class="col-sm-12 col-lg-10 offset-lg-1">
+        {% capture my-include %}{% include intro.md %}{% endcapture %}
+        {{ my-include | markdownify }}
+
+        {% assign colls = site.collections | where_exp: "item", "item.title" %}
+
+        <h2>Latest posts</h2>
+
+        {% assign all_posts = [] %}
+        {% for coll in colls %}
+          {% assign posts = coll.docs | where: 'layout', 'post' %}
+          {% assign all_posts = all_posts | concat: posts %}
+        {% endfor %}
+
+        <ul>
+          {% assign bosts = all_posts | sort: 'date' %}
+          {% for post in all_posts limit:5 %}
+            <li>{{ post.title }} on {{ post.date | date: '%d %B' }} in {{ post.collection }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
+<div class="container">
+  <div>
+    <div class="row">
+      <div class="col-sm-12 col-lg-10 offset-lg-1">
+        Hi, and welcome to my website.
+
+        <h2>Latest posts</h2>
+      </div>
+    </div>
     {% if paginator.posts.size > 0 %}
       <div class="row">
         <div class="col-sm-12 col-lg-10 offset-lg-1" itemscope="" itemtype="http://schema.org/Blog">
@@ -50,3 +86,5 @@ about: 'about.html'
     {% endif %}
   </div>
 </div
+
+-->

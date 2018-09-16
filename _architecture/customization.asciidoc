@@ -1,5 +1,8 @@
 = Software customization is really hard
 :page-layout: post
+:page-date: 2018-04-24T00:00:00
+:page-group: Product design
+:page-subtitle: Explores the inherent difficulties in maintaining customizable product architectures.
 :xrefstyle: short
 :sectanchors:
 

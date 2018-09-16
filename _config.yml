@@ -51,3 +51,14 @@ asciidoctor:
     source-highlighter: pygments
     imagesdir: /images
     bibliography-database: blog.bib
+
+collections:
+  architecture:
+    output: true
+    title: Architecture
+  webdev:
+    output: true
+    title: Web development
+  programming:
+    output: true
+    title: Programming and programming languages
