@@ -2,7 +2,8 @@
 layout: post
 date: 2016-10-14
 title: "Communicators: Actors with purely functional state"
-summary: "or, why mutable state is dangerous"
+subtitle: "Or, why mutable state is dangerous."
+group: Scala
 disqus: true
 tags:
   - scala

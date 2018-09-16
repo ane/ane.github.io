@@ -2,6 +2,7 @@
 title: Apache Camel and the price of abstractions
 layout: post
 disqus: true
+subtitle: Tactical nuclear weapons have their cost.
 date: 2017-03-08T00:00:00
 tags:
   - java

@@ -2,6 +2,7 @@
 :page-date: 2018-09-16T00:00:00
 :page-layout: post
 :page-tag: architecture
+:page-subtitle: Can the ability to manipulate an application actually destroy its performance?
 :xrefstyle: short
 
 Here's an interesting problem: suppose you have an event-driven system that

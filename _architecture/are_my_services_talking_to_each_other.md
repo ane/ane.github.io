@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Are my services talking to each other?
+subtitle: Assuming they don't hate each other?
 disqus: true
 date: 2016-01-26
 tags: 

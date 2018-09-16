@@ -4,7 +4,7 @@ software, web applications, computer games, optimization software, user interfac
 systems.
 
 On this website you'll find writings about every aspect of software engineering, from [programming
- and programming languages](/programming), general [software architecture](/architecture), to [web
+ and programming language design](/programming), general [software architecture](/architecture), to [web
  development](/webdev). I'm especially interested in [software product design](), and also on the
  business side of things I've written about [use case analysis](), [feature design](), [modelling]()
  and [requirements engineering](). I find writing [architectural descriptions]() to be quite

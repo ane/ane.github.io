@@ -2,6 +2,8 @@
 layout: post
 disqus: true
 date: 2016-01-08
+group: Language design and theory
+subtitle: Open for extension, but closed for modification?
 tags: 
 - programming
 - ocaml

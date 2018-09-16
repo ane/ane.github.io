@@ -23,9 +23,9 @@ about: 'about.html'
         {% endfor %}
 
         <ul>
-          {% assign bosts = all_posts | sort: 'date' %}
-          {% for post in all_posts limit:5 %}
-            <li>{{ post.title }} on {{ post.date | date: '%d %B' }} in {{ post.collection }}</li>
+          {% assign bosts = all_posts | sort: 'date' | reverse %}
+          {% for post in bosts limit:5 %}
+            <li><a href="{{ post.url }}">{{ post.title }}</a> on {{ post.date | date: '%d %B %Y' }} in <a href="/{{ post.collection }}">{{ post.collection | capitalize }}</a></li>
           {% endfor %}
         </ul>
       </div>
@@ -33,58 +33,3 @@ about: 'about.html'
   </div>
 </div>
 
-<!--
-<div class="container">
-  <div>
-    <div class="row">
-      <div class="col-sm-12 col-lg-10 offset-lg-1">
-        Hi, and welcome to my website.
-
-        <h2>Latest posts</h2>
-      </div>
-    </div>
-    {% if paginator.posts.size > 0 %}
-      <div class="row">
-        <div class="col-sm-12 col-lg-10 offset-lg-1" itemscope="" itemtype="http://schema.org/Blog">
-          {% for post in paginator.posts %}
-            <article itemprop="blogPost" itemscope="" itemtype="http://schema.org/BlogPosting">
-              <header>
-                {% include post-title.html post=post bip=post.title %}
-                {% if forloop.first %}
-                  <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}"/>
-                {% endif %}
-                <meta itemprop="keywords" content="{{ post.tags | join: ',' }}" />
-                <meta itemprop="author" content="{{ site.author }}" />
-                <meta itemprop="publisher" content="{{ site.author }}" />
-                <meta itemprop="headline" content="{{ post.title }}" />
-              </header>
-              <div itemprop="description">
-                {{ post.content }} 
-              </div>
-            </article>
-            {% unless forloop.last %}
-              <hr class="my-4">
-            {% endunless %}
-          {% endfor %}
-          <div class="row mt-5">
-            <div class="col-sm-6">
-              {% if paginator.previous_page %}
-                <a href="{{ paginator.previous_page_path }}">&larr; Newer posts</a>
-              {% endif %}
-            </div>
-            <div class="col-6 text-sm-right">
-              {% if paginator.next_page %}
-                <a href="{{ paginator.next_page_path }}">Older posts &rarr;</a>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
-    {% else %}
-      <h3>:-(</h3>
-      <p>I'm sorry, but there are no posts.</p>
-    {% endif %}
-  </div>
-</div
-
--->

@@ -1,5 +1,6 @@
 ---
 title: Useless interfaces 
+subtitle: Reusability can actually manifest as unusability.
 layout: post
 date: 2017-03-23T00:00:00
 disqus: true

@@ -21,7 +21,7 @@ nav {
     }
 }
 
-#footnotes a, .content p a, .content li a, .content span a {
+#footnotes a, .content p a, .content li a, .content span a, dt a {
     text-decoration: underline;
     &:hover {
         border: 0;

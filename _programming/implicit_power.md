@@ -1,6 +1,8 @@
 ---
 layout: post
 title: Implicit power
+group: Scala
+subtitle: Enter a trifecta of implicits.
 date: 2017-03-15T00:00:00
 tags:
   - scala

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Imprecision and abstraction
+subtitle: Fly too high and the sun burns you.
 disqus: true
 date: 2016-03-17
 tags: 

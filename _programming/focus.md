@@ -2,6 +2,8 @@
 layout: post
 title: Focus
 disqus: true
+subtitle: Some languages get it.
+group: Language design and theory
 date: 2016-03-25
 tags: 
   - go
