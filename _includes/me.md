@@ -2,8 +2,9 @@ Hi, my name is Antoine. I'm a software professional from Jyväskylä, Finland. I
 architect at [Qvantel](http://www.qvantel.com).
 
 I've been programming since childhood, moving from games to desktop software to the web. I've built
-desktop software, web applications, optimization software, and I've also done my fair share of user
-interface design.
+desktop software, web applications, optimization software, machine learning products, and messaging systems. 
+I've worked a lot with distributed applications and designing fault-tolerant systems. I've also done my 
+fair share of user interface design.
 
 I write here about topics that interest me. I can't offer a single term that could cover all the
 categories in this blog, although if I had to guess, *software* might be a good one.

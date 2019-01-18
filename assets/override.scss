@@ -3,7 +3,7 @@
 ---
 
 $headerFont: Arial, sans-serif;
-$preFont: monospace;
+$preFont: Menlo, Consolas, Monaco, "Courier New", monospace;
 $bodyFont: -apple-system,BlinkMacSystemFont,"avenir next",avenir,"Segoe UI","lucida grande","helvetica neue",helvetica,"Fira Sans",roboto,noto,"Droid Sans",cantarell,oxygen,ubuntu,"franklin gothic medium","century gothic","Liberation Sans",sans-serif;
 $linkColor: #006688;
 $visitedLinkColor: #443366;
@@ -81,8 +81,12 @@ pre, code, tt {
 
 
 pre.highlight {
-    font-size: 80%;
-    padding: 0 1rem;
+    font-size: 16px;
+    padding: 1rem 1.5rem;
+    background: #f7f7f9;
+    border-radius: 4px;
+    color: #303030;
+    line-height: 1.6;
 }
 
 header {
