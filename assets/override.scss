@@ -57,9 +57,11 @@ pre, code, tt {
     }
 
     p {
-        -webkit-hyphens: manual;
-        -moz-hyphens: manual;
-        hyphens: manual;
+        text-align: justify;
+        -ms-hyphens: auto;
+        -webkit-hyphens: auto;
+        -moz-hyphens: auto;
+        hyphens: auto;
     }
 
     li p {
@@ -314,4 +316,8 @@ span.icon>.fa {
     font-size: 0.85em;
     display: block;
     padding-top: 0.1em;
+}
+
+footer {
+    font-size: 85%;
 }
