@@ -23,19 +23,6 @@ post_class: post-template
 
       <footer>
         {% include comments.html %}
-        <hr/>
-        <div class="clearfix">
-          <span class="float-left">
-            {% if page.previous.url %}
-            <a class="prev" href="{{page.previous.url}}">&xlarr; {{page.previous.title}}</a>
-            {% endif %}
-          </span>
-          <span class="float-right">
-            {% if page.next.url %}
-           <a class="next" href="{{page.next.url}}">{{page.next.title}} &xrarr;</a>
-            {% endif %}
-          </span>
-        </div>
       </footer>
 
 

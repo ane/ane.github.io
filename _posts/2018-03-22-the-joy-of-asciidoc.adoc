@@ -2,6 +2,7 @@
 :page-layout: post
 :page-liquid:
 :page-tags: [meta]
+:page-description: Markdown has many limitations, AsciiDoc has few. Converting this site to AsciiDoc was not as easy as I thought, as I had to ditch the standard Github Jekyll integration, and build my own.
 
 I have always used https://jekyllrb.com/[Jekyll] on
 https://pages.github.com/[Github Pages] to host this site. It's always been very

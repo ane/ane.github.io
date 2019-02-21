@@ -11,11 +11,11 @@ tags:
 A feature that often frustrates me in object-oriented code is the prevalence of useless
 interfaces. Interface isn't meant literally here: this applies to traits of Rust/Scala and protocols
 of Clojure as well.
+<!--break-->
 
 The advice of *planning for the interface* is just and solid, but people tend to follow this tip to
 the extreme. It is not uncommon to see people design a module or class by defining its interface
 first, with an actual implementation following later.
-<!--break-->
 
 One eagerly designs an interface as follows:
 

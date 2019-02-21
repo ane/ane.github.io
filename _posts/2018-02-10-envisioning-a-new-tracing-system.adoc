@@ -2,6 +2,7 @@
 :page-layout: post
 :page-liquid:
 :page-tags: [distributed, tracing]
+:page-description: We can tell where we are by knowing the time and looking at stars. Can we do the same with distributed software systems?
 
 I've begun designing a new kind of tracing system for distributed
 systems. With tracing system I mean something like Zipkin or Prometheus:

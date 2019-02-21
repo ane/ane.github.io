@@ -21,10 +21,10 @@ conversation?
 A problem like arises when you have a non-trivial amount of distributed components talking to each
 other, forming a complex network. Let's start from the basics and consider a simple one:
 
-{:.text-xs-center}
+{:.text-center}
 ![A simple example](/images/are-my-services-1-simple.png)
 
-{:.text-xs-center}
+{:.text-center}
 *arrows indicate flows of information, i.e. x &rarr; y means x sends information to y*
 
 You could assume **A** is an event log, for example, of financial transactions; **B** is a message
@@ -38,7 +38,7 @@ towards **B**, but what we're really interested in is messages getting through a
 **C**. So in reality, if we superimpose our perceived dependencies on top of information flows, we
 end up with this:
 
-{:.text-xs-center}
+{:.text-center}
 ![A simple example, part two.](/images/are-my-services-3-simple.png)
 
 ## Tolerating faults
@@ -51,10 +51,10 @@ not talking to each other, where is or *who* is the broken phone?
 With such a simple case as above, pointing this out is easy, so let's make our network a bit more
 complicated.
 
-{:.text-xs-center}
+{:.text-center}
 ![A slightly more complex example](/images/are-my-services-2-not-so-simple.png)
 
-{:.text-xs-center}
+{:.text-center .mx-5}
 <small>
 <em>A - an event log; B - a message queue; C - a cache; E - app back-end; P - a user-facing
 application; I - a business intelligence system; S - a storage system</em>
@@ -77,10 +77,10 @@ in such a way that it does not! The event log simply dumps data to a message que
 it. What is worse, is that the implicit dependencies each propagate up the chain. Not only does the
 leaf node depend on the root node, it also depends on the intermediate nodes.
 
-{:.text-xs-center}
+{:.text-center}
 ![A slightly more complex example](/images/are-my-services-4-not-so-simple.png)
 
-{:.text-xs-center}
+{:.text-center}
 <small>
 <em>Implicit dependencies</em>
 </small>
@@ -140,10 +140,10 @@ Building a FRP-based rule engine isn't easy, you'd need to construct a rule engi
 diverse data events into high-level *signals* and then create additional logic for *summing* the
 signals. 
 
-{:.text-xs-center}
+{:.text-center}
 ![The FRP approach](/images/are-my-services-5-frp.png)
 
-{:.text-xs-center}
+{:.text-center}
 <small>
 <em>The sum of two signals is another signal. (Oh hey, this makes it a [semigroup](https://en.wikipedia.org/wiki/Semigroup)!)</em>
 </small>
@@ -163,10 +163,10 @@ Playing with some toy solutions I thought of something I call a *shadow network*
 principal information source is an event monitor **X** and we have a **leaf node** in the
 information dependency tree that is interested in data originating from **X**. 
 
-{:.text-xs-center}
+{:.text-center}
 ![Shadows](/images/are-my-services-6-shadow.png)
 
-{:.text-xs-center}
+{:.text-center}
 <small>
 <em>Each leaf node sends its data to the shadow node. The shadow node understands the data and can
 tell where it originated from, thereby seeing the implicit dependencies. The shadow node is

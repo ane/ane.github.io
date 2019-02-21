@@ -5,7 +5,7 @@ excerpt_separator: <!--break-->
 logo: false
 markdown: kramdown
 mathjax: true
-paginate: 3
+paginate: 7
 exclude: ["vendor"]
 baseurl: ""
 domain_name: 'http://ane.github.io'

@@ -12,3 +12,6 @@ categories in this blog, although if I had to guess, *software* might be a good 
 You if you have any questions you can reach me via [email](mailto:ane@iki.fi) or
 on [Twitter](https://twitter.com/anewtf).
 
+### Colophon
+
+This page is made using [Jekyll](https://jekyllrb.com/), the pages are built by [Travis CI](https://travis-ci.org/) and [deployed to and hosted]({% post_url 2018-03-22-the-joy-of-asciidoc %}) by [Github](http://github.com). The pages are a mix of [Asciidoctor](https://asciidoctor.org/) and Markdown, with images by [PlantUML](http://plantuml.com/), [graphviz](https://www.graphviz.org/), and [ditaa](http://ditaa.sourceforge.net/). The theme is [my own](https://github.com/ane/ane.github.io/). 

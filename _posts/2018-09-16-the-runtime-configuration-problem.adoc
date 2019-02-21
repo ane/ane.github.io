@@ -2,6 +2,7 @@
 :page-date: 2018-09-16T00:00:00
 :page-layout: post
 :page-tag: architecture
+:page-description: Configuring continuously running applications is a tricky problem. Effecting a new configuration alters application behavior, but this doesn't always happen instantly. I explore various ways for ensuring transitions between one state and the next happens smoothly.
 :xrefstyle: short
 
 Here's an interesting problem: suppose you have an event-driven system that

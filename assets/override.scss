@@ -15,9 +15,10 @@ a {
     }
 }
 
-nav {
+.nav {
     li.active a {
         font-weight: bold;
+        text-decoration: underline;
     }
 }
 
@@ -68,18 +69,35 @@ pre, code, tt {
         margin-bottom: 0.625rem;
     }
 
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.25rem; }
+    h4 { font-size: 1.0rem; }
+    h5 { font-size: 1.0rem; }
+    h6 { font-size: 1.0rem; }
 
-    h1 { font-size: 2em; }
-    h2 { font-size: 1.5em; }
-    h3 { font-size: 1.17em; }
-    h4 { font-size: 1.12em; }
-    h5 { font-size: .83em; }
-    h6 { font-size: .75em; }
+    @media (max-width: 575.98px) {
+        h1 { font-size: 1.3rem; }
+        h2 { font-size: 1.25rem; }
+        h3 { font-size: 1.2rem; }
+        h4 { font-size: 1.15rem; }
+        h5 { font-size: 1.1rem; }
+        h6 { font-size: 1.052rem; }
+
+        pre.highlight {
+            font-size: 12px;
+        }
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        margin-bottom: 1rem;
+    }
 }
 
 .hilink:target {
     background-color: #ffa;
 }
+
 
 
 pre.highlight {
@@ -92,9 +110,6 @@ pre.highlight {
 }
 
 header {
-    h1, h2, h3, h4, h5, h6 {
-        margin-bottom: 8px;
-    }
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -135,40 +150,6 @@ blockquote {
 
 .share-icon {
     font-size: 30px;
-}
-
-
-
-
-.full-size {
-    min-height: 100vh;
-    display: flex;
-    -webkit-box-align-content: center;
-    -webkit-align-content: center;
-    -ms-flex-align-content: center;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -moz-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    align-content: center;
-}
-
-.full-size h1, .full-size h3 {
-    font-family: "PT Serif", "Droid Serif", "Georgia", serif;
-}
-
-.full-size h1 {
-    font-size: 50px;
-}
-
-.full-size .share-icon {
-    font-size: 30px;
-}
-
-.center {
-    margin: 0 auto;
-    text-align: center;
 }
 
 #footnotes, .footnotes {

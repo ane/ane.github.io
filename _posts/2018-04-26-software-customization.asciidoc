@@ -2,11 +2,9 @@
 :page-layout: post
 :xrefstyle: short
 :sectanchors:
+:page-description: I have been thinking long and hard about how to do software customization properly at a software architecture level.  I don't want to claim that I have figured things out, but I offer what I think is a reasonably abstract solution, if that makes sense.
 
-I have been thinking long and hard about how to do software customization
-properly at a software architecture level.  I don't want to claim that I have
-figured things out, but I offer what I think is a reasonably abstract solution,
-if that makes sense.  I will detail my findings below, but first let's start by
+{page-description} I will detail my findings below, but first let's start by
 understanding the _problem_.
 
 The _primary_ goal of software customization is to _satisfy the needs of its
