@@ -28,7 +28,7 @@ directed graph.
 
 [[idea]]
 .Something like this.
-[graphviz.text-center.ml-3.float-lg-right,target=observatory,format=svg,width=600]
+[graphviz.twothirds.float-sm-right,target=observatory,format=svg]
 ....
 digraph Example {
     A[label="web-server"];

@@ -2,7 +2,7 @@
 :page-date: 2018-09-16T00:00:00
 :page-layout: post
 :page-tag: architecture
-:page-description: Configuring continuously running applications is a tricky problem. Effecting a new configuration alters application behavior, but this doesn't always happen instantly. I explore various ways for ensuring transitions between one state and the next happens smoothly.
+:page-description: Configuring continuously running applications is a tricky problem. Effecting a new configuration alters application behavior, but this doesn't always happen instantly. I explore various ways for ensuring these transitions happen smoothly.
 :xrefstyle: short
 
 Here's an interesting problem: suppose you have an event-driven system that
@@ -13,25 +13,6 @@ changes are infrequent and manual, and done by a human. The problem is this:
 since reloading the latest configuration always takes time, how do you build the
 runtime configuration capability without causing performance problems in the
 event processor?
-
-[[uc]]
-[plantuml,role="float-sm-right"]
-.The use cases of our system. 
-....
-@startuml
-rectangle "Event processing system" <<system>> {
-  usecase "Configure rules" as R
-  usecase "Process events" as PE
-  PE -D-> R : Include
-}
-
-actor Environment
-actor User <<Human>>
-
-Environment -L- PE 
-User -R- R 
-@enduml
-....
 
 A good example of this is some business rule engine that performs actions based
 on users interacting with a system. The rules for these actions are configurable
@@ -46,8 +27,6 @@ an event stream of some kind, let's leave that abstract. It doesn't matter where
 they come from or what the events are, we simply need to assume that the system
 has to respond to each one of them. The responses are based on business logic
 executed according to a configuration. This configuration is updated by humans
-(or automated processes) using a configuration tool. <<uc>> displays the
-use cases of this system.
 
 Since the configuration will always live in some external storage system for
 persistence purposes, there is a cost for retrieving the data from this storage
@@ -59,7 +38,7 @@ to make the configuration as easy as possible. The sequence diagram in <<seq>>
 illustrates how the event processing and rules are tied together.
 
 [[seq]]
-[plantuml,role="text-sm-center"]
+[plantuml,role="float-sm-right ml-3"]
 .How the system works
 ....
 title Configuration is reloaded on every event

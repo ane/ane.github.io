@@ -43,6 +43,7 @@ keep_files:
 exclude:
   - "*.ditaa"
   - vendor
+  - .asciidoctor
 
 asciidoctor:
   base_dir: :source

@@ -9,6 +9,7 @@ $linkColor: #006688;
 $visitedLinkColor: #443366;
 
 a {
+
     color: $linkColor;
     &:visited {
         color: $visitedLinkColor;
@@ -53,12 +54,19 @@ pre, code, tt {
     font-size: 18px;
     line-height: 1.5;
 
+    a[href]:not([href*='{{ site.baseurl }}']):not([href^='#']):not([href^='/']):after {
+        content: ' \279a';
+    }
+
+    h2#references + div.sectionbody {
+        font-size: 85%;
+    }
+
     @media only screen and (max-width: 590px) {
         font-size: 16px;
     }
 
     p {
-        text-align: justify;
         -ms-hyphens: auto;
         -webkit-hyphens: auto;
         -moz-hyphens: auto;
@@ -155,6 +163,7 @@ blockquote {
 #footnotes, .footnotes {
     padding-top: 1rem;
     font-size: 90%;
+    margin-bottom: 2rem;
 
     &:before {
         content: "Footnotes";
@@ -165,7 +174,7 @@ blockquote {
 }
 
 .post-meta {
-    margin-top: -0.25em;
+    margin-top: -1rem;
 }
 
 // asciidoctor crap
@@ -174,17 +183,45 @@ span.icon>.fa {
   cursor: default;
 }
 
+@media only screen and (min-width: 598px) {
+    .quarter {
+        width: 25%;
+    }
+
+    .third {
+        width: 33%;
+    }
+
+    .half {
+        width: 50%;
+    }
+
+    .twothirds {
+        width: 66%;
+    }
+
+    .threequarters {
+        width: 75%;
+        align-items: center;
+        margin: 1rem auto;
+    }
+}
+
 .imageblock {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin: 1rem 0rem;
+
 
     .title {
         color: #666;
-        font-style: italic;
-        margin: 0px auto;
-        max-width: 75%;
-        display: flex;
-        flex-direction: column;
+        font-size: 85%;
+    }
+
+    .content {
+
+        img {
+            height: auto;
+            width: 100%;
+        }
     }
 }
 
@@ -257,13 +294,6 @@ span.icon>.fa {
     margin-right: -5rem;
 }
 
-.imageblock {
-    display: block;
-
-    .content {
-        display: inline-block;
-    }
-}
 
 .content li .faded-tags {
     a {

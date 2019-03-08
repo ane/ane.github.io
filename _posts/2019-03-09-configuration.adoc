@@ -1,0 +1,149 @@
+= Configurability
+:page-layout: post
+:sectanchors:
+:page-liquid:
+:page-description: Customizing software products can be done by creating derivate products by altering what is known as the baseline product. This results in effectively new products, and managing them involves complicated logistics. What if we brought all the custom features _inside_ the baseline, and used configuration to choose from the baseline what goes into the custom versions?
+:figure-caption!:
+
+This post is a part of series on link:{% post_url
+2018-04-26-software-customization %}[software product customization]. Here, I
+present a method that avoid customization entirely: instead of customizations,
+behavioral changes are controlled by configuration. The start-time or build-time
+parameters of the product determine its behavior. To use a car analogy, a flip
+of a button can swap leather seats with
+https://en.wikipedia.org/wiki/Alcantara_(material)[Alcantara], instead of
+building a product line for leather seated cars and another for Alcantara cars
+at the car factory.
+
+Shipping a software product that integrates into a lot of systems is hard,
+because these systems vary from customer to customer. In most cases, these
+systems have different integrations mechanisms, protocols, locations. For
+example, a web shop product might integrate into the customer's shipping and
+logistics system. One customer could rely on UPS, the other on DHL, the other on
+the national post system, the other on FedEx, and so on. Each of these require a
+certain integration point from the web shop. 
+
+=== Customization versus configuration
+
+One way to do this is to _customize_ the software: produce a different version
+of the software that caters to this particular customer installation, using its
+specific shipping system integration. This alteration is done at the development
+pipeline, creating a new product instance, where the core behaviour is
+significantly changed. This custom version cannot be used for other customers,
+nor is the same version as the baseline anymore. The custom behavior is built
+into the software, it's not something you can swap out at whim.
+
+While the term _customization_ loosely means making the product behave
+differently, in this context I specifically use to mark the "customized" product
+as a derivative one. That strikes a difference between _configuration_: a
+configurable product gets its custom behavior derived from configuration, a set
+of parameters that determine the application behavior that are _external_ to the
+application. The part producing the custom behavior is outside the application.
+
+The part where car analogies in software tend to ultimately fall apart is
+software is not a physical medium. A binary does have a size, but whether the
+package is 100MB vs 1GB is largely irrelevant these days. As such, shipping a
+multitude of features such as shipping system integrations inside the same
+product does not dramatically alter the size of the deployable program.
+
+:locomotive: /images/locomotive.jpg
+[role="float-sm-right ml-3 half"]
+.Talk about configurability!
+image::{locomotive}[Locomotive, 300, link="{locomotive}"]
+
+Although clumsy, the seat selection analogy works well here. A customizable car
+has one of two choices, leather or fake leather. The customer gets a car with
+one or the other. If the customer were to change their mind, they'd be forced to
+return to the supplier to get them refitted. On the other hand, if one were to
+ship a _configurable_ car, one would ship two seat sets with the car and an
+option to get them swapped at minimal cost. But the customer needs to find a
+place for the secondary seat set.
+
+As said before, car analogies stop working at this point when talking about
+software. The secondary seat set might be a couple of megabytes or tens of
+megabytes in the binary size. The _logistics_ of the additional feature set are
+close to non-existent.
+
+Since software is not really a physical medium, a software delivery could just
+ship both seat sets and be done with it. Flip a switch off an enumeration to
+choose between seat styles. Or shipping system integrations.
+
+=== A big blob?
+
+A configurable software system has the custom features live inside the same
+space as all the rest. Compare this to a customizable system where different
+versions have different features. A version for customer _A_ has different
+modules available to it, since the modules for customer _B_'s requirements are
+not there. Underneath, it is mounted on top of the _baseline system_, where the
+standard product features come from. Both versions _A_ and _B_ have to now track
+changes in the baseline system, and this can be logistically challenging, as it
+tends to engender complicated release management and version control processes.
+
+In a configurable system there is no need for complex logistics: simply put all
+the features in the same binary, and ship the product with the necessary
+features enabled and the unnecessary or impossible ones disabled. Customer _A_
+chooses a different subset than customer _B_, but they are subsets of the same
+set nonetheless.
+
+=== Death to customization product lines!
+
+Configurability is the antithesis of customization product lines. Customization
+produces derivative products that are distinct: parts may be removed,
+overwritten, or altered. In configuration, instead of removing, we
+disable. Instead of overwriting behavior, we choose another implementation. To
+alter, we do the same.
+
+The logistical problem of customization management does not vanish but takes
+another form: configuration management. How do create a product line that can
+take a rich product and trim the cruft to ship the versions that are needed? The
+product team should not have to waste time with a steam locomotive control panel
+with dozens of switches and gears to deploy the products to customers!
+
+As the previous article dealt with the issue of managing product lines for
+customizations, we now enter face the problem of configuration management!
+Imagine for a second that the web shop system has now on top of its shipping
+system integration _ten other_ places to connect to, from product catalogs to
+order management systems to workforce management to billing. How do we make sure
+we can deliver versions of the product with the _right_ set of settings, the
+correct integrations and so on?
+
+The obvious answer is that this requires an extremely user-friendly interface. I
+don't mean a graphical one! Even a configuration file with a nice, clear syntax
+_with good documentation_ is more than enough. Ideally, the configuration system
+should be something that is fairly abstract. If you don't want to deal with YAML
+or JSON or properties files, you shouldn't have to. The configuration system
+must produce some sort of configuration and it shouldn't matter where this comes
+from. So even the origin of the configuration must be configurable!
+
+Aside from graphical interfaces, which face link:{% post_url
+2018-09-16-the-runtime-configuration-problem %}[issues of their own], there are
+lots of ways for creating user-friendly configuration interfaces. Over the years
+I've grown fond of https://github.com/lightbend/config[Typesafe Config], but
+plain YAML, TOML or INI files will do in a pinch.
+
+=== Configuration is flexible
+
+A configurable system has the downside that the settings need to be
+managed. Flexible, lightweight configuration management is still an unsolved
+problem, I think. That doesn't mean configuration is the solution to
+customization needs. On the contrary, it is a much better solution than any sort
+of derivative or "custom" software product line we've seen so far, but the
+implication is the requirement for configuration management.
+
+While the baseline codebase becomes large, as the custom requirements are
+bundled there, managing a large "monorepo" for a single product is usually
+easier than having separate code repositories. There are lots of ways to try to
+overlay customizations on top of a baseline version, but I've found them all
+wanting.
+
+So in the end, if I were to ship a web shop with integrations towards many
+shipping systems, I'd create a system where I can choose that for customer X,
+they get a certain set of integrations, and the other customer gets a different
+set. But the good part is that I can _control_ how this happen without having to
+install a special product line or team that manages customizations. This is a
+much better alternative than creating custom derivatives.
+
+Where do we go from here? So now I've closed the idea of creating customization
+product lines, but now I'm faced with an entirely new problem: configuration
+management! This is an entirely separate problem, which deserves a post of its
+own, so stay tuned!

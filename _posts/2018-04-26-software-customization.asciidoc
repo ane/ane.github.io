@@ -4,6 +4,11 @@
 :sectanchors:
 :page-description: I have been thinking long and hard about how to do software customization properly at a software architecture level.  I don't want to claim that I have figured things out, but I offer what I think is a reasonably abstract solution, if that makes sense.
 
+[[two-versions]]
+[role="float-sm-right half ml-sm-3"]
+.Two custom versions of the same product. Color and shape are used to illustrate differences.
+ditaa::_images/custom0.ditaa[format=svg,separation=false,scale=0.75]
+
 {page-description} I will detail my findings below, but first let's start by
 understanding the _problem_.
 
@@ -12,7 +17,6 @@ users_.  This means implementing their requirements into the product.  The
 _secondary_ goal is to do this efficiently.  Needless repetition is what
 characterizes a bad software product line.  <<two-versions>> illustrates this
 problem: two teams are building a similar twice from scratch.
-
 
 Customization is, at heart, modification. By modifying a certain basic version
 of a product, one creates a _new_ product that behaves differently, works
@@ -30,11 +34,6 @@ products. The modifications, when split into discrete parts, are
 _customizations_. Together, a _customized reference_ is a _custom version_ or a
 _custom product_.
 
-[[two-versions]]
-[role="text-center"]
-.Two custom versions of the same product, differing in shape and color.
-ditaa::_images/custom0.ditaa[format=svg,separation=false,scale=0.75]
-
 From a product management perspective, the reference is _a_ product. Yet, from a
 business perspective, nobody sells a reference product. Customers always require
 some modifications, and won't accept an unmodified reference implementation. So
@@ -48,7 +47,7 @@ to start sharing technology by establishing a reference implementation. <<many-t
 situation where there are parallel teams building the same product in isolation.
 
 [[many-teams]]
-[role="text-sm-center"]
+[role="third float-sm-right ml-sm-3"]
 .Repetition can indicate the need for a reference product.
 ditaa::_images/custom4.ditaa[format=svg,separation=false]
 
@@ -69,17 +68,17 @@ customizable units in such a way that it does not make the product inflexible.
 If the code looks like it's full of switches and toggles for customizationz
 the code can be really hard to reason about and maintain.
 
+[[dissimilar]]
+[role="half float-sm-right ml-sm-3"]
+.Establishing a reference can be hard if product instances aren't alike.
+ditaa::_images/custom5.ditaa[format=svg,scale=0.8]
+
 On the other hand, customization has to be efficient. Most of the effort in the
 product development process should *always* be in the reference product. The
 customizations come later, they are modifications, they are not a new
 product. If a product team spends more time in producing the user-facing custom
 versions than the actual reference product, this says that there are a lot of
 issues with the architecture.
-
-[[dissimilar]]
-[role="text-center float-sm-right"]
-.Establishing a reference can be hard if product instances aren't alike.
-ditaa::_images/custom5.ditaa[format=svg,scale=0.8]
 
 == On palimpsests
 
@@ -105,7 +104,7 @@ reference features flow seamlessly in the custom versions. It does not create
 conflicts. 
 
 [[branching]]
-[role="text-center ml-sm-3 float-sm-right"]
+[role="text-center half ml-sm-3 float-sm-right"]
 .Overwritten custom versions of a reference product (gray).
 ditaa::_images/custom1.ditaa[format=svg,separation=false,scale=0.75]
 
@@ -151,9 +150,10 @@ and that it can *alter the application behavior*.
 Configuration alone isn't going to solve the problem.  Programming the
 customizations into the reference product and selecting them at run-time makes
 the product bigger.  A larger product is harder to maintain.
+kakka
 
 [[bigline]]
-[role="text-center float-sm-right"]
+[role="text-center float-sm-right half ml-sm-3"]
 .Custom versions (A, B, C) are just subsets of a large reference product. 
 ditaa::_images/custom6.ditaa[format=svg,separation=false]
 
@@ -186,7 +186,7 @@ providing the custom implementation.
 This is particularly harmful because the Liskov substitution principle asserts
 that
 
-[.text-center]
+[.mx-auto.twothirds]
 Let latexmath:[q(x)] be a property provable about objects latexmath:[x] of type
 latexmath:[T]. Then latexmath:[q(y)] should be provable for objects
 latexmath:[y] of type latexmath:[S], where latexmath:[S] is subtype of
@@ -234,7 +234,7 @@ The reality is _somewhat_ darker than this. By emphasizing _somewhat_ I mean _a
 lot_ darker than this. The preceding paragraphs described the _ideal_ scenario
 of a modular architecture.
 
-[emmental.float-sm-right.ml-sm-3]
+[emmental.float-sm-right.third.ml-sm-3]
 .Emmental cheese.
 image::emmental.jpg[width=300]
 
@@ -265,7 +265,7 @@ approach can be viable, if the modules lack strong defaults, it might be hard to
 say what the reference does.
 
 [[too-many-holes]]
-[role="text-center"]
+[role="float-sm-left mr-3 third"]
 .An extremely modular architecture.
 ditaa::_images/custom7.ditaa[format=svg,separation=false]
 
@@ -297,7 +297,7 @@ non-customizable parts into a separate unit, and the customizable part as the
 customizable unit.
 
 [[layer1]]
-[role="text-center"]
+[role="threequarters mx-sm-auto"]
 .Visualizing the customizations as extensions on top of a base layer. This is most likely not how the customizations are organized concretely.
 ditaa::_images/custom8.ditaa[format=svg,separation=false]
 
@@ -307,7 +307,7 @@ understand from this picture. Customizable plugin belong to the customizable
 layer and the non-customizable parts are in the static layer.
 
 [[reintegr]]
-[role="text-center float-sm-right ml-3"]
+[role="float-sm-right half ml-sm-3"]
 .Identifying a reusable part.
 ditaa::_images/custom9.ditaa[format=svg,separation=false]
 
@@ -322,9 +322,9 @@ strong reference product _and_ separate custom versions, a totally modular
 architecture might be fine.
 
 [[approachB]]
-[role="text-center float-sm-right"]
-.Static reintegration. X is made a non-custom part of the reference.
-ditaa::_images/custom11.ditaa[format=svg,separation=false]
+[role="float-sm-right half ml-sm-3"]
+.Static reintegration. X is made a standard extension.
+ditaa::_images/custom10.ditaa[format=svg,separation=false]
 
 Sometimes customizations can be seen as reusable assets that should exist in
 _all_ versions, in the reference product. This is the _reintegration_ process
@@ -333,18 +333,18 @@ approaches to reintegration. Once the reusable part is identified in a
 customization (see <<reintegr>>), we can choose whether it should be a _global_
 customization. A global customization means that this is a customization point
 in every version. So the feature is made a module in the reference and custom
-versions.
-
+versions (<<approachB>>).
 
 What if the feature is not seen as a customization, just as a feature that
 should be made a static part of the reference? In this case we make the feature
-a non-customizable part of the reference product. This is the static
-extension process: a custom asset, from a custom version, is made part of
-the reference product. This happens when the customization is not really a
-customizable thing, it's something every instance of the product benefits from.
+a non-customizable part of the reference product, as seen in <<approachC>>.
+This is the static extension process: a custom asset, from a custom version, is
+made part of the reference product. This happens when the customization is not
+really a customizable thing, it's something every instance of the product
+benefits from.
 
-[[approachB]]
-[role="text-center float-sm-right"]
+[[approachC]]
+[role="float-sm-right half ml-sm-3"]
 .Static reintegration. X is made a non-custom part of the reference.
 ditaa::_images/custom11.ditaa[format=svg,separation=false]
 
@@ -501,12 +501,15 @@ that is, recognizing that the creation of software _products_ can be understood
 using _product lines_. 
 
 Fundamentally, the art of customization is about software reuse. For a deeper
-introduction to the idea of reuse I recommend the book _Software Reuse:
-Architecture, Process and Organization for Business Success_ by Ivar Jacobson,
-Martin Griss and Patrik Jonsson (Addison-Wesley, 1997). From this is is easy to
-make the transition to the idea of software product lines. A good introduction
-to the subject are the books _Software Product Lines: Practices and Patterns_ by
-Klaus Pohl, Günter Böckle and Frank J. van der Linden (Springer, 2005) and
-_Software Product Line Engineering: Foundations, Principles and Techniques_ by
-Paul Clements and Linda Northrop (Addison-Wesley, 2002).
+introduction to the idea of reuse I recommend the book
+_Software Reuse: Architecture, Process and Organization for Business Success_
+cite:[jacobson1997].  From the concepts of _reuse_ it is
+easy to make the transition to the idea of software product lines. A good
+introduction to the subject are the books _Software Product Lines: Practices and
+Patterns_ cite:[pohl2005software], and _Software Product Line Engineering: Foundations, Principles and
+Techniques_ cite:[clements2002software].
 
+
+== References
+
+bibliography::[]
