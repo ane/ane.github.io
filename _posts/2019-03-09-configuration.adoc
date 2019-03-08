@@ -10,10 +10,10 @@ This post is a part of series on link:{% post_url
 present a method that avoid customization entirely: instead of customizations,
 behavioral changes are controlled by configuration. The start-time or build-time
 parameters of the product determine its behavior. To use a car analogy, a flip
-of a button can swap leather seats with
-https://en.wikipedia.org/wiki/Alcantara_(material)[Alcantara], instead of
-building a product line for leather seated cars and another for Alcantara cars
-at the car factory.
+of a button in car can swap its leathter seats with
+https://en.wikipedia.org/wiki/Alcantara_(material)[Alcantara] instantly. This
+feature is part of the car itself, and doesn't require building a product line
+for leather seated cars and another for Alcantara cars at the car factory.
 
 Shipping a software product that integrates into a lot of systems is hard,
 because these systems vary from customer to customer. In most cases, these
