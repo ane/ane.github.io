@@ -1,6 +1,6 @@
 = Configurability
+:page-date: 2019-03-09T00:00:00
 :page-layout: post
-:sectanchors:
 :page-liquid:
 :page-description: Customizing software products can be done by creating derivate products by altering what is known as the baseline product. This results in effectively new products, and managing them involves complicated logistics. What if we brought all the custom features _inside_ the baseline, and used configuration to choose from the baseline what goes into the custom versions?
 :figure-caption!:

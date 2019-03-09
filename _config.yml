@@ -52,3 +52,4 @@ asciidoctor:
     source-highlighter: pygments
     imagesdir: /images
     bibliography-database: blog.bib
+    sectanchors: ''
