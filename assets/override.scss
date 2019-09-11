@@ -5,8 +5,8 @@
 $headerFont: Arial, sans-serif;
 $preFont: Menlo, Consolas, Monaco, "Courier New", monospace;
 $bodyFont: -apple-system,BlinkMacSystemFont,"avenir next",avenir,"Segoe UI","lucida grande","helvetica neue",helvetica,"Fira Sans",roboto,noto,"Droid Sans",cantarell,oxygen,ubuntu,"franklin gothic medium","century gothic","Liberation Sans",sans-serif;
-$linkColor: #006688;
-$visitedLinkColor: #443366;
+$linkColor: #0000EE;
+$visitedLinkColor: #551A8B;
 
 a {
 
@@ -53,10 +53,6 @@ pre, code, tt {
 .content {
     font-size: 18px;
     line-height: 1.5;
-
-    a[href]:not([href*='{{ site.baseurl }}']):not([href^='#']):not([href^='/']):after {
-        content: ' \279a';
-    }
 
     h2#references + div.sectionbody {
         font-size: 85%;
