@@ -1,11 +1,13 @@
-Hi, I'm Antoine. I'm a software professional from Jyväskylä, Finland. I work as a software
-architect at [Qvantel](http://www.qvantel.com).
+Hi, I'm Antoine. I work as a software architect at
+[Qvantel](http://www.qvantel.com), where I build software for the telecom
+industry. I live in Jyväskylä, Finland with my wife and daughter.
 
-I've been programming since childhood, moving from games to desktop software to
-the web. I've worked with desktop software, web applications, optimization
-software, machine learning, distributed databases, and messaging systems. I've
-also done my fair share of user interface design. These past years I've worked a
-lot with product design and product development in the telecom sector. 
+I've been programming since childhood, moving from silly games to desktop
+software to the web and systems. I've worked with desktop software, web
+applications, optimization software, machine learning, distributed databases,
+and messaging systems. I've also done my fair share of user interface design.
+These past years I've worked a lot with product design and product
+development in the telecom sector.
 
 I write here about topics that interest me. I can't offer a single term that
 could cover all the categories in this blog, although if I had to guess,
@@ -13,13 +15,3 @@ could cover all the categories in this blog, although if I had to guess,
 
 You if you have any questions you can reach me via [email](mailto:ane@iki.fi) or
 on [Twitter](https://twitter.com/anewtf).
-
-##### Colophon
-
-This page is made using [Jekyll](https://jekyllrb.com/), the pages are built by
-[Travis CI](https://travis-ci.org/) and [deployed to and hosted]({% post_url
-2018-03-22-the-joy-of-asciidoc %}) by [Github](http://github.com). The pages are
-a mix of [Asciidoctor](https://asciidoctor.org/) and Markdown, with images by
-[PlantUML](http://plantuml.com/), [graphviz](https://www.graphviz.org/), and
-[ditaa](http://ditaa.sourceforge.net/). The theme is [my
-own](https://github.com/ane/ane.github.io/). I author this site using [GNU Emacs](https://www.gnu.org/software/emacs/).
