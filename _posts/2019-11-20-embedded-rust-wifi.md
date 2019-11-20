@@ -22,7 +22,7 @@ MCUs in Python!](https://circuitpython.org/) Clock speeds run in the hundreds of
 of kilobytes of RAM. The internet is full of tutorials.
 
 Rust, given its nice high-level abstractions and package management, has [an
-amazing embedded ecosystem](https://circuitpython.org/). All you need is their build tool and GDB with
+amazing embedded ecosystem](https://github.com/rust-embedded/awesome-embedded-rust). All you need is their build tool and GDB with
 ARM support. Using a HAL is actually a real abstraction: implement a single HAL
 API, like [I<sup>2</sup>C](https://docs.rs/embedded-hal/0.2.3/embedded_hal/blocking/i2c/index.html), and your device is usable by anyone. As of
 writing some things are still missing from the Rust HAL library, like USB and
