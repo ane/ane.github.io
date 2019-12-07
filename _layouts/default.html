@@ -1,3 +1,4 @@
+<!-- -*- engine:liquid -*- -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -32,28 +33,18 @@
   </head>
   <body itemscope itemtype="https://schema.org/WebPage" class="{% if page.post_class %}{{page.post_class}}{% else %}home-template{% endif %}">
     <div class="hyphenate">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-12 col-lg-10 offset-lg-1">
-            {% include header.html %}
+      <div class="d-flex mt-5">
+        {% include menu.html %}
+        <div class="ml-5 w-50 content">
+          <div>
+            {{ content }}
           </div>
-        </div>
-      </div>
-
-      <div class="content">
-        {{ content }}
-      </div>
-      
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-12 col-lg-10 offset-lg-1">
-            <footer>
-              <hr>
-              <address>
-                Copyright &copy; {{ site.time | date: "%Y" }} <a href="{{ site.baseurl }}">{{ site.author }}</a> under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
-              </address>
-            </footer>
-          </div>
+          <footer>
+            <hr>
+            <address>
+              Copyright &copy; {{ site.time | date: "%Y" }} <a href="{{ site.baseurl }}">{{ site.author }}</a> under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
+            </address>
+          </footer>
         </div>
       </div>
       <!-- <script src="/assets/jquery.3.2.1.min.js"></script> -->

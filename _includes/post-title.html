@@ -1,7 +1,7 @@
 {% assign post = include.post %}
-<h1 class="page-header">
+<h2 class="page-header">
   <a class="post-title" href="{{ post.url }}" itemprop="url">{{ post.title }}</a>
-</h1>
+</h2>
 <p class="post-meta text-muted">
-  {% if post.category %}<span class="small-caps">{{ post.category | capitalize }}</span> &mdash; {% endif %}<time itemprop="datePublished">{{ post.date | date: "%B %-d, %Y" }}</time>
+  <time itemprop="datePublished">{{ post.date | date: "%B %-d, %Y" }}</time>
 </p>

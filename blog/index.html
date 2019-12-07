@@ -1,0 +1,43 @@
+---
+layout: default
+title: Blog
+cover: false
+about: 'about.html'
+---
+
+<h2>Blog posts</h2>
+<div>
+  {% if paginator.posts.size > 0 %}
+  <ul class="ml-0 pl-0">
+    {% for post in paginator.posts %}
+    <li class="list-unstyled">
+      <article class="mb-1" itemprop="blogPost" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}" />
+        <meta itemprop="keywords" content="{{ post.tags | join: ',' }}" />
+        <meta itemprop="author" content="{{ site.author }}" />
+        <meta itemprop="publisher" content="{{ site.author }}" />
+        <meta itemprop="headline" content="{{ post.title }}" />
+        <small class="text-monospace text-muted mr-1">{{ post.date | date: "%d %b %Y" }}</small> <a href="{{ post.url }}"> {{ post.title }}</a>
+      </article>
+    </li>
+
+    {% endfor %}
+  </ul>
+  
+  <div class="row mt-5">
+    <div class="col-sm-6">
+      {% if paginator.previous_page %}
+      <a href="{{ paginator.previous_page_path }}">&larr; Newer posts</a>
+      {% endif %}
+    </div>
+    <div class="col-6 text-sm-right pr-5">
+      {% if paginator.next_page %}
+      <a href="{{ paginator.next_page_path }}">Older posts &rarr;</a>
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+  <h3>:-(</h3>
+  <p>I'm sorry, but there are no posts.</p>
+  {% endif %}
+</div>

@@ -16,10 +16,14 @@ a {
     }
 }
 
-.nav {
-    li.active a {
+ul {
+    li a.active {
         font-weight: bold;
-        text-decoration: underline;
+        text-decoration: none;
+    }
+    
+    &.nav li.nav-item a.nav-link {
+        padding-left: 0;
     }
 }
 
@@ -51,9 +55,6 @@ pre, code, tt {
 
 
 .content {
-    font-size: 18px;
-    line-height: 1.5;
-
     h2#references + div.sectionbody {
         font-size: 85%;
     }
@@ -72,13 +73,6 @@ pre, code, tt {
     li p {
         margin-bottom: 0.625rem;
     }
-
-    h1 { font-size: 2rem; }
-    h2 { font-size: 1.5rem; }
-    h3 { font-size: 1.25rem; }
-    h4 { font-size: 1.0rem; }
-    h5 { font-size: 1.0rem; }
-    h6 { font-size: 1.0rem; }
 
     @media (max-width: 575.98px) {
         h1 { font-size: 1.3rem; }
@@ -117,16 +111,7 @@ header {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: $headerFont;
-    font-weight: 600;
     margin-bottom: 0.67em;
-}
-
-.post-meta {
-    font-size: 90%;
-    h1.page-header + p {
-        margin-top: -0.25rem;
-    }
 }
 
 nav {
@@ -166,6 +151,10 @@ blockquote {
         font-variant: small-caps;
         color: #aaa;
         display: inline-block;
+    }
+
+    ol {
+        margin-top: 1rem;
     }
 }
 
@@ -327,4 +316,42 @@ span.icon>.fa {
 
 footer {
     font-size: 85%;
+}
+
+dt {
+    margin-bottom: 0.5rem;
+}
+
+dd {
+    margin-left: 1rem;
+}
+
+.diagram .highlight pre.highlight {
+    background: #fff;
+    line-height: 1.15;
+
+    & code {
+        font-size: 80%;
+        width: 100%;
+        display: block;
+        text-align: center;
+    }
+}
+
+figure {
+    img {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+
+    figcaption {
+        font-size: 90%;
+        color: rgb(108, 117, 125);
+    }
+}
+
+pre.highlight code {
+    font-size: 80%;
 }

@@ -35,10 +35,7 @@ you want to write Rust on this thing though, there are problems: the ESP32 is
 using a Xtensa LX6 processor, which doesn't (yet) have mainline LLVM support,
 you'll have to use C or CircuitPython.
 
-<figure class="float-sm-right ml-3">
-  <img src="/images/esp32_wroom.jpg" class="figure-img img-fluid" width="150px"/>
-  <figcaption class="figure-caption">ESP-WROOM32 </figcaption>
-</figure>
+![ESP32-WROOM-32](/images/esp32_wroom.jpg){:standalone .w-25.ml-3.float-sm-right}
 
 Fine, if your goal is to get something *working*, it's probably not a good idea
 to use Rust for WiFi enabled toy devices. But if you want to do something *fun*,
@@ -60,11 +57,9 @@ its own firmware. The nice thing about the Adafruit firmware is that there's a
 to be straightforward. The ATWINC1500 libraries are hidden somewhere in Atmel
 Studio so I'm not going to dig that out just yet!
 
-<figure class="figure float-sm-right w-25 ml-3">
-  <img src="/images/airlift_breakout.jpg" class="figure-img img-fluid"/>
-  <figcaption class="figure-caption">The ESP32-WROOM-32 is also available as a
-  breakout with SPI support from <a href="https://www.adafruit.com/product/4201">Adafruit</a>.</figcaption>
-</figure>
+![The ESP32-WROOM-32 is also available as a breakout with SPI support from <a
+href="https://www.adafruit.com/product/4201">Adafruit</a>](/images/airlift_breakout.jpg){:standalone
+.figure.float-sm-right.w-25.ml-3}
 
 The alternative would be to build WiFi support yourself on some microcontroller
 that has WiFi. With the ESP32 being badly supported by LLVM and thus Rust, the
@@ -98,10 +93,7 @@ different WiFi microcontrollers I found:
     [Cypress WICED](https://www.digikey.com/en/resources/wiced-iot-platform)
     which is proprietary, but the Particle Photon uses FreeRTOS.
 
-<figure class="figure float-sm-right w-25 ml-3">
-  <img src="/images/atwinc1500.jpg" class="figure-img img-fluid"/>
-  <figcaption class="figure-caption">There's also a breakout for the ATWINC1500.</figcaption>
-</figure>
+![There's also a breakout for the ATWINC1500.](/images/atwinc1500.jpg){:standalone .float-sm-right.w-25.ml-3}
 
 Based on the chart I would go either with the ESP32-WROOM-32 or the
 ATWINC1500. The ESP32-WROOM-32 is both cheaper and easier to develop for compared
@@ -119,10 +111,9 @@ binary to the bootloader.
 
 Once I have the board, the next step is to build the SPI interface and some sort
 of socket abstraction that works over the SPI interface. Seems like there is no
-[real abstraction for
-sockets](https://github.com/rust-embedded/embedded-hal/issues/146), and there's
+[real abstraction for sockets](https://github.com/rust-embedded/embedded-hal/issues/146), and there's
 no `#![no_std]` library for things like HTTP let alone MQTT... this is going to
-be interesting! 
+be interesting!
 
 To put it simply, the Rust embedded ecosystem isn't super mature yet. It's
 getting there. That's not a problem, if I really need to get my toy device (like

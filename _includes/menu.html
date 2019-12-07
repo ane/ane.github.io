@@ -1,0 +1,28 @@
+<div class="card ml-5 flex-fill" style="max-width: 15rem;">
+  <div class="card-body">
+    <h5 class="card-title">Antoine Kalmbach</h5>
+    <ul class="nav mt-3 flex-column">
+      <li class="nav-item">
+        <a class="nav-link {% if page.title == 'Home' %}active{% endif %}" href="/">Home</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link {% if page.title == 'Blog' or page.layout == 'post' %}active{% endif %}" href="/blog" itemprop="url"><span itemprop="name">Blog</span></a>
+      </li>
+      <li class="nav-item" href="/about" itemprop="url">
+        <a class="nav-link {% if page.title == 'About' %}active{% endif %}" href="/about/">About</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {% if page.collection == 'embedded' or page.title contains "Embedded" %}active{% endif %}" href="/embedded/" itemprop="url">Embedded</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link  {% if page.collection == 'electronics' %}active{% endif %}" href="/electronics/" itemprop="url">Electronics</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link {% if page.title == 'Software' %}active{% endif %}" href="/software/" itemprop="url">Software</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+      </li>
+    </ul>
+  </div>
+</div>

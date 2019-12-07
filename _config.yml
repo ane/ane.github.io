@@ -5,7 +5,8 @@ excerpt_separator: <!--break-->
 logo: false
 markdown: kramdown
 mathjax: true
-paginate: 7
+paginate: 10
+paginate_path: "/blog/page:num/"
 exclude: ["vendor"]
 baseurl: ""
 domain_name: 'http://ane.github.io'
@@ -24,7 +25,15 @@ plugins:
   - asciidoctor-diagram
   - asciidoctor-bibliography
   - jekyll-asciidoc
+  - jekyll-last-modified-at
 
+collections:
+  embedded:
+    output: true
+    permalink: /:collection/:path
+  tracing:
+    output: true
+  
 twitter:
   username: anewtf
 

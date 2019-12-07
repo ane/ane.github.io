@@ -1,0 +1,11 @@
+---
+layout: default
+post_class: post-template page-template
+---
+
+<h2>{{ page.title }}</h2>
+<p class="post-meta">
+  <time class="text-muted">Last updated at {{ page.last_modified_at | date: "%d %b %Y" }}</time>
+</p>
+
+{{ content }}
