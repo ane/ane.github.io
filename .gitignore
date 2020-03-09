@@ -3,4 +3,5 @@ _site/*
 vendor
 .bundle
 .asciidoctor
+.DS_Store
 .jekyll-cache
