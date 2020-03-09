@@ -4,21 +4,12 @@ archive: false
 post_class: post-template
 ---
 
-<div class="container">
-  <article>
-    <header>
-      {% include post-title.html post=page bip=page.title %}
-      <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}" />
-    </header>
-    {{content}}
-  </article>
+<article>
+  <header>
+    {% include post-title.html post=page bip=page.title %}
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}" />
+  </header>
+  {{content}}
+</article>
 
-  <!-- <small class="text-muted">
-        {% if post.tags.size > 0 %} Tagged as {% for tag in post.tags %}<a href="/tags.html#{{ tag }}">{{ tag }}</a>{%
-        unless forloop.last %}, {% endunless %}{% endfor %}{% endif %}
-      </small> -->
-
-  <footer>
-    {% include comments.html %}
-  </footer>
-</div>
+{% include comments.html %}

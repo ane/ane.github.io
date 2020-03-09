@@ -5,47 +5,45 @@ cover: false
 about: 'about.html'
 ---
 
-<div class="container">
-  <div>
-    {% if paginator.posts.size > 0 %}
+<div>
+  {% if paginator.posts.size > 0 %}
 
-    {% for post in paginator.posts %}
-    <article class="mb-1" itemprop="blogPost" itemscope="" itemtype="http://schema.org/BlogPosting">
-      <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}" />
-      <meta itemprop="keywords" content="{{ post.tags | join: ',' }}" />
-      <meta itemprop="author" content="{{ site.author }}" />
-      <meta itemprop="publisher" content="{{ site.author }}" />
-      <meta itemprop="headline" content="{{ post.title }}" />
-      <article>
-        <header>
-          {% include post-title.html post=page bip=page.title %}
-          <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}" />
-        </header>
-        {{ post.content }}
-      </article>
+  {% for post in paginator.posts %}
+  <article class="mb-1" itemprop="blogPost" itemscope="" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}" />
+    <meta itemprop="keywords" content="{{ post.tags | join: ',' }}" />
+    <meta itemprop="author" content="{{ site.author }}" />
+    <meta itemprop="publisher" content="{{ site.author }}" />
+    <meta itemprop="headline" content="{{ post.title }}" />
+    <article>
+      <header>
+        {% include post-title.html post=page bip=page.title %}
+        <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}" />
+      </header>
+      {{ post.content }}
     </article>
+  </article>
 
-    {% unless forloop.last %}
-    <hr class="my-5">
-    {% endunless %}
+  {% unless forloop.last %}
+  <hr class="my-5">
+  {% endunless %}
 
-    {% endfor %}
-    <div class="row mt-5">
-      <div class="col-sm-6">
-        {% if paginator.previous_page %}
-        <a href="{{ paginator.previous_page_path }}">&larr; Newer posts</a>
-        {% endif %}
-      </div>
-      <div class="col-6 text-sm-right">
-        {% if paginator.next_page %}
-        <a href="{{ paginator.next_page_path }}">Older posts &rarr;</a>
-        {% endif %}
-      </div>
+  {% endfor %}
+  <div class="row mt-5">
+    <div class="col-sm-6">
+      {% if paginator.previous_page %}
+      <a href="{{ paginator.previous_page_path }}">&larr; Newer posts</a>
+      {% endif %}
     </div>
-
-    {% else %}
-    <h3>:-(</h3>
-    <p>I'm sorry, but there are no posts.</p>
-    {% endif %}
+    <div class="col-6 text-sm-right">
+      {% if paginator.next_page %}
+      <a href="{{ paginator.next_page_path }}">Older posts &rarr;</a>
+      {% endif %}
+    </div>
   </div>
+
+  {% else %}
+  <h3>:-(</h3>
+  <p>I'm sorry, but there are no posts.</p>
+  {% endif %}
 </div>
