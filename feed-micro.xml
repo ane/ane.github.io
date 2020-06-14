@@ -1,0 +1,25 @@
+---
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>{{ site.name | xml_escape }}</title>
+    <description>{{ site.title | xml_escape }}</description>		
+    <link>{{ site.url }}</link>
+    <language>en-gb</language>
+    <managingEditor>Antoine Kalmbach (ane@iki.fi)</managingEditor>
+    <webMaster>Antoine Kalmbach (ane@iki.fi)</webMaster>
+    <atom:link href="{{ site.url }}/feed-micro.xml" rel="self" type="application/rss+xml" />
+    {% assign micro = site.micro | sort: 'date' | reverse %}
+    {% for post in micro %}
+    <item>
+      <title></title>
+      <dc:creator>{{ site.author | xml_escape }}</dc:creator>
+      <description>{{ post.content | xml_escape }}</description>
+      <pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
+      <link>{{ site.url }}{{ post.url }}</link>
+      <guid isPermaLink="true">{{ site.url }}{{ post.url }}</guid>
+    </item>
+    {% endfor %}
+  </channel>
+</rss>

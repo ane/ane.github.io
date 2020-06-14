@@ -1,7 +1,9 @@
 {% assign post = include.post %}
+{% if post.title %}
 <h3 class="mb-3">
   <a class="post-title" href="{{ post.url }}" itemprop="url">{{ post.title }}</a>
 </h3>
 <p class="post-meta text-muted">
   <time itemprop="datePublished">{{ post.date | date: "%B %-d, %Y" }}</time>
 </p>
+{% endif %}

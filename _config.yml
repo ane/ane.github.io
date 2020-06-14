@@ -27,11 +27,9 @@ plugins:
   - jekyll-last-modified-at
 
 collections:
-  embedded:
+  micro:
     output: true
-    permalink: /:collection/:path
-  tracing:
-    output: true
+    permalink: /:collection/:year:month:day:hour:minute
   
 twitter:
   username: anewtf
