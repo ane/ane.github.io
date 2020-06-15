@@ -88,7 +88,6 @@ pre, code, tt {
     }
 
     h1, h2, h3, h4, h5, h6 {
-        margin-bottom: 1rem;
     }
 }
 
@@ -357,14 +356,30 @@ pre.highlight code {
 }
 
 .micro {
-    margin: 2rem 0;
-    font-size: 120%;
+    .list-group p {
+        margin-bottom: 0;
+    }
 
+    &:target {
+        h6 a {
+            color: #333 !important;
+        }
+        
+        color: red;
+    }
+    
+    &-date {
+        font-size: 90%;
+        color: #999 !important;
+    }
+
+    &-lg {
+        font-size: 120%;
+    }
+
+    &-xl {
+        font-size: 150%;
+    }
 }
 
-.micro-date {
-    font-size: 90%;
-    color: #999 !important;
-    margin-bottom: 0.5rem !important;
-}
 

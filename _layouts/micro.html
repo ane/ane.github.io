@@ -1,0 +1,13 @@
+---
+layout: default
+archive: false
+post_class: post-template
+---
+
+<article class="micro micro-xl">
+  <header class="micro-date">
+    {% include post-title.html post=page bip=page.title %}
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}" />
+  </header>
+  {{content}}
+</article>
