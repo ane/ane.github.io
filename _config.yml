@@ -29,7 +29,7 @@ plugins:
 collections:
   micro:
     output: true
-    permalink: /:collection/#:year:month:day:hour:minute
+    permalink: /:collection#:year:month:day:hour:minute
   
 twitter:
   username: anewtf
