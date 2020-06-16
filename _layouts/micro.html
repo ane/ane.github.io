@@ -6,8 +6,14 @@ post_class: post-template
 
 <article class="micro micro-xl">
   <header class="micro-date">
-    {% include post-title.html post=page bip=page.title %}
     <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}" />
   </header>
   {{content}}
+
+  <p class="text-muted mb-4 small">{{ page.date | date: "%A, %B %d, %Y at %H:%M" }}</p>
+  
+  {% assign convo = "http://ane.github.io" | append: post.url | url_encode %}
 </article>
+
+<script src="https://micro.blog/conversation.js?url={{ convo }}"></script>
+

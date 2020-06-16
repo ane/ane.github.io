@@ -8,7 +8,9 @@
 
   <title>
     {% if page.title == "Home" %}
-    {{ site.title }}
+      {{ site.title }}
+    {% elsif page.layout == "micro" %}
+      {{ page.date | date: "Microblog post on %A, %B %d, %Y at %H:%M" }}
     {% else %}
     {{ page.title }}
     {% endif %}
