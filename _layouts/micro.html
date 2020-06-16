@@ -4,15 +4,24 @@ archive: false
 post_class: post-template
 ---
 
+<div class="d-flex justify-content-between mb-3 small">
+  {% if page.previous %}
+    <a href="{{ site.url }}{{ page.previous.url }}">Previous</a>
+  {% endif %}
+  {% if page.next %}  
+    <a href="{{ site.url }}{{ page.previous.url }}">Next</a>
+  {% endif %}  
+</div>
+
 <article class="micro micro-xl">
   <header class="micro-date">
     <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}" />
   </header>
   {{content}}
 
-  <p class="text-muted mb-4 small">{{ page.date | date: "%A, %B %d, %Y at %H:%M" }}</p>
-  
-  {% assign convo = "http://ane.github.io" | append: post.url | url_encode %}
+  <p class="text-muted mb-4 small">{{ page.date | date: "%A, %B %d, %Y at %H:%M %Z" }}</p> 
+
+  {% assign convo = "http://ane.github.io" | append: page.url | url_encode %}
 </article>
 
 <script src="https://micro.blog/conversation.js?url={{ convo }}"></script>
