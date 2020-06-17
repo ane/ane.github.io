@@ -51,28 +51,28 @@ about: 'about.html'
     </div>
   </div>
   <div class="col-md-4">
-    <div class="card micro">
-        <h5 class="card-header d-flex justify-content-between">
+    <div class="card bg-light">
+      <div class="card-body">
+        <h4 class="card-title d-flex justify-content-between">
           <a href="/micro">Microblog</a>
           <a href="https://micro.blog/ane">
             <img src="/assets/microblog.svg" alt="Follow me on Micro.blog" width="24" height="24">
           </a>
-        </h5>
+        </h4>
 
-        <div class="list-group list-group-flush border-top-0">
           {% assign micro = site.micro | sort: 'date' | reverse %}
           {% for post in micro %} 
-          <li class="list-group-item">
+          <div class="micro-feed-entry">
             {{ post.content }}
-            <a class="text-muted text-decoration-none" href="{{ site.url }}{{ post.url }}">
+            <a class="d-block mt-n3 text-sm-right text-muted text-decoration-none" href="{{ site.url }}{{ post.url }}">
                 <small>
                 {{ post.date | date: '%B %d, %Y at %H:%M' }}
                 </small>
             </a>
-          </li>
+          </div>
 
           {% endfor %}
-        </ul>
+      </div>
     </div>
   </div>
 </div>

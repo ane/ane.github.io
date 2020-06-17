@@ -382,6 +382,12 @@ pre.highlight code {
     }
 }
 
+.micro-feed-entry {
+    & + & {
+        margin-top: 2rem;
+    }
+}
+
 .microblog_conversation {
     border-top: 1px solid #eee;
     padding-top: 2rem;
