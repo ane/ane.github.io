@@ -1,7 +1,7 @@
 {% assign post = include.post %}
 {% if post.title %}
-<h3 class="mb-3" class="p-name">
-  <a class="post-title" href="{{ post.url }}" itemprop="url">{{ post.title }}</a>
+<h3 class="mb-3">
+  <a class="post-title p-name" rel="bookmark" href="{{ post.url }}" itemprop="url">{{ post.title }}</a>
 </h3>
 
 <p class="post-meta text-muted">

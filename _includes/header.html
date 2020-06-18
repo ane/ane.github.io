@@ -1,14 +1,6 @@
 <nav class="navbar flex-md-column flex-lg-row align-items-baseline justify-content-between navbar-expand-md navbar-light mt-3 mb-4 p-0 border-bottom border-secondary">
   <a class="navbar-brand text-wrap" style="font-size: 2.3em;" href="/">
     {{ site.title }}
-
-    <div class="p-author d-none">
-      <p class="h-card">
-        <img class="u-photo" src="/images/me.png" />
-        <a class="p-name u-url" href="{{ site.url }}">{{ site.author }}</a>
-        <a class="u-email" href="mailto:{{ site.email }}">{{ site.email }}</a>
-      </p>
-    </div>
   </a>
   <ul class="navbar-nav text-uppercase">
     <li class="nav-item {% if page.title == 'Home' or page.layout == 'post' %}active{% endif %}">
@@ -28,3 +20,10 @@
     </li>
   </ul>
 </nav>
+
+<div class="h-card d-none">
+  <img class="u-photo" src="/images/me.png" />
+  <a class="u-url" href="{{ site.url }}{{ page.url }}"></a>
+  <a class="p-name u-url" href="{{ site.url }}">{{ site.author }}</a>
+  <a class="u-email" href="mailto:{{ site.email }}">ane@iki.fi</a>
+</div>
