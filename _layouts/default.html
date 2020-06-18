@@ -6,41 +6,41 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
     <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
 
-  <title>
-    {% if page.title == "Home" %}
-      {{ site.title }}
-    {% elsif page.layout == "micro" %}
-      {{ page.date | date: "Microblog post on %A, %B %d, %Y at %H:%M" }}
+    <title>
+      {% if page.title == "Home" %}
+        {{ site.title }}
+      {% elsif page.layout == "micro" %}
+        {{ page.date | date: "Microblog post on %A, %B %d, %Y at %H:%M" }}
+      {% else %}
+        {{ page.title }}
+      {% endif %}
+    </title>
+
+    {% if page.summary %}
+      <meta name="description" content="{{ page.summary }}">
     {% else %}
-    {{ page.title }}
+      <meta name="description" content="{{ site.meta_description}}" />
     {% endif %}
-  </title>
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 
-  {% if page.summary %}
-  <meta name="description" content="{{ page.summary }}">
-  {% else %}
-  <meta name="description" content="{{ site.meta_description}}" />
-  {% endif %}
-  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+    {% feed_meta %}
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  {% feed_meta %}
-  <meta charset="utf-8">
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="MobileOptimized" content="320" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% seo %}
+    <link rel="stylesheet" href="/assets/bootstrap.min.css" />
+    <link rel="stylesheet" href="/assets/override.css" />
+    <link rel="stylesheet" href="/assets/pygments.css" />
+  </head>
 
-  {% seo %}
-  <link rel="stylesheet" href="/assets/bootstrap.min.css" />
-  <link rel="stylesheet" href="/assets/override.css" />
-  <link rel="stylesheet" href="/assets/pygments.css" />
-</head>
-
-<body itemscope itemtype="https://schema.org/WebPage" class="{% if page.post_class %}{{page.post_class}}{% else %}home-template{% endif %}">
-  <div class="hyphenate">
-    <div class="container">
-      {% include header.html %}
-
+  <body itemscope itemtype="https://schema.org/WebPage" class="{% if page.post_class %}{{page.post_class}}{% else %}home-template{% endif %}">
+    <div class="hyphenate">
+      <div class="container">
+        {% include header.html %}
 
       <div class="content">
         {{ content }}

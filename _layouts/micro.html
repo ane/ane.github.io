@@ -10,19 +10,20 @@ post_class: post-template
   {% endif %}
   {% if page.next %}  
     <a href="{{ site.url }}{{ page.previous.url }}">Next</a>
-  {% endif %}  
+    {% endif %}  
 </div>
 
-<article class="micro micro-xl">
-  <header class="micro-date">
-    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}" />
-  </header>
-  {{content}}
+<article class="micro micro-xl h-entry">
+  <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="{{ post.url }}" />
 
-  <p class="text-muted mb-4 small">{{ page.date | date: "%A, %B %d, %Y at %H:%M %Z" }}</p> 
+  <div class="e-content">
+    {{content}}
+  </div>
 
+  <time datetime="{{ page.date }}" class="dt-published text-muted mb-4 small">{{ page.date | date: "%A, %B %d, %Y at %H:%M %Z" }}</time> 
+ 
   {% assign convo = "http://ane.github.io" | append: page.url | url_encode %}
 </article>
 
-<script src="https://micro.blog/conversation.js?url={{ convo }}"></script>
+<script src="https://micro.blog/conversation.js?url={{ convo }}" async="async" defer="defer"></script>
 
