@@ -21,9 +21,10 @@ post_class: post-template
   </div>
 
   <time datetime="{{ page.date }}" class="dt-published text-muted mb-4 small">{{ page.date | date: "%A, %B %d, %Y at %H:%M %Z" }}</time> 
- 
+  
   {% assign convo = "http://ane.github.io" | append: page.url | url_encode %}
+
+  <script src="https://micro.blog/conversation.js?url={{ convo }}" defer="defer"></script>
 </article>
 
-<script src="https://micro.blog/conversation.js?url={{ convo }}" async="async" defer="defer"></script>
 
