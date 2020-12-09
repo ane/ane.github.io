@@ -1,0 +1,26 @@
+digraph {
+    rankdir=LR
+    
+    node[group=left]
+    subgraph cluster_0 {
+        rank=same
+        color=grey
+        HttpRequest;
+        HttpResponse;
+        label="HTTP server flow"
+    }
+
+    MQ;
+    Files;
+    REST;
+    Processor;
+    Log;
+
+    MQ -> Processor;
+    Files -> Processor;
+    REST -> Processor;
+    Processor -> Log;
+
+    HttpRequest -> HttpResponse;
+    HttpRequest -> REST[label=<<i>yoink!</i>>,constraint=false];
+}

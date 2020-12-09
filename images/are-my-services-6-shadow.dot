@@ -1,0 +1,18 @@
+digraph {
+    rankdir="LR"
+
+    A -> B -> C;
+    C -> S;
+    C -> E;
+    B -> I;
+    E -> P;
+
+    X[label="S",style=dotted];
+    I -> X[style=dotted];
+    P -> X[style=dotted];
+    S -> X[style=dotted];
+
+    A -> I[style=dashed];
+    A -> P[style=dashed];
+    A -> S[style=dashed];
+}
