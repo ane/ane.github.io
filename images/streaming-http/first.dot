@@ -1,0 +1,7 @@
+digraph {
+    rankdir="LR";
+    MQ -> Processor;
+    Files -> Processor;
+    Rest -> Processor;
+    Processor -> Log;
+}

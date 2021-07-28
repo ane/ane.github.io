@@ -1,0 +1,341 @@
+<!-- -*- engine:liquid -*- -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
+
+    <title>
+      
+        Embedded Rust and WiFi
+      
+    </title>
+
+    
+      <meta name="description" content="" />
+    
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link type="application/atom+xml" rel="alternate" href="http://ane.iki.fi/feed.xml" title="Antoine Kalmbach's website" />
+    <meta http-equiv="refresh" content="0; url=http://ane.iki.fi/2019/11/20/embedded-rust-wifi.html" />
+    <link rel="canonical" href="http://ane.iki.fi/2019/11/20/embedded-rust-wifi.html"/>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Embedded Rust and WiFi | Antoine Kalmbach’s website</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Embedded Rust and WiFi" />
+<meta name="author" content="Antoine Kalmbach" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Earlier this year, in May or so, I started having fun with hobby electronics, and ended up playing around with Rust in embedded devices, microcontrollers and the like. Actually it’s the other way around, I first wanted to write some Rust, and found out that Rust has a thriving embedded ecosystem, and proceeded to buy some microcontroller dev boards (and upgrading my “lab” equipment from 2003), and started writing Rust on them. It’s fun! The last time I did any embedded was in 2003, when I was 15 or so, and things were way different back then. The affordable microcontrollers were 8-bit turds like PIC8, and the hot stuff was AVR. C was the only language that was around and information on the net was scarce. Then, Arduino happened, and things started improving. Now in 2019, sixteen years later, things are much easier. You can program MCUs in Python! Clock speeds run in the hundreds of MHz and there are tens of kilobytes of RAM. The internet is full of tutorials. Rust, given its nice high-level abstractions and package management, has an amazing embedded ecosystem. All you need is their build tool and GDB with ARM support. Using a HAL is actually a real abstraction: implement a single HAL API, like I2C, and your device is usable by anyone. As of writing some things are still missing from the Rust HAL library, like USB and CAN support, but it’s slowly building up. Anyway, WiFi. Wireless connectivity on a little microcontroller is an extremely nice way of getting your toy device on the internet. Most likely the most popular WiFi microcontroller devboard is the ESP32, which costs about 10 EUR. If you want to write Rust on this thing though, there are problems: the ESP32 is using a Xtensa LX6 processor, which doesn’t (yet) have mainline LLVM support, you’ll have to use C or CircuitPython. ESP32-WROOM-32 Fine, if your goal is to get something working, it’s probably not a good idea to use Rust for WiFi enabled toy devices. But if you want to do something fun, doing this with Rust is a great idea! So how to get WiFi working with embedded Rust? The answer is simple: use a microcontroller where you can use Rust and a WiFi coprocessor, where one microcontroller runs your Rust program and the WiFi coprocessor runs its custom firmware which has WiFi support. The firmware has its own TCP stack so the interface between the two processor is fairly high-level, at the level of “here’s a password, connect to this network”. The two microcontrollers would use SPI or some other interface to talk to each other and transfer data. So you need a microcontroller with WiFi support and a firmware to boot! Turns out there are a few good choices: the ESP-WROOM32 from Espressif running the Adafruit NINA-W102 firmware or ATWINC1500 from Microchip running its own firmware. The nice thing about the Adafruit firmware is that there’s a CircuitPython implementation with SPI, so reimplementing this in Rust looks to be straightforward. The ATWINC1500 libraries are hidden somewhere in Atmel Studio so I’m not going to dig that out just yet! The ESP32-WROOM-32 is also available as a breakout with SPI support from Adafruit The alternative would be to build WiFi support yourself on some microcontroller that has WiFi. With the ESP32 being badly supported by LLVM and thus Rust, the other option is ATWINC1500 which is built on the Cortus APS3, building Rust for that is another here-be-dragons I’d rather not explore. Lastly, there’s the WM-N-BM-09 from USI that is a STM32F205RG paired with a Broadcom 43362 WiFi module. This is available in the Adafruit WICED Feather and the Particle Photon. With STM32 being widely supported in embedded Rust, it should be possible to write a WiFi program on such a microcontroller. Then there’s the u-blox NINA W102 which is another ESP32 based WiFi microcontroller, used in various Arduino WiFi products. That said, building a WiFi “firmware” in Rust is quite a Herculean task, though not impossible! You essentially need a functioning TCP/IP stack and implement a WiFi layer on top. That would be possible with smoltcp, a Rust TCP/IP stack suitable for embedded devices. However, for the time being, I think I will stick with using ESP32-WROOM or ATWINC1500 with preloaded WiFi ready firmware. Here’s a comparison table of the different WiFi microcontrollers I found: Microcontroller Architecture “Coprocessor” firmware Interface Free SDK/library ESP-WROOM32 Xtensa LX6 Several1 SPI WiFiSpi (C), Adafruit CircuitPython u-blox W102 Xtensa LX6 Several SPI ditto ATWINC1500 Cortus APS3S Yes, proprietary SPI, UART Arduino WiFi101 (C) WM-N-BM-09 ARM (STM32F205) Several2 SPI Several There&#39;s also a breakout for the ATWINC1500. Based on the chart I would go either with the ESP32-WROOM-32 or the ATWINC1500. The ESP32-WROOM-32 is both cheaper and easier to develop for compared to the ATWINC1500, but the ATWINC1500 seems to be a bit more performant and reliable. Anyway, this led me to choose ESP32-WROOM-32 as the WiFi “coprocessor”. What’s next is writing a Rust library that can control the ESP32 over SPI. This should be fairly straightforward, since I can essentially reimplement the Adafruit CircuitPython ESP32-SPI driver in Rust. That’s going to be fun! First I’ll need a development board, I’ll most likely use the Adafruit AirLift Shield on top of a Adafruit Metro M0. Why the Metro M0? Well, it has a JTAG header so I can use SWD to debug what’s going on, instead of repeatedly flashing the binary to the bootloader. Once I have the board, the next step is to build the SPI interface and some sort of socket abstraction that works over the SPI interface. Seems like there is no real abstraction for sockets, and there’s no #![no_std] library for things like HTTP let alone MQTT… this is going to be interesting! To put it simply, the Rust embedded ecosystem isn’t super mature yet. It’s getting there. That’s not a problem, if I really need to get my toy device (like a temperature sensor over WiFi), I can write the necessary Python/Arduino C++ in a few hours, and I have something that works. But a large part of my resurgent hobby electronics adventures is being able to write Rust in bare-metal systems. The breadboarding and soldering parts are fun as well, but my main interest is in programming. Anyway, this looks like a pleasant challenge! There’s Arduino NINA (Adafruit’s fork for ESP32-WROOM-32), NodeMCU and so on. &#8617; Depends on the vendor, Adafruit is based on Cypress WICED which is proprietary, but the Particle Photon uses FreeRTOS. &#8617;" />
+<meta property="og:description" content="Earlier this year, in May or so, I started having fun with hobby electronics, and ended up playing around with Rust in embedded devices, microcontrollers and the like. Actually it’s the other way around, I first wanted to write some Rust, and found out that Rust has a thriving embedded ecosystem, and proceeded to buy some microcontroller dev boards (and upgrading my “lab” equipment from 2003), and started writing Rust on them. It’s fun! The last time I did any embedded was in 2003, when I was 15 or so, and things were way different back then. The affordable microcontrollers were 8-bit turds like PIC8, and the hot stuff was AVR. C was the only language that was around and information on the net was scarce. Then, Arduino happened, and things started improving. Now in 2019, sixteen years later, things are much easier. You can program MCUs in Python! Clock speeds run in the hundreds of MHz and there are tens of kilobytes of RAM. The internet is full of tutorials. Rust, given its nice high-level abstractions and package management, has an amazing embedded ecosystem. All you need is their build tool and GDB with ARM support. Using a HAL is actually a real abstraction: implement a single HAL API, like I2C, and your device is usable by anyone. As of writing some things are still missing from the Rust HAL library, like USB and CAN support, but it’s slowly building up. Anyway, WiFi. Wireless connectivity on a little microcontroller is an extremely nice way of getting your toy device on the internet. Most likely the most popular WiFi microcontroller devboard is the ESP32, which costs about 10 EUR. If you want to write Rust on this thing though, there are problems: the ESP32 is using a Xtensa LX6 processor, which doesn’t (yet) have mainline LLVM support, you’ll have to use C or CircuitPython. ESP32-WROOM-32 Fine, if your goal is to get something working, it’s probably not a good idea to use Rust for WiFi enabled toy devices. But if you want to do something fun, doing this with Rust is a great idea! So how to get WiFi working with embedded Rust? The answer is simple: use a microcontroller where you can use Rust and a WiFi coprocessor, where one microcontroller runs your Rust program and the WiFi coprocessor runs its custom firmware which has WiFi support. The firmware has its own TCP stack so the interface between the two processor is fairly high-level, at the level of “here’s a password, connect to this network”. The two microcontrollers would use SPI or some other interface to talk to each other and transfer data. So you need a microcontroller with WiFi support and a firmware to boot! Turns out there are a few good choices: the ESP-WROOM32 from Espressif running the Adafruit NINA-W102 firmware or ATWINC1500 from Microchip running its own firmware. The nice thing about the Adafruit firmware is that there’s a CircuitPython implementation with SPI, so reimplementing this in Rust looks to be straightforward. The ATWINC1500 libraries are hidden somewhere in Atmel Studio so I’m not going to dig that out just yet! The ESP32-WROOM-32 is also available as a breakout with SPI support from Adafruit The alternative would be to build WiFi support yourself on some microcontroller that has WiFi. With the ESP32 being badly supported by LLVM and thus Rust, the other option is ATWINC1500 which is built on the Cortus APS3, building Rust for that is another here-be-dragons I’d rather not explore. Lastly, there’s the WM-N-BM-09 from USI that is a STM32F205RG paired with a Broadcom 43362 WiFi module. This is available in the Adafruit WICED Feather and the Particle Photon. With STM32 being widely supported in embedded Rust, it should be possible to write a WiFi program on such a microcontroller. Then there’s the u-blox NINA W102 which is another ESP32 based WiFi microcontroller, used in various Arduino WiFi products. That said, building a WiFi “firmware” in Rust is quite a Herculean task, though not impossible! You essentially need a functioning TCP/IP stack and implement a WiFi layer on top. That would be possible with smoltcp, a Rust TCP/IP stack suitable for embedded devices. However, for the time being, I think I will stick with using ESP32-WROOM or ATWINC1500 with preloaded WiFi ready firmware. Here’s a comparison table of the different WiFi microcontrollers I found: Microcontroller Architecture “Coprocessor” firmware Interface Free SDK/library ESP-WROOM32 Xtensa LX6 Several1 SPI WiFiSpi (C), Adafruit CircuitPython u-blox W102 Xtensa LX6 Several SPI ditto ATWINC1500 Cortus APS3S Yes, proprietary SPI, UART Arduino WiFi101 (C) WM-N-BM-09 ARM (STM32F205) Several2 SPI Several There&#39;s also a breakout for the ATWINC1500. Based on the chart I would go either with the ESP32-WROOM-32 or the ATWINC1500. The ESP32-WROOM-32 is both cheaper and easier to develop for compared to the ATWINC1500, but the ATWINC1500 seems to be a bit more performant and reliable. Anyway, this led me to choose ESP32-WROOM-32 as the WiFi “coprocessor”. What’s next is writing a Rust library that can control the ESP32 over SPI. This should be fairly straightforward, since I can essentially reimplement the Adafruit CircuitPython ESP32-SPI driver in Rust. That’s going to be fun! First I’ll need a development board, I’ll most likely use the Adafruit AirLift Shield on top of a Adafruit Metro M0. Why the Metro M0? Well, it has a JTAG header so I can use SWD to debug what’s going on, instead of repeatedly flashing the binary to the bootloader. Once I have the board, the next step is to build the SPI interface and some sort of socket abstraction that works over the SPI interface. Seems like there is no real abstraction for sockets, and there’s no #![no_std] library for things like HTTP let alone MQTT… this is going to be interesting! To put it simply, the Rust embedded ecosystem isn’t super mature yet. It’s getting there. That’s not a problem, if I really need to get my toy device (like a temperature sensor over WiFi), I can write the necessary Python/Arduino C++ in a few hours, and I have something that works. But a large part of my resurgent hobby electronics adventures is being able to write Rust in bare-metal systems. The breadboarding and soldering parts are fun as well, but my main interest is in programming. Anyway, this looks like a pleasant challenge! There’s Arduino NINA (Adafruit’s fork for ESP32-WROOM-32), NodeMCU and so on. &#8617; Depends on the vendor, Adafruit is based on Cypress WICED which is proprietary, but the Particle Photon uses FreeRTOS. &#8617;" />
+<link rel="canonical" href="http://ane.iki.fi/2019/11/20/embedded-rust-wifi.html" />
+<meta property="og:url" content="http://ane.iki.fi/2019/11/20/embedded-rust-wifi.html" />
+<meta property="og:site_name" content="Antoine Kalmbach’s website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-11-20T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Embedded Rust and WiFi" />
+<meta name="twitter:site" content="@anewtf" />
+<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<script type="application/ld+json">
+{"headline":"Embedded Rust and WiFi","dateModified":"2019-12-07T10:53:19+00:00","datePublished":"2019-11-20T00:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://ane.iki.fi/2019/11/20/embedded-rust-wifi.html"},"url":"http://ane.iki.fi/2019/11/20/embedded-rust-wifi.html","author":{"@type":"Person","name":"Antoine Kalmbach"},"description":"Earlier this year, in May or so, I started having fun with hobby electronics, and ended up playing around with Rust in embedded devices, microcontrollers and the like. Actually it’s the other way around, I first wanted to write some Rust, and found out that Rust has a thriving embedded ecosystem, and proceeded to buy some microcontroller dev boards (and upgrading my “lab” equipment from 2003), and started writing Rust on them. It’s fun! The last time I did any embedded was in 2003, when I was 15 or so, and things were way different back then. The affordable microcontrollers were 8-bit turds like PIC8, and the hot stuff was AVR. C was the only language that was around and information on the net was scarce. Then, Arduino happened, and things started improving. Now in 2019, sixteen years later, things are much easier. You can program MCUs in Python! Clock speeds run in the hundreds of MHz and there are tens of kilobytes of RAM. The internet is full of tutorials. Rust, given its nice high-level abstractions and package management, has an amazing embedded ecosystem. All you need is their build tool and GDB with ARM support. Using a HAL is actually a real abstraction: implement a single HAL API, like I2C, and your device is usable by anyone. As of writing some things are still missing from the Rust HAL library, like USB and CAN support, but it’s slowly building up. Anyway, WiFi. Wireless connectivity on a little microcontroller is an extremely nice way of getting your toy device on the internet. Most likely the most popular WiFi microcontroller devboard is the ESP32, which costs about 10 EUR. If you want to write Rust on this thing though, there are problems: the ESP32 is using a Xtensa LX6 processor, which doesn’t (yet) have mainline LLVM support, you’ll have to use C or CircuitPython. ESP32-WROOM-32 Fine, if your goal is to get something working, it’s probably not a good idea to use Rust for WiFi enabled toy devices. But if you want to do something fun, doing this with Rust is a great idea! So how to get WiFi working with embedded Rust? The answer is simple: use a microcontroller where you can use Rust and a WiFi coprocessor, where one microcontroller runs your Rust program and the WiFi coprocessor runs its custom firmware which has WiFi support. The firmware has its own TCP stack so the interface between the two processor is fairly high-level, at the level of “here’s a password, connect to this network”. The two microcontrollers would use SPI or some other interface to talk to each other and transfer data. So you need a microcontroller with WiFi support and a firmware to boot! Turns out there are a few good choices: the ESP-WROOM32 from Espressif running the Adafruit NINA-W102 firmware or ATWINC1500 from Microchip running its own firmware. The nice thing about the Adafruit firmware is that there’s a CircuitPython implementation with SPI, so reimplementing this in Rust looks to be straightforward. The ATWINC1500 libraries are hidden somewhere in Atmel Studio so I’m not going to dig that out just yet! The ESP32-WROOM-32 is also available as a breakout with SPI support from Adafruit The alternative would be to build WiFi support yourself on some microcontroller that has WiFi. With the ESP32 being badly supported by LLVM and thus Rust, the other option is ATWINC1500 which is built on the Cortus APS3, building Rust for that is another here-be-dragons I’d rather not explore. Lastly, there’s the WM-N-BM-09 from USI that is a STM32F205RG paired with a Broadcom 43362 WiFi module. This is available in the Adafruit WICED Feather and the Particle Photon. With STM32 being widely supported in embedded Rust, it should be possible to write a WiFi program on such a microcontroller. Then there’s the u-blox NINA W102 which is another ESP32 based WiFi microcontroller, used in various Arduino WiFi products. That said, building a WiFi “firmware” in Rust is quite a Herculean task, though not impossible! You essentially need a functioning TCP/IP stack and implement a WiFi layer on top. That would be possible with smoltcp, a Rust TCP/IP stack suitable for embedded devices. However, for the time being, I think I will stick with using ESP32-WROOM or ATWINC1500 with preloaded WiFi ready firmware. Here’s a comparison table of the different WiFi microcontrollers I found: Microcontroller Architecture “Coprocessor” firmware Interface Free SDK/library ESP-WROOM32 Xtensa LX6 Several1 SPI WiFiSpi (C), Adafruit CircuitPython u-blox W102 Xtensa LX6 Several SPI ditto ATWINC1500 Cortus APS3S Yes, proprietary SPI, UART Arduino WiFi101 (C) WM-N-BM-09 ARM (STM32F205) Several2 SPI Several There&#39;s also a breakout for the ATWINC1500. Based on the chart I would go either with the ESP32-WROOM-32 or the ATWINC1500. The ESP32-WROOM-32 is both cheaper and easier to develop for compared to the ATWINC1500, but the ATWINC1500 seems to be a bit more performant and reliable. Anyway, this led me to choose ESP32-WROOM-32 as the WiFi “coprocessor”. What’s next is writing a Rust library that can control the ESP32 over SPI. This should be fairly straightforward, since I can essentially reimplement the Adafruit CircuitPython ESP32-SPI driver in Rust. That’s going to be fun! First I’ll need a development board, I’ll most likely use the Adafruit AirLift Shield on top of a Adafruit Metro M0. Why the Metro M0? Well, it has a JTAG header so I can use SWD to debug what’s going on, instead of repeatedly flashing the binary to the bootloader. Once I have the board, the next step is to build the SPI interface and some sort of socket abstraction that works over the SPI interface. Seems like there is no real abstraction for sockets, and there’s no #![no_std] library for things like HTTP let alone MQTT… this is going to be interesting! To put it simply, the Rust embedded ecosystem isn’t super mature yet. It’s getting there. That’s not a problem, if I really need to get my toy device (like a temperature sensor over WiFi), I can write the necessary Python/Arduino C++ in a few hours, and I have something that works. But a large part of my resurgent hobby electronics adventures is being able to write Rust in bare-metal systems. The breadboarding and soldering parts are fun as well, but my main interest is in programming. Anyway, this looks like a pleasant challenge! There’s Arduino NINA (Adafruit’s fork for ESP32-WROOM-32), NodeMCU and so on. &#8617; Depends on the vendor, Adafruit is based on Cypress WICED which is proprietary, but the Particle Photon uses FreeRTOS. &#8617;","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/override.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/pygments.css" type="text/css" media="screen" />
+  </head>
+  <body itemscope itemtype="https://schema.org/WebPage" class="home-template">
+    <div class="hyphenate">
+      <h1 style="text-align: center;">
+  Antoine Kalmbach
+</h1>
+<nav class="navbar">
+  <ul>
+    <li class="nav-item ">
+      <a class="nav-link pl-0" href="/" itemprop="url"><span itemprop="name">Home</span></a>
+    </li>
+    <li class="nav-item  active">
+      <a class="nav-link" href="/archive.html" itemprop="url"><span itemprop="name">Blog</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/about/" itemprop="url"><span itemprop="name">About</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/tags.html" itemprop="url"><span itemprop="name">Index</span></a>
+    </li>
+
+    <li class="nav-item mr-n2">
+      <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="h-card d-none" style="display: none">
+  <img class="u-photo" src="/images/me.png" />
+  <a class="u-url" href="http://ane.iki.fi/2019/11/20/embedded-rust-wifi.html"></a>
+  <a class="p-name u-url" href="http://ane.iki.fi">Antoine Kalmbach</a>
+  <a class="u-email" href="mailto:">ane@iki.fi</a>
+</div>
+
+
+      <div class="content">
+        <article class="h-entry">
+  <header>
+    
+
+
+
+
+
+  <h2 class="p-name" style="margin: 0.25rem 0;">
+    Embedded Rust and WiFi
+  </h2>
+
+  <p class="post-meta text-muted">
+    <time class="dt-published" itemprop="datePublished" datetime="2019-11-20 00:00:00 +0000">
+      Posted on November 20, 2019
+
+  </p>
+
+
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="/2019/11/20/embedded-rust-wifi.html" />
+  </header>
+  <div class="e-content">
+    <p>Earlier this year, in May or so, I started having fun with hobby electronics,
+and ended up playing around with Rust in embedded devices, microcontrollers and
+the like. Actually it’s the other way around, I first wanted to write some Rust,
+and found out that Rust has a thriving embedded ecosystem, and proceeded to buy
+some microcontroller dev boards (and upgrading my “lab” equipment from 2003),
+and started writing Rust on them.</p>
+
+<p><strong>It’s fun!</strong> The last time I did any embedded was in 2003, when I was 15 or so,
+and things were <em>way</em> different back then. The affordable microcontrollers were
+8-bit turds like PIC8, and the hot stuff was AVR. C was the only language that
+was around and information on the net was scarce. Then, Arduino happened, and
+things started improving.</p>
+
+<p>Now in 2019, sixteen years later, things are <em>much</em> easier. <a href="https://circuitpython.org/">You can program
+MCUs in Python!</a> Clock speeds run in the hundreds of MHz and there are tens
+of kilobytes of RAM. The internet is full of tutorials.</p>
+
+<p>Rust, given its nice high-level abstractions and package management, has <a href="https://github.com/rust-embedded/awesome-embedded-rust">an
+amazing embedded ecosystem</a>. All you need is their build tool and GDB with
+ARM support. Using a HAL is actually a real abstraction: implement a single HAL
+API, like <a href="https://docs.rs/embedded-hal/0.2.3/embedded_hal/blocking/i2c/index.html">I<sup>2</sup>C</a>, and your device is usable by anyone. As of
+writing some things are still missing from the Rust HAL library, like USB and
+CAN support, but it’s slowly building up.</p>
+
+<p>Anyway, WiFi. Wireless connectivity on a little microcontroller is an extremely
+nice way of getting your toy device on the internet. Most likely the most
+popular WiFi microcontroller devboard is the ESP32, which costs about 10 EUR. If
+you want to write Rust on this thing though, there are problems: the ESP32 is
+using a Xtensa LX6 processor, which doesn’t (yet) have mainline LLVM support,
+you’ll have to use C or CircuitPython.</p>
+
+<figure class="w-25 ml-3 float-sm-right">
+  <img src="/images/esp32_wroom.jpg" alt="ESP32-WROOM-32" />
+  <figcaption>ESP32-WROOM-32</figcaption>
+</figure>
+
+<p>Fine, if your goal is to get something <em>working</em>, it’s probably not a good idea
+to use Rust for WiFi enabled toy devices. But if you want to do something <em>fun</em>,
+doing this with Rust is a <strong>great</strong> idea!</p>
+
+<p>So how to get WiFi working with embedded Rust? The answer is simple: use a
+microcontroller where you <em>can</em> use Rust and a WiFi <em>coprocessor</em>, where one
+microcontroller runs your Rust program and the WiFi coprocessor runs its custom
+firmware which has WiFi support. The firmware has its own TCP stack so the
+interface between the two processor is fairly high-level, at the level of
+“here’s a password, connect to this network”. The two microcontrollers would use
+SPI or some other interface to talk to each other and transfer data.</p>
+
+<p>So you need a microcontroller with WiFi support and a firmware to boot! Turns
+out there are a few good choices: the <a href="https://www.google.com/search?client=firefox-b-d&amp;q=esp-wroom32">ESP-WROOM32</a> from Espressif running
+the <a href="https://www.google.com/search?client=firefox-b-d&amp;q=esp-wroom32">Adafruit NINA-W102</a> firmware or <a href="https://www.microchip.com/wwwproducts/en/ATwinc1500">ATWINC1500</a> from Microchip running
+its own firmware. The nice thing about the Adafruit firmware is that there’s a
+<a href="https://github.com/adafruit/Adafruit_CircuitPython_ESP32SPI">CircuitPython implementation with SPI</a>, so reimplementing this in Rust looks
+to be straightforward. The ATWINC1500 libraries are hidden somewhere in Atmel
+Studio so I’m not going to dig that out just yet!</p>
+
+<figure class="figure float-sm-right w-25 ml-3">
+  <img src="/images/airlift_breakout.jpg" alt="The ESP32-WROOM-32 is also available as a breakout with SPI support from &lt;a
+href=&quot;https://www.adafruit.com/product/4201&quot;&gt;Adafruit&lt;/a&gt;" />
+  <figcaption>The ESP32-WROOM-32 is also available as a breakout with SPI support from <a
+href="https://www.adafruit.com/product/4201">Adafruit</a></figcaption>
+</figure>
+
+<p>The alternative would be to build WiFi support yourself on some microcontroller
+that has WiFi. With the ESP32 being badly supported by LLVM and thus Rust, the
+other option is ATWINC1500 which is built on the Cortus APS3, building Rust for
+that is another here-be-dragons I’d rather not explore. Lastly, there’s the
+<a href="https://www.acalbfi.com/be/IoT-and-Wireless/WiFi-802-11/p/WiFi-IoT-Module--IEEE-802-11-b-g-n/0000008OKP">WM-N-BM-09</a> from USI that is a STM32F205RG paired with a Broadcom 43362 WiFi
+module. This is available in the <a href="https://www.adafruit.com/product/3056">Adafruit WICED Feather</a> and the <a href="https://docs.particle.io/photon/">Particle
+Photon</a>. With STM32 being widely supported in embedded Rust, it should be
+possible to write a WiFi program on such a microcontroller. Then there’s the
+<a href="https://www.u-blox.com/en/product/nina-w10-series">u-blox NINA W102</a> which is another ESP32 based WiFi microcontroller, used in
+various <a href="https://store.arduino.cc/arduino-wifi-shield">Arduino WiFi products</a>.</p>
+
+<p>That said, building a WiFi “firmware” in Rust is quite a Herculean task, though
+not impossible! You essentially need a functioning TCP/IP stack and implement a
+WiFi layer on top. That would be possible with <a href="https://www.googlpe.com/search?client=firefox-b-d&amp;q=smoltcp">smoltcp</a>, a Rust TCP/IP stack
+suitable for embedded devices.</p>
+
+<p>However, for the time being, I think I will stick with using ESP32-WROOM or
+ATWINC1500 with preloaded WiFi ready firmware. Here’s a comparison table of the
+different WiFi microcontrollers I found:</p>
+
+<table class="table table-bordered table-sm">
+  <thead>
+    <tr>
+      <th style="text-align: left">Microcontroller</th>
+      <th style="text-align: left">Architecture</th>
+      <th style="text-align: left">“Coprocessor” firmware</th>
+      <th>Interface</th>
+      <th style="text-align: left">Free SDK/library</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">ESP-WROOM32</td>
+      <td style="text-align: left">Xtensa LX6</td>
+      <td style="text-align: left">Several<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">1</a></sup></td>
+      <td>SPI</td>
+      <td style="text-align: left">WiFiSpi (C), Adafruit CircuitPython</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">u-blox W102</td>
+      <td style="text-align: left">Xtensa LX6</td>
+      <td style="text-align: left">Several</td>
+      <td>SPI</td>
+      <td style="text-align: left"><em>ditto</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ATWINC1500</td>
+      <td style="text-align: left">Cortus APS3S</td>
+      <td style="text-align: left">Yes, proprietary</td>
+      <td>SPI, UART</td>
+      <td style="text-align: left">Arduino WiFi101 (C)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">WM-N-BM-09</td>
+      <td style="text-align: left">ARM (STM32F205)</td>
+      <td style="text-align: left">Several<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">2</a></sup></td>
+      <td>SPI</td>
+      <td style="text-align: left">Several</td>
+    </tr>
+  </tbody>
+</table>
+
+<figure class="float-sm-right w-25 ml-3">
+  <img src="/images/atwinc1500.jpg" alt="There's also a breakout for the ATWINC1500." />
+  <figcaption>There's also a breakout for the ATWINC1500.</figcaption>
+</figure>
+
+<p>Based on the chart I would go either with the ESP32-WROOM-32 or the
+ATWINC1500. The ESP32-WROOM-32 is both cheaper and easier to develop for compared
+to the ATWINC1500, but the ATWINC1500 seems to be a bit more performant and
+reliable.</p>
+
+<p>Anyway, this led me to choose ESP32-WROOM-32 as the WiFi “coprocessor”. What’s
+next is writing a Rust library that can control the ESP32 over SPI. This should
+be fairly straightforward, since I can essentially reimplement the <a href="https://github.com/adafruit/Adafruit_CircuitPython_ESP32SPI">Adafruit
+CircuitPython ESP32-SPI driver</a> in Rust. That’s going to be fun! First I’ll
+need a development board, I’ll most likely use the <a href="https://www.adafruit.com/product/4285">Adafruit AirLift Shield</a>
+on top of a <a href="https://www.adafruit.com/product/3505">Adafruit Metro M0</a>. Why the Metro M0? Well, it has a JTAG header
+so I can use SWD to debug what’s going on, instead of repeatedly flashing the
+binary to the bootloader.</p>
+
+<p>Once I have the board, the next step is to build the SPI interface and some sort
+of socket abstraction that works over the SPI interface. Seems like there is no
+<a href="https://github.com/rust-embedded/embedded-hal/issues/146">real abstraction for sockets</a>, and there’s
+no <code class="language-plaintext highlighter-rouge">#![no_std]</code> library for things like HTTP let alone MQTT… this is going to
+be interesting!</p>
+
+<p>To put it simply, the Rust embedded ecosystem isn’t super mature yet. It’s
+getting there. That’s not a problem, if I really need to get my toy device (like
+a temperature sensor over WiFi), I can write the necessary Python/Arduino C++ in
+a few hours, and I have something that works. But a large part of my resurgent
+hobby electronics adventures is being able to write Rust in bare-metal
+systems. The breadboarding and soldering parts are fun as well, but my main
+interest is in programming. Anyway, this looks like a pleasant challenge!</p>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:2" role="doc-endnote">
+      <p>There’s <a href="https://github.com/arduino/nina-fw">Arduino NINA</a> (<a href="https://github.com/adafruit/arduino-esp32">Adafruit’s
+fork for ESP32-WROOM-32</a>),
+<a href="https://nodemcu.readthedocs.io/en/master/">NodeMCU</a> and so on. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:1" role="doc-endnote">
+      <p>Depends on the vendor, Adafruit is based on 
+<a href="https://www.digikey.com/en/resources/wiced-iot-platform">Cypress WICED</a>
+which is proprietary, but the Particle Photon uses FreeRTOS. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div>
+  <small style="display: flex; justify-content: space-between;">
+    
+      <em>
+        Previous: <a href="/2019/03/09/configuration.html">Configurability</a>
+      </em>
+    
+
+    
+      <em>
+        Next: <a href="/2020/03/07/winding-down.html">Winding down</a>
+      </em>
+    
+  </small>
+</article>
+
+      </div>
+
+      <footer>
+        <hr>
+        <address>
+          
+          
+
+          &copy; <a href="mailto:ane@iki.fi">Antoine Kalmbach</a>, see <a href="/this-site/index.html#copying">copying</a>.
+          Last updated on <a href="/changelog.html">July 28, 2021</a>. Discuss at my <a href="https://lists.sr.ht/~ane/public-inbox">public inbox</a>.
+        </address>
+      </footer>
+    </div>
+    <script src="/assets/hyphenator.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
+         processEscapes: false
+       }
+     });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="/assets/hylo.js" type="text/javascript"></script>
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-58162697-1']);
+     _gaq.push(['_trackPageview']);
+
+     (function () {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+  </body>
+
+</html>

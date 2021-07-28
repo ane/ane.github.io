@@ -1,0 +1,96 @@
+html { font-family: sans-serif; font-size: 18px; line-height: 1.3; }
+
+dt { margin-top: 0.75em; margin-bottom: 0.25em; }
+
+img.me-pic { margin-left: 1rem; margin-bottom: 1rem; float: right; }
+
+a { color: #0000EE; }
+
+a:visited { color: #551A8B; }
+
+ul li a.active { font-weight: bold; text-decoration: none; }
+
+ul.nav li.nav-item a.nav-link { padding-left: 0; }
+
+#footnotes a, .content p a, .content li a, .content span a { text-decoration: underline; }
+
+#footnotes a:hover, .content p a:hover, .content li a:hover, .content span a:hover { border: 0; text-decoration: none; }
+
+body { color: black; max-width: 50rem; margin: 0px auto; padding: 0px 15px; }
+
+pre, code, tt { font-family: monospace; }
+
+.content h2#references + div.sectionbody { font-size: 85%; }
+
+.content p { -ms-hyphens: auto; -webkit-hyphens: auto; -moz-hyphens: auto; hyphens: auto; }
+
+.content li p { margin-bottom: 0.625rem; }
+
+.hilink:target { background-color: #ffa; }
+
+pre.highlight { padding: 0.5rem 1rem; border-radius: 4px; color: #303030; font-size: 85%; }
+
+nav.navbar { font-family: sans-serif; }
+
+nav.navbar ul { list-style-type: none; display: flex; justify-content: center; flex-direction: row; border-top: 1px solid #999; border-bottom: 1px solid #999; padding: 0.5rem 0 0.5rem 0px; margin-top: -0.5rem; margin-bottom: 1.5rem; }
+
+nav.navbar ul li { padding: 0 1rem; }
+
+nav.navbar ul li.active a { font-weight: bold; text-decoration: none; color: #000 !important; }
+
+nav.navbar ul li a:link, nav.navbar ul li a:visited, nav.navbar ul li a:active { color: #0000EE; }
+
+nav.navbar ul li a:link:hover, nav.navbar ul li a:visited:hover, nav.navbar ul li a:active:hover { color: #333; }
+
+blockquote { padding: 0.5rem 2rem; font-style: italic; }
+
+/* kbd { */
+/*     background-color: #ddd; */
+/*     color: black; */
+/*     border: 1px solid #bbb; */
+/*     border-radius: 2px; */
+/*     padding: 0 0.25rem; */
+/* } */
+footer { margin-bottom: 1em; }
+
+#footnotes, .footnotes { padding-top: 1rem; font-size: 90%; margin-bottom: 2rem; }
+
+#footnotes:before, .footnotes:before { content: "Footnotes"; font-variant: small-caps; color: #aaa; display: inline-block; }
+
+#footnotes ol, .footnotes ol { margin-top: 1rem; }
+
+.post-meta { color: #333; font-style: italic; margin-top: 0rem; }
+
+span.icon > .fa { cursor: default; }
+
+@media only screen and (min-width: 598px) { .quarter { width: 25%; } .third { width: 33%; } .half { width: 50%; } .twothirds { width: 66%; } .threequarters { width: 75%; align-items: center; margin: 1rem auto; } }
+
+.imageblock { margin: 1rem 0rem; }
+
+.imageblock .title { color: #666; font-size: 85%; }
+
+.imageblock .content img { height: auto; width: 100%; }
+
+.primary h1 > a.anchor, h2 > a.anchor, h3 > a.anchor, #toctitle > a.anchor, .sidebarblock > .content > .title > a.anchor, h4 > a.anchor, h5 > a.anchor, h6 > a.anchor { position: absolute; z-index: 1001; width: 1.5ex; margin-left: -1.5ex; display: block; text-decoration: none !important; visibility: hidden; text-align: center; font-weight: normal; }
+
+.primary h1:hover > a.anchor, .primary h1 > a.anchor:hover, h2:hover > a.anchor, h2 > a.anchor:hover, h3:hover > a.anchor, #toctitle:hover > a.anchor, .sidebarblock > .content > .title:hover > a.anchor, h3 > a.anchor:hover, #toctitle > a.anchor:hover, .sidebarblock > .content > .title > a.anchor:hover, h4:hover > a.anchor, h4 > a.anchor:hover, h5:hover > a.anchor, h5 > a.anchor:hover, h6:hover > a.anchor, h6 > a.anchor:hover { visibility: visible; }
+
+.primary h1 > a.anchor::before, h2 > a.anchor::before, h3 > a.anchor::before, #toctitle > a.anchor::before, .sidebarblock > .content > .title > a.anchor::before, h4 > a.anchor::before, h5 > a.anchor::before, h6 > a.anchor::before { content: "\00A7"; font-size: 0.85em; display: block; padding-top: 0.1em; }
+
+figure.float-sm-right { float: right; }
+
+figure.w-25 { max-width: 25%; }
+
+figure.w-50 { width: 50%; }
+
+figure.w-75 { width: 75%; }
+
+figure img { max-width: 100%; height: auto; margin-bottom: 0.5rem; line-height: 1; }
+
+figure figcaption { font-size: 90%; color: #6c757d; }
+
+code.highlighter-rouge, pre.highlight code, kbd { font-size: 1em; }
+
+hr { border: none; border-top: 1px solid #999; margin: 1rem 0rem; }
+
+/*# sourceMappingURL=override.css.map */

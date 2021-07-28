@@ -1,0 +1,619 @@
+<!-- -*- engine:liquid -*- -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
+
+    <title>
+      
+        Half stack web frameworks
+      
+    </title>
+
+    
+      <meta name="description" content="" />
+    
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link type="application/atom+xml" rel="alternate" href="http://ane.iki.fi/feed.xml" title="Antoine Kalmbach's website" />
+    <meta http-equiv="refresh" content="0; url=http://ane.iki.fi/2016/11/02/half-stack-web-frameworks.html" />
+    <link rel="canonical" href="http://ane.iki.fi/2016/11/02/half-stack-web-frameworks.html"/>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Half stack web frameworks | Antoine Kalmbach’s website</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Half stack web frameworks" />
+<meta name="author" content="Antoine Kalmbach" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In my previous post, I discussed how web development had become weird. In this post, I will discuss what exactly is it that makes it so weird. I will also present an alternative to JavaScript-based SPAs that look and behave like them, yet at the base are built using standard full-stack frameworks. They can leverage modern JavaScript libraries like React and compilers like Babel while simultaneously avoiding the confusing tooling ecosystem and providing a rich and responsive user experience, all the while retaining an pleasant developer experience." />
+<meta property="og:description" content="In my previous post, I discussed how web development had become weird. In this post, I will discuss what exactly is it that makes it so weird. I will also present an alternative to JavaScript-based SPAs that look and behave like them, yet at the base are built using standard full-stack frameworks. They can leverage modern JavaScript libraries like React and compilers like Babel while simultaneously avoiding the confusing tooling ecosystem and providing a rich and responsive user experience, all the while retaining an pleasant developer experience." />
+<link rel="canonical" href="http://ane.iki.fi/2016/11/02/half-stack-web-frameworks.html" />
+<meta property="og:url" content="http://ane.iki.fi/2016/11/02/half-stack-web-frameworks.html" />
+<meta property="og:site_name" content="Antoine Kalmbach’s website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-11-02T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Half stack web frameworks" />
+<meta name="twitter:site" content="@anewtf" />
+<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<script type="application/ld+json">
+{"headline":"Half stack web frameworks","dateModified":"2018-01-06T16:55:18+00:00","datePublished":"2016-11-02T00:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://ane.iki.fi/2016/11/02/half-stack-web-frameworks.html"},"url":"http://ane.iki.fi/2016/11/02/half-stack-web-frameworks.html","author":{"@type":"Person","name":"Antoine Kalmbach"},"description":"In my previous post, I discussed how web development had become weird. In this post, I will discuss what exactly is it that makes it so weird. I will also present an alternative to JavaScript-based SPAs that look and behave like them, yet at the base are built using standard full-stack frameworks. They can leverage modern JavaScript libraries like React and compilers like Babel while simultaneously avoiding the confusing tooling ecosystem and providing a rich and responsive user experience, all the while retaining an pleasant developer experience.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/override.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/pygments.css" type="text/css" media="screen" />
+  </head>
+  <body itemscope itemtype="https://schema.org/WebPage" class="home-template">
+    <div class="hyphenate">
+      <h1 style="text-align: center;">
+  Antoine Kalmbach
+</h1>
+<nav class="navbar">
+  <ul>
+    <li class="nav-item ">
+      <a class="nav-link pl-0" href="/" itemprop="url"><span itemprop="name">Home</span></a>
+    </li>
+    <li class="nav-item  active">
+      <a class="nav-link" href="/archive.html" itemprop="url"><span itemprop="name">Blog</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/about/" itemprop="url"><span itemprop="name">About</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/tags.html" itemprop="url"><span itemprop="name">Index</span></a>
+    </li>
+
+    <li class="nav-item mr-n2">
+      <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="h-card d-none" style="display: none">
+  <img class="u-photo" src="/images/me.png">
+  <a class="u-url" href="http://ane.iki.fi/2016/11/02/half-stack-web-frameworks.html"></a>
+  <a class="p-name u-url" href="http://ane.iki.fi">Antoine Kalmbach</a>
+  <a class="u-email" href="mailto:">ane@iki.fi</a>
+</div>
+
+
+      <div class="content">
+        <article class="h-entry">
+  <header>
+    
+
+
+
+
+
+  <h2 class="p-name" style="margin: 0.25rem 0;">
+    Half stack web frameworks
+  </h2>
+
+  <p class="post-meta text-muted">
+    <time class="dt-published" itemprop="datePublished" datetime="2016-11-02 00:00:00 +0000">
+      Posted on November 2, 2016
+
+  </time></p>
+
+
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="/2016/11/02/half-stack-web-frameworks.html">
+  </header>
+  <div class="e-content">
+    <p>In my previous post, I discussed <a href="/2016/10/25/web-development-has-become-weird.html">how web development had become weird</a>. In this post, I will discuss what exactly is it
+that makes it so weird. I will also present an alternative to JavaScript-based SPAs that look and
+behave like them, yet at the base are built using standard full-stack frameworks. They can leverage
+modern JavaScript libraries like React and compilers like Babel while simultaneously avoiding the
+confusing tooling ecosystem and providing a rich and responsive user experience, all the
+while retaining an pleasant developer experience.
+<!--break--></p>
+
+<h2 id="what-exactly-is-wrong-with-the-tooling-ecosystem">What exactly is wrong with the tooling ecosystem?</h2>
+
+<p>I think, largely, the reason why web development has become weird was that front-end development
+cannot figure itself out. We are wasting effort and time by building more and more elaborate
+abstractions that fundamentally exist only because of an unhappy accident: the web is the <em>only</em>
+cross-platform application container. It is also a very accessible medium. To create a web
+application, fundamentally, one needs to present the right kind of mark-up to a browser that renders
+it.</p>
+
+<p>Let’s stop here. Just because the web became what it is by accident, doesn’t make it a bad thing in
+itself. Everybody <em>loves</em> platform independence. Everybody loves accessibility. The web is easy to
+develop for and it can reach almost everybody. This is a reality we have to deal with, a reality in
+which web development is (a) popular, (b) ubiquitous and (c) easy.</p>
+
+<p>The combination of those properties creates an interesting melting pot of rapidly evolving
+technologies. Rapid progress is a nice thing in itself, but a bad thing to the ecosystem when it
+evolves blindly. Web development doesn’t evolve blindly, rather, it is myopic.</p>
+
+<h2 id="progress-progress-progress">Progress, progress, progress!</h2>
+
+<p>To put this into context, we must understand that currently, most software is disposable. Because
+software is disposable, we eagerly toss a half-functioning solution into the bin and rewrite it,
+rather than taking it apart and rebuilding a better version. This leads to programs getting
+rewritten and rewritten, sometimes doing things differently but most of the time it’s just the same
+thing under a different layer of paint.</p>
+
+<p>But I digress. That is more of a problem with software development in general. We can review a more
+concrete example: the JavaScript tooling ecosystem. To develop front-end in JS, you need three
+different tools;</p>
+
+<ul>
+  <li>A package manager - npm, bower or yarn</li>
+  <li>A module bundler - webpack, rollup or browserify</li>
+  <li>A task runner - gulp, grunt, brunch</li>
+</ul>
+
+<p>Each of these segments work completely differently. So to get started with, that’s three different
+tooling systems you have to learn. Better yet, each individual tool inside each system is unique in
+its configuration syntax. So if you learn how to configure Grunt you will have to learn Gulp and
+Brunch from scratch. Joy.</p>
+
+<p>Yeah, yeah, I get it. Bower was cool because it built flattened trees when npm didn’t. Gulp had a
+nicer configuration syntax, and Brunch was easy to get started with. Yarn is more secure and more
+reliable than npm. Webpack can inline your CSS and images and is more configurable than Browserify.</p>
+
+<h2 id="not-about-killing-innovation">Not about killing innovation</h2>
+
+<p>At this point, you may be wondering that I desire a world in which there is but one alternative to
+every task. This is not the case. I only ask for reservation: if there are no fundamental
+ideological differences, if there are no personal incompatibilities between the developing
+organizations, is there any valid argument for building your own version of a tool, instead of
+contributing to an existing system?</p>
+
+<p>I don’t think this is the case <strong>at this scale</strong> — obviously, a world with just one kind of tool
+or library for one thing is stupid, but the sweet spot does definitely not lie at <em>seven</em>.</p>
+
+<p>So if the answer is no, does that mean JavaScript developers are so strange that they cannot get
+their heads together and agree on something? Do they really think people enjoy keeping up with the
+Joneses all the time and learning a new tool every year?</p>
+
+<p>When it comes to the first question, remember Joyent and the io.js schism. <em>Oops</em>. As to the second,
+I doubt it. Still, this is what we have to live with. A
+<a href="https://github.com/verekia/js-stack-from-scratch">guide</a> for building a modern JS front-end app
+consists of <em>twelve</em> distinct steps, all of them quite elaborate. I applaud the author for the
+gargantuan effort in that tutorial: it’s the best I’ve seen so far. But seriously, take a look at
+it! What the fuck?! I could have just rewritten my previous post with a link to that guide and
+rested my case!</p>
+
+<p>I remember a <a href="http://www.charlespetzold.com/pw5/">book</a> about Windows programming using C, and parts
+of this guide are arcane enough to evoke memories of <em>that</em>. I think one can enumerate the type
+system of Scala using less. Or how to write a Scheme interpreter.</p>
+
+<p>The usability of the tooling ecosystem is absolutely disgraceful. No other developer segment has
+this many hoops to jump through and nobody else has to learn so many different tools just to get a
+simple web application running.</p>
+
+<p>Why do we put up with this? Why isn’t any effort being put into simplifying the tooling stack,
+instead of making it more elaborate, powerful, and verbose? Consider webpack. It is a powerful
+utility that is supposed to combine all your assets — that is, code, CSS, images — into a single
+module that is used in your application. This is a powerful thing. The only problem is that its
+configuration is <em>hell</em>. I work with SBT every day, and my goodness, even SBT is easier to configure
+than Webpack. Ask any Scala developer what it means to say that. You will get funny looks. Even Java
+folks will consider this crazy, although, in fairness, they’ve
+<a href="http://microprofile.io/">moved into the post-framework age</a>, and consider us mortals rather quaint.</p>
+
+<h2 id="spa-development-is-more-than-just-tools">SPA development is more than just tools</h2>
+
+<p>The problems don’t stop here. A SPA must effectively handle client state <em>entirely</em> in the browser,
+though in <del>isomor</del>universal SPA apps part of the rendering and client state is processed on the
+server. This requires the use of architectural patterns
+like <a href="https://github.com/reactjs/react-redux">Redux</a>
+and <a href="https://github.com/ReactTraining/react-router">React Router</a>.</p>
+
+<p>These libraries are nice and intelligent, but I feel they are a wasted abstraction. Using the trick
+below I can create React apps that can approximate the performance of a real SPA app, without having
+to rely on these complicated architectural patterns.</p>
+
+<p><strong>Caveat lector</strong>. This is largely a matter of taste. If you really like Redux and React Router, by
+all means use them, but I find their usability to be sub-par to the MVC architecture of any
+full-stack framework. The architectural pattern — Flux — is a message-based event loop. The
+views generate user actions (button clicks) that are dispatched to stores (state containers) which
+update themselves (increment a number) then deliver state changes (an incremented number) to the
+views which re-render themselves. If a request is sent to the server, it must be split into two
+parts: first, a button click is registered, and its effect is rendered; second, a request is sent to
+the back-end and when it completes, an action describing a completed request is sent to the message
+dispatcher. So any interaction with the back-end requires two actions. Sounds complicated? Yeah, this
+is why I prefer a dumb MVC architecture (or Relay).</p>
+
+<h2 id="in-summary">In summary</h2>
+
+<p>So, to put this argument into a more cogent form, I’ll summarize them below.</p>
+
+<h3 id="1-lack-of-emphasis-on-usability-a-myopic-focus-on-adding-features">1. Lack of emphasis on usability, a myopic focus on adding features.</h3>
+<p>Why doesn’t anyone integrate dependency management, module bundling and task running under the
+same program? Why do we have to use three different programs that are getting replaced every year?
+Tool “monoliths” like SBT may be ugly in parts, but they can do package management, compilation,
+debugging, testing – even if it’s DSL is garish and confusing, still, once you’re familiar with it,
+you don’t have to master six other horrifying DSLs. Just one.</p>
+
+<h3 id="2-chasing-novelty-with-little-care-about-its-impact-on-maintainability">2. Chasing novelty with little care about its impact on maintainability.</h3>
+<p>Babel lets us write JS in eleventy different dialects. While that is a cool thing in itself, it a
+horror show for developers. You ask, who wouldn’t want to use <code class="language-plaintext highlighter-rouge">await</code>, or ES6 classes? Well, how
+about the person who doesn’t want to <em>learn how to use Babel</em>?</p>
+
+<p>With Babel, you can write in any version of JavaScript you want,
+since it all gets compiled down to ES5 anyway. This is great for building your
+flavor-of-the-month hack, but it’s also a terrific way of building unmaintainable software. For
+this zany <em>hack</em> to work, you need <del>tra</del>compilers that translate your modern code to old code. The
+requirement of that tool is too high a price to pay for some fancy language features.</p>
+
+<h3 id="3-snubbing-full-stack-frameworks-for-their-want-novelty-although-they-generally-feature-exemplary-usability">3. Snubbing full-stack frameworks for their want novelty, although they generally feature exemplary usability</h3>
+
+<p>Clojure developers have found a way of eschewing frameworks over composable
+libraries. For some reason, everybody else is really bad at this, so we build frameworks, i.e., sets
+of libraries that govern the design of your program in a certain way. Monolithic frameworks like
+Rails or Django are fundamentally dated — though this is easily fixed — but they are
+usable. Setting up a functional application with these takes a few minutes, and it just works.</p>
+
+<h2 id="a-new-direction-renovate-not-rewrite">A new direction: renovate, not rewrite</h2>
+
+<p>In my opinion, front-end development can be done in an alternate, saner way. It doesn’t mean going
+back to the stone age of Apache or Rails with ActiveRecord. Rather, it means refurbishing these old,
+battle-tested technologies with modern components without tossing the whole chassis into the
+bin.</p>
+
+<p>In other words, there is an alternative to the current JavaScript SPA horror show. Using the
+following technologies, as an example:</p>
+
+<ol>
+  <li>
+    <p><strong>A REST API built in a scalable and performant language</strong></p>
+
+    <p><em>Examples: Scala, Haskell, Go, Clojure, Java, Rust, OCaml, Elixir</em></p>
+
+    <p>This gives us a clear advantage when scaling and deploying our application. Data access is made
+opaque and is in no way tied to the front-end - which is ultimately just presentation and some
+client state. The language needs the following:</p>
+
+    <ul>
+      <li>A stable library ecosystem, especially for data access, e.g., database drivers</li>
+      <li>A functioning web server and associated libraries</li>
+      <li>Speed, multi-threading, performance</li>
+    </ul>
+
+    <p>With these properties, you should be quite comfortable in your back-end development.</p>
+  </li>
+  <li>
+    <p><strong>Client state, presentation and back-end communication handled using a monolithic framework</strong></p>
+
+    <p><em>Examples: Ruby on Rails, Django, Pyramid, MeteorJS, Udash, Play</em></p>
+
+    <p>Rails may be dated in some parts — coupling your front-end with data access is one thing — but
+as an infrastructure it is functional, mature, easy to understand and <em>stable</em>. The Ruby ecosystem
+is large and is well documented, even the secondary documentation (StackOverflow etc.) is abundant.</p>
+  </li>
+  <li>
+    <p><strong>A wrapper that turns ordinary HTTP page requests into XHRs</strong></p>
+
+    <p><em>Examples: Turbolinks (for Ruby on Rails and Django)</em></p>
+
+    <p>Turbolinks is perhaps a hack but it is clever: any HTTP request that would normally cause a page
+reload, like a link or a form submission, is converted into an XHR. Then, the page redraws itself
+by swapping out the <code class="language-plaintext highlighter-rouge">&lt;body&gt;</code> element from the returned response.</p>
+  </li>
+</ol>
+
+<p>Turbolinks is a “pseudo-SPA” application in that it simply reroutes ordinary page requests (links,
+form submissions) as XHRs and then from the new page, it <strong>merges</strong> the <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code> element and <strong>swaps</strong>
+the <code class="language-plaintext highlighter-rouge">&lt;body&gt;</code> element. By using a gem like <code class="language-plaintext highlighter-rouge">react-rails</code> you can combine this with react, however, it
+does <strong>not</strong> use React’s virtual DOM when redrawing the <code class="language-plaintext highlighter-rouge">body</code> content. It only mounts and unmounts the
+components when the page swaps, retaining the actual DOM bindings.</p>
+
+<h2 id="what-your-answer-is-rails-in-2016">What?! Your answer is <em>Rails</em>? <em>In 2016</em>?</h2>
+
+<p>Just because these frameworks aren’t making headlines doesn’t mean they are stuck in the stone
+age. These monolithic frameworks still, after years of maturation, possess novelty value in one,
+unparalleled aspect: usability. These frameworks may not lend themselves to universal applications,
+but they’re still capable of absorbing new technologies like
+<a href="http://edgeguides.rubyonrails.org/action_cable_overview.html">websockets</a> and
+<a href="https://github.com/rmosolgo/graphql-ruby">GraphQL</a>.</p>
+
+<p>Some parts of them are stuck in the past, of which the most striking one is combining data access
+with data control and presentation in the same program. This is easily fixed: make your Rails
+controllers call an external, opaque service to render is data. The job of the full-stack framework
+is reduced to managing client state and data presentation, which go together.</p>
+
+<p>So, what can be done? Here’s an example.</p>
+
+<h2 id="a-rest-backed-rails-app-with-react-as-the-templating-engine">A REST-backed Rails app with React as the templating engine</h2>
+
+<p><a href="https://github.com/reactjs/react-rails">react-rails</a> is a Rails gem that gives us React components
+in the asset pipeline, supporting server-side rendering and Turbolinks (caveat: see above)</p>
+
+<p>Under the hood, when rendering on the server, react-rails uses
+<a href="https://github.com/babel/ruby-babel-transpiler">Babel</a> and
+<a href="https://github.com/sstephenson/execjs">ExecJS</a> to prerender the content. Better yet, your content
+is still rendered by a simple Rails controller like the following.</p>
+
+<p>The controller lives in <code class="language-plaintext highlighter-rouge">app/controllers/foos_controller.rb</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">FoosController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># maps to GET /foos (on the front-end)</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="c1"># incurs a GET /foos on the back-end</span>
+    <span class="vi">@foos</span> <span class="o">=</span> <span class="no">Foo</span><span class="p">.</span><span class="nf">all</span><span class="p">.</span><span class="nf">to_json</span>
+  <span class="k">end</span> 
+  
+  <span class="c1"># maps to POST /foos (on the front-end)</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="c1"># this is a POST /foos on the back-end</span>
+    <span class="no">Foo</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:bar</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="p">[</span><span class="s1">'bar'</span><span class="p">])</span>
+
+    <span class="c1"># turbolinks turns this into a XHR</span>
+    <span class="n">redirect_to</span> <span class="s1">'/foos'</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The model is just a <a href="https://github.com/remiprev/her">Her</a> model, an ORM that uses a REST API, which
+you can customize. In <code class="language-plaintext highlighter-rouge">apps/models/foo.rb</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Foo</span> <span class="o">&lt;</span> <span class="no">Her</span><span class="o">::</span><span class="no">Model</span>
+  <span class="n">attributes</span> <span class="ss">:bar</span><span class="p">,</span> <span class="ss">:id</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now <code class="language-plaintext highlighter-rouge">Foo.find(1)</code> maps to <code class="language-plaintext highlighter-rouge">GET /foos/1</code> in the back-end, and so forth.</p>
+
+<p>The view is generated by <code class="language-plaintext highlighter-rouge">app/views/foos/index.html.erb</code></p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> 
+<span class="n">react_component</span><span class="p">(</span>
+  <span class="s1">'Foos'</span><span class="p">,</span> 
+  <span class="p">{</span> <span class="ss">foos: </span><span class="vi">@foos</span><span class="p">,</span> <span class="ss">token: </span><span class="n">form_activity_token</span><span class="p">,</span> <span class="ss">action: </span><span class="n">url_for</span><span class="p">(</span><span class="ss">action: </span><span class="s1">'create'</span><span class="p">)</span> <span class="p">},</span> 
+  <span class="p">{</span> <span class="ss">prerender: </span><span class="kp">true</span> <span class="p">}</span>
+<span class="p">)</span> 
+<span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>This maps to a React component <code class="language-plaintext highlighter-rouge">app/assets/javascripts/components/foos.es6.jsx</code>:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">Foos</span> <span class="kd">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nx">ul</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">foos</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">foo</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+           <span class="k">return</span> <span class="o">&lt;</span><span class="nx">li</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">foo</span><span class="p">.</span><span class="nx">bar</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span>        <span class="p">})}</span>
+      <span class="o">&lt;</span><span class="sr">/ul</span><span class="err">&gt;
+</span>      <span class="c1">// dataRemote is a Rails trick that makes the form make an XHR</span>
+      <span class="o">&lt;</span><span class="nx">form</span> <span class="nx">action</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">action</span><span class="p">}</span> <span class="nx">method</span><span class="o">=</span><span class="dl">"</span><span class="s2">POST</span><span class="dl">"</span> <span class="nx">dataRemote</span><span class="o">=</span><span class="dl">"</span><span class="s2">true</span><span class="dl">"</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="dl">"</span><span class="s2">hidden</span><span class="dl">"</span> <span class="nx">name</span><span class="o">=</span><span class="dl">"</span><span class="s2">authenticity_token</span><span class="dl">"</span> <span class="nx">value</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">token</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="dl">"</span><span class="s2">text</span><span class="dl">"</span> <span class="nx">name</span><span class="o">=</span><span class="dl">"</span><span class="s2">bar</span><span class="dl">"</span> <span class="nx">value</span><span class="o">=</span><span class="dl">"</span><span class="s2">Blah blah</span><span class="dl">"</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="dl">"</span><span class="s2">submit</span><span class="dl">"</span> <span class="nx">value</span><span class="o">=</span><span class="dl">"</span><span class="s2">Add!</span><span class="dl">"</span> <span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="sr">/form</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Try doing that with less code in any JS app! The controller looks like any standard Rails
+controller. In fact, it is exactly like one, yet the magic of React &amp; Turbolinks lets us wrap this
+into a SPA-like experience.</p>
+
+<p>Combining these elements, we get <strong>an application that can reach nine-tenths of the performance and
+responsiveness of a 100% JavaScript SPA, while simultaneously avoiding the messy tooling ecosystem</strong>.</p>
+
+<ul>
+  <li>
+    <p>A total absence of extraneous tooling, the framework has these built-in. No need for Webpack or
+Babel, these are just another gems you add to your dependency list.</p>
+  </li>
+  <li>
+    <p>A boring, but familiar, framework that handles routing, message dispatch and API integration for
+us. Routing and state management are the worst parts of SPA development. Now our state is just
+another Rails</p>
+  </li>
+  <li>
+    <p>Responsiveness close enough to that of a real SPA. It will never match a real SPA in speed, since
+the requests map to Rails controllers, but it will be extremely pleasant to develop in.</p>
+  </li>
+  <li>
+    <p>A scalable back-end without any data access logic in the front-end (the usual front-end back-end
+split), the framework handles only UI state and presentation logic.</p>
+  </li>
+</ul>
+
+<p>There are some obvious compromises in such a solution, which are both good and bad.</p>
+
+<h4 id="compromises-made">Compromises made</h4>
+
+<p>The biggest compromise is in performance, which is due to the following:</p>
+
+<ul>
+  <li>
+    <p><strong>Does not use React’s DOM to its full power</strong>. Turbolinks just swaps the <code class="language-plaintext highlighter-rouge">body</code> element. This
+could be improved by making it use the React virtual DOM. This is the bad part. The good part is
+that we don’t have to create XHRs ourselves in React components.</p>
+  </li>
+  <li>
+    <p><strong>Forces the user to use JSX, throws ERB/HAML in the bin</strong>. It is true that the example
+application could be indeed built without JSX — just don’t use react-rails — but I find JSX to
+be a nicer templating syntax than ERB. advantage of React</p>
+
+    <p>But it would be naïve to assume this brings us the whole of <em>React</em>. It brings us the <em>templating
+syntax</em> and binding mechanisms, but since Turbolinks effectively causes a re-rendering of the
+<em>whole</em> HTML page, this doesn’t fully leverage the server-side rendering aspect of React.</p>
+
+    <p>So, overall, the good part of this compromise is that we get to use JSX, which has a nicer,
+functional approach compared to ERB, but the bad part is that we don’t harness the full power of
+React.</p>
+  </li>
+  <li>
+    <p><strong>Turbolinks effectively reverses React server-side rendering</strong>. Whereas in a normal SPA app the
+server-side rendering is the “base” template, in this case a <em>new</em> server-side rendering is
+produced on every interaction. In a normal SPA app, one just updates the DOM with new <em>state</em> —
+i.e., props — not with a new <strong>DOM</strong>.</p>
+
+    <p>There is a solution: skip Turbolinks and use XHRs in React components. A simple solution in a
+controller:</p>
+
+    <div class="language-ruby highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@f</span> <span class="o">=</span> <span class="no">Foo</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:bar</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="p">[</span><span class="ss">:bar</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">request</span><span class="p">.</span><span class="nf">xhr?</span>
+      <span class="c1"># send a JSON of all the Foos</span>
+      <span class="n">render</span> <span class="ss">:json</span> <span class="o">=&gt;</span> <span class="no">Foo</span><span class="p">.</span><span class="nf">all</span><span class="p">.</span><span class="nf">to_json</span>
+    <span class="k">else</span>
+      <span class="c1"># send HTML with a React component</span>
+      <span class="n">redirect_to</span> <span class="ss">action: </span><span class="s1">'index'</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>    </div>
+
+    <p>If the request is made from a component, it’s can now use <code class="language-plaintext highlighter-rouge">setState</code> (or a store) to update its
+new state. In this paradigm, Rails is acting as the state store.</p>
+
+    <p>A better example would be to make the Rails app support GraphQL and use Relay to communicate with
+the Rails part, see below.</p>
+  </li>
+</ul>
+
+<p>I think, given the simplicity of the above application, I think it’s fair to say that these
+compromises are warranted. If the actual set-up were any more complicated I wouldn’t be so
+certain. But, for the simplicity, we must trade performance.</p>
+
+<h3 id="a-functioning-example">A functioning example</h3>
+
+<p>I’ve created a functioning example and put it into two repositories:</p>
+
+<ul>
+  <li>
+    <p>Front-end – Rails 5 &amp; react-rails &amp; Her – <a href="https://github.com/ane/rails-react-frontend">https://github.com/ane/rails-react-frontend</a></p>
+
+    <p>A Rails 5 app combining react-rails and Her to talk to the back-end.</p>
+
+    <p>To install, clone the repo, run <code class="language-plaintext highlighter-rouge">bundle install</code>, run <code class="language-plaintext highlighter-rouge">foreman start</code>. This will start the Rails
+server and the live re-loader.</p>
+  </li>
+  <li>
+    <p>Back-end – <a href="https://github.com/ane/rails-react-backend">https://github.com/ane/rails-react-backend</a></p>
+
+    <p>It’s a dead simple Sinatra REST API that uses Sqlite3. This is obviously not suitable for
+production.</p>
+
+    <p>To install, clone the repo, run <code class="language-plaintext highlighter-rouge">bundle install</code>, run <code class="language-plaintext highlighter-rouge">rackup</code>.</p>
+  </li>
+</ul>
+
+<p>This application will <em>never</em> match a real SPA. A part of the front-end is not in the browser, so we
+will rely on a second web-server to run it. So it is an <em>illusion</em>, but as an illusion it is close
+enough, and it is <em>easy to use</em>.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>JavaScript front-end development, as it currently stands, is painful to develop in. One has to
+master many command line tools that instead of being unified as a single tool, each continue to
+diverge and grow larger and more powerful. The result is a confusing developer experience.</p>
+
+<p>In this post, I showed that we can scrape the good parts of modern JS developments and use them to
+modernize an older application stack that mimics the user experience of a SPA, but is not one. The
+application uses a clever library — Turbolinks — to convert page requests into XHRs, creating an
+illusion of a single-page application.</p>
+
+<p>The end result is a <em>half stack web framework</em>: we yank data access from a monolithic full-stack
+framework (Rails) and make it use a REST API and we replace its presentation logic (ERB) with
+React. The framework is left to handle client state, routing and asset pipelining, which are the
+painful parts of SPA development, and the UI is rendered using React. So the Model–View–Controller
+is distributed into three places: Rails for UI state, React for UI rendering, and the REST API is
+the actual business logic. Effectively, this reduces Rails to a thin SPA-like front-end over a REST API!</p>
+
+<p>Where to go from here? Here are some interesting things that could be explored:</p>
+
+<ul>
+  <li>
+<strong>Turbolinks with React</strong>. Use React to parse the HTML returned by Turbolinks (if rendered on the
+server) and use the React virtual DOM to update the DOM, instead of blindly swapping the <code class="language-plaintext highlighter-rouge">body</code> element.</li>
+  <li>
+<strong>GraphQL</strong>. Although Her is nice, we could use <a href="http://graphql.org/">GraphQL</a> when communicating
+with the backend <strong>and</strong> also use it as a communication method between Rails and React.</li>
+  <li>
+<strong>TypeScript</strong>. I like static typing, but currently react-rails doesn’t really work that well with TypeScript.</li>
+  <li>
+<strong>React On Rails</strong>. A
+different <a href="https://github.com/shakacode/react_on_rails">kind of React &amp; Rails integration</a>, which
+lets you use Webpack. React On Rails is more flexible than react-rails: you get the full power of
+Webpack and NPM here, so this is both good and bad.</li>
+</ul>
+
+<p>All in all, this solution is a compromise.</p>
+
+<p>Compared to a full-stack Rails app, we have to do extra work in creating a REST API backend, but the
+result is an app that’s easier to manage due to the separation of concerns. With a separate data
+access layer — the REST API — complex business logic is contained in a single place. It is easy
+to couple several clients to such a front-end, and our Rails app is just one of these.</p>
+
+<p>But, compared to a full-fledged SPA, this app will never be as quick, it will never be as fluid, and
+it may not be what cutting-edge front-end development this day represents, but it is is <em>simple</em>,
+there is <em>one</em> build tool (bundler), and it is <em>fun</em> to develop in.</p>
+
+<p>I might miss fancy things like state hydration and Redux, but the insanity of Webpack, Gulp, Babel
+and NPM, I will <strong>not</strong> miss.</p>
+
+  </div>
+  <small style="display: flex; justify-content: space-between;">
+    
+      <em>
+        Previous: <a href="/2016/10/25/web-development-has-become-weird.html">Web development has become weird</a>
+      </em>
+    
+
+    
+      <em>
+        Next: <a href="/2017/03/08/camel-abstractions.html">Apache Camel and the price of abstractions</a>
+      </em>
+    
+  </small>
+</article>
+
+      </div>
+
+      <footer>
+        <hr>
+        <address>
+          
+          
+
+          © <a href="mailto:ane@iki.fi">Antoine Kalmbach</a>, see <a href="/this-site/index.html#copying">copying</a>.
+          Last updated on <a href="/changelog.html">July 28, 2021</a>. Discuss at my <a href="https://lists.sr.ht/~ane/public-inbox">public inbox</a>.
+        </address>
+      </footer>
+    </div>
+    <script src="/assets/hyphenator.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
+         processEscapes: false
+       }
+     });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="/assets/hylo.js" type="text/javascript"></script>
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-58162697-1']);
+     _gaq.push(['_trackPageview']);
+
+     (function () {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+  </body>
+
+</html>

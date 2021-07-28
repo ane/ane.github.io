@@ -1,0 +1,520 @@
+<!-- -*- engine:liquid -*- -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
+
+    <title>
+      
+        Working with Git and patches in Emacs
+      
+    </title>
+
+    
+      <meta name="description" content="" />
+    
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link type="application/atom+xml" rel="alternate" href="http://ane.iki.fi/feed.xml" title="Antoine Kalmbach's website" />
+    <meta http-equiv="refresh" content="0; url=http://ane.iki.fi/emacs/patches.html" />
+    <link rel="canonical" href="http://ane.iki.fi/emacs/patches.html"/>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Working with Git and patches in Emacs | Antoine Kalmbach’s website</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Working with Git and patches in Emacs" />
+<meta name="author" content="Antoine Kalmbach" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Git was initially designed around emails. Modern Git forges have co-opted the term pull request to mean using web-based applications for collaborating using Git. This has become the de facto method of collaboration in the Git world. Before that happened, people actually used plain emails when working with decentralized version control system. There was no notion of requiring a web application for collaboration, you simply mailed your changes to someone and they merged them if they wished. This document demonstrates the way I use email and Git using Emacs. Why Git and email? While working with Git these days you cannot but notice the mainstream collaboration model is completely unlike what this document details. You are expected to use web applications like Github or its copies (Gitlab, etc., see above). Lots of people have written about the pros and cons of each, to highlight a few: Drew Devault in The advantages of email-driven git workflow Joe Nelson in Mailing lists vs. Github My own reason for preferring email is that it promotes discussion. Many forges do not actively promote a discussion forum, which is why things like gitter.im exist. Other alternatives is to have an IRC channel, but those are usually too informal to focus on development. Development forums are essential With an email-based workflow the place for collaboration supports both discussion and actual development work and review. A project mailing list offers an environment for discussing the project and for sending and reviewing patches. When patches are mixed with discussion, it makes it easy for people to follow the current zeitgeist of the project. Changes have more context this way. Contrast this to a forge like GitHub where, if the project doesn’t really state anything, you’re suppose to conduct your discussion in issues before making a pull request. But that can lead to confusion: issues usually are synonymous with bug reports. It would be nicer if issues were, well, issues. In an email-based collaboration model, discussion and development happen in the same place, it’s a vibrant bazaar of development. Email? Seriously? Ok, email and git isn’t for everybody. That’s fine. The folks at GitHub rightly understood that if one were to make sending pull requests easier it would increase the popularity of Git. The point isn’t in elitism or setting high barriers of entry. I don’t think the point is in filtering beginners either, since I wouldn’t want to be hostile to beginners. I suppose advocating Git and email in 2020 is in one sense some kind of activism for simpler solutions from a more elegant time. The argument is also interesting from a technological perspective: git send-email is actually a uniform, standard way of collaborating in Git. As a result, git send-email is actually quite relevant still despite forges having twisted the meaning of pull request. That is why in every forge a pull request is slightly different. Some forges call them merge requests or something similar, and the user experience for making them varies ever so slightly. There is no standard pull request any more There is certain nonobvious elegance in the email-based workflow: it actually standardizes on two tools: git send-email and git am. This standardization means that everyone, regardless of their mail client, will be working with a uniform language for collaboration. Now, many will say that web applications offer a better user experience than emails. That is, first and foremost, a matter of opinion. While web applications offer more graphical bells and whistles, the problem is that in the modern age of a multitude of Git forges every one of them will have slight differences in the language they use and implement pull requests in. So if you regularly collaborate on many platforms the slight idiosyncracies of each forge will get in the way. Not so with git send-email, it’s the same for everyone! Barriers of entry Some forges embrace email based collaboration natively: sourcehut is a newish forge from 2018 which is still in alpha as of October 2020, and it actively promotes an email-based workflow. In fact, the people behind sourcehut are behind the tutorial at git-send-email.io. Even sourcehut recognizes that setting up sendemail in git can be onerous and a lot of people don’t want to work with email. So they built a webpage to handle that part where you can interactively prepare a patch email as if you were using git send-email. It’s still email at the bottom, that’s the cool part! So as a result, don’t think of git and email as some sort of activism mixed with retrocomputing or text-based interfaces, rather, the goal is to rely on a standard way of collaboration, and natively mix discussion and development in the same environment. Because git send-email encourages the use of mailing lists, you no longer need an official IRC channel or subreddit or gitter room or whatever. And forges like sourcehut have made it easy to separate patches in the web interface for mailing lists, as well as having CI for mailing lists (seriously, how cool is that?). Git and email in 5 minutes Email-based workflows in Git are based on two tools: git send-email for sending changes to someone git am for applying changes from someone git send-email is essentially a wrapper around git format-patch. This wrapper calls git format-patch and mails it to the email address in the --to parameter. So $ git send-email --to=&quot;foo@bar.com@&quot; HEAD^ This will call git format-patch HEAD^ and send it to foo@bar.com. Git includes a Perl-based email client that it uses. This mail includes your commit message and the diff of the changes. When foo@bar.com wants to apply your patch, they save the mail and use git am on it. $ git am patch.mbox Now the question is, how do you use git send-email and git am from Emacs so that you don’t have to exit to the shell? Sending patches from Emacs Those daring enough who have configured Emacs as their email client probably think, ok, what’s the big deal, let me just call git format-patch and then mail the patch myself. The workflow would be thus: Prepare some changes. Commit the changes. Use git format-patch to prepare a file foo.patch. Send foo.patch as an email to the intended recipient, e.g. by opening it and then calling M-x message-mode which would open it in a major mode for sending emails. While this makes sense, you’ll still have to edit the intended recipient manually, ensure your subject is formatted properly, and so on. For basic one-off patches this might be sufficient, but you risk deviating from the standard git send-email format. The following is displayed on git-send-email.io, the git &amp; email tutorial: Warning! Some people think that they can get away with sending patches through some means other than git send-email, but you can’t. Your patches will be broken and a nuisance to the maintainers whose inbox they land in. Follow the golden rule: just use git send-email. So it’s safe to say we ought to stick to git send-email. But we can use it interactively from within Emacs. Calling git send-email from Emacs Calling any shell command is pretty easy in Emacs, just type M-! (or M-x shell-command) and type git send-email -1. This will open up a shell command buffer and git send-email will prompt you for the recipient and so on. You can stop this process at any time using C-c C-c if you’re note happy with it. Here’s an example patch generated using git send-email: From: Antoine Kalmbach &lt;ane@iki.fi&gt; Date: Mon, 19 Oct 2020 21:47:50 +0300 Subject: [PATCH] Added a line This should improve the README experience by quite a bit. --- Not sure about the final wording. README.md | 2 ++ 1 file changed, 2 insertions(+) diff --git a/README.md b/README.md index f9e3d61..2e4f197 100644 --- a/README.md +++ b/README.md @@ -1,3 +1,5 @@ # Hello there! Blah blah blah. + +Let&#39;s add this line here. Sometimes it makes sense to annotate your patch with a message that explains what the patch does, but not in a way that it would end up into the commit history. In the example above, that’s the bit under the three dashes ---. To add such an annotation, git send-email specifies a --annotate flag that will preview your patch in your editor specified by the $EDITOR environment variable. If you have your EDITOR set correctly to e.g. emacsclient, this will work just fine provided you’re running an Emacs server. Setting Emacs as $EDITOR If you try --annotate without EDITOR set, git send-email will most likely complain that your terminal has no editor specified, and quit. We’re executing a shell command, so we want to tell the terminal that we’re doing this from the editor. There’s an easy way to do this: Emacs has a with-editor-shell-command which will then set EDITOR to the Emacs process. Just call M-x with-editor-shell-command and type git send-email -1 &amp;. The ampersand tells the shell to execute the command asynchronously, letting us interact with the process while it is running. (If it was executing synchronously we’d have no way of suspending the command execution to spawn an editor buffer.) You can also do directly M-x with-editor-async-shell-command and you can drop the &amp;. You can also call git format-patch to produce the patch and then send it using git send-email which also accepts patch files. That way you can inspect the patch file before sending it, but this is mostly unnecessary since if you pass --annotate to git send-email it will preview the file anyway. I recommend calling $ git config --global sendemail.annotate yes And git send-email will always preview the patch before sending it. Ok now that we’ve successfully sent a patch, how do we turn this around and apply patches sent to us? Applying email patches in Emacs Let’s assume a patch has landed in your email. You need to be able to save this patch in either a mbox or maildir format. If you’re not sure how to do this, you can just copy the mail verbatim into a text file and then pass that to git am. git am will detect the format and use the From: field to set the committer and Subject: and message body will go into the commit message. How to do this in Emacs? For this, we don’t have to just rely only on shell commands anymore. We can use either the wonderful Magit package with its interface for git am opening the patch and sending (piping) the whole buffer to git am Using Magit, this is as simple as pressing w w (magit-am-apply-patches) or w m (magit-am-apply-maildir). Just find the patch email and you’re set. Without Magit you can do this just by opening the patch and piping its output to git am. That is as easy as doing M-| git am. But that requires you to be in the same directory as the repository itself. So you’d have to M-x cd into the directory before applying. But all in all, there are several ways for doing this directly from Emacs, and of course as a last resort you can just open the Emacs shell M-x eshell and do it from thecommand line. Making our own M-x git-am If you’re not too keen on using Magit or cding to the directory every time, I wrote this handy little Emacs Lisp to provide a nice M-x git-am command: (defun git-am (repository) &quot;Run git-am in REPOSITORY with the current buffer. If REPOSITORY is nil, prompt for a directory. If a region is selected, it will pipe the buffer to git am. If the current buffer mode is Rmail, Gnus article, or diff mode, it will call `git am&#39; with the contents of the current buffer. If the current buffer isn&#39;t appropriate and there is no region selected, call git am after prompting for a patch/mbox/maildir. If the current buffer is a `vc-dir-mode&#39;, assume we are in the repository and we want to look for a patch somewhere else. If Magit is available and we&#39;re in a `magit-status-mode&#39; buffer, the same treatment as `vc-dir-mode&#39; is given. With prefix argument ignore the fact we&#39;re in a version control buffer and prompt for the repository anyway.&quot; (interactive (list (if (and (not current-prefix-arg) (memq major-mode &#39;(vc-dir-mode magit-status-mode)) (eq &#39;Git (vc-responsible-backend default-directory))) (vc-git-root default-directory) (read-directory-name &quot;Repository: &quot;)))) (when (not repository) (error &quot;No repository given.&quot;)) (when (not (eq &#39;Git (vc-responsible-backend repository))) (error &quot;Not a git repository: %s&quot; repository)) (let ((default-directory (expand-file-name repository))) (cond ((mark) (shell-command-on-region (region-beginning) (region-end) &quot;git am&quot;)) ;; Use the whole mail buffer when viewing a patch email or patch file. ((memq major-mode &#39;(rmail-mode gnus-article-mode diff-mode)) (shell-command-on-region (point-min) (point-max) &quot;git am&quot;)) (t (shell-command (format &quot;git am %s&quot; (read-file-name &quot;Apply patch (mbox/patch/maildir): &quot; nil nil t))))))) This command works both in version control status buffers, dired buffers, patch files and patch emails. If the user is looking at some version control status buffer, it assumes the repository is the one we’re in, unless the prefix argument is given by pressing C-u M-x git-am. If we’re in a mail buffer or looking at a diff-mode file (*.patch), we’re going to apply this patch to some unknown repository. And if none of this is true we’re going to prompt for the patch as well. Emacs has for a couple of major versions supported the idea of version control as projects. That is, a version controlled directory tree is a project, i.e. a collection of related files. This facility leverages ignore mechanisms like .gitignore by providing an interactive file selection interface but with ignored files filtered out from the search. Whenever you interact with such a project, Emacs registers this repository into its list of known projects. Since these projects map to git repositories, I wrote a wrapper for git-am that will present repositories using project-prompt-project-dir: (defun project-git-am (&amp;optional use-current-project) &quot;Run `git-am&#39; in a project directory. With a prefix argument run in the current project if found, otherwise prompt for a project directory. See the Info node `(emacs) Projects&#39; for what a project is.&quot; (interactive &quot;P&quot;) (let ((root (if (and use-current-project (project-current)) (project-root (project-current)) (project-prompt-project-dir)))) (git-am root))) Looks like this requires installing project.el from GNU ELPA, or using Emacs 28 from Git, which includes this version of project.el. Who knows, maybe all of this will end up in its own package one day! Even without this Elisp code you can easily use git am quite readily in Emacs with the tools already available. If nothing else, this code shows how easily you can do powerful customizations for simple shell commands in Emacs! Conclusion Git + Email = ❤. It’s nice to see a resurgence of Git and email being boosted by sites like sourcehut. I think the first time I used Git and email must have been in maybe 2008? I don’t remember what it was for, but I do remember mailing it to the author directly from alpine. Not long after that GitHub came and made everything different." />
+<meta property="og:description" content="Git was initially designed around emails. Modern Git forges have co-opted the term pull request to mean using web-based applications for collaborating using Git. This has become the de facto method of collaboration in the Git world. Before that happened, people actually used plain emails when working with decentralized version control system. There was no notion of requiring a web application for collaboration, you simply mailed your changes to someone and they merged them if they wished. This document demonstrates the way I use email and Git using Emacs. Why Git and email? While working with Git these days you cannot but notice the mainstream collaboration model is completely unlike what this document details. You are expected to use web applications like Github or its copies (Gitlab, etc., see above). Lots of people have written about the pros and cons of each, to highlight a few: Drew Devault in The advantages of email-driven git workflow Joe Nelson in Mailing lists vs. Github My own reason for preferring email is that it promotes discussion. Many forges do not actively promote a discussion forum, which is why things like gitter.im exist. Other alternatives is to have an IRC channel, but those are usually too informal to focus on development. Development forums are essential With an email-based workflow the place for collaboration supports both discussion and actual development work and review. A project mailing list offers an environment for discussing the project and for sending and reviewing patches. When patches are mixed with discussion, it makes it easy for people to follow the current zeitgeist of the project. Changes have more context this way. Contrast this to a forge like GitHub where, if the project doesn’t really state anything, you’re suppose to conduct your discussion in issues before making a pull request. But that can lead to confusion: issues usually are synonymous with bug reports. It would be nicer if issues were, well, issues. In an email-based collaboration model, discussion and development happen in the same place, it’s a vibrant bazaar of development. Email? Seriously? Ok, email and git isn’t for everybody. That’s fine. The folks at GitHub rightly understood that if one were to make sending pull requests easier it would increase the popularity of Git. The point isn’t in elitism or setting high barriers of entry. I don’t think the point is in filtering beginners either, since I wouldn’t want to be hostile to beginners. I suppose advocating Git and email in 2020 is in one sense some kind of activism for simpler solutions from a more elegant time. The argument is also interesting from a technological perspective: git send-email is actually a uniform, standard way of collaborating in Git. As a result, git send-email is actually quite relevant still despite forges having twisted the meaning of pull request. That is why in every forge a pull request is slightly different. Some forges call them merge requests or something similar, and the user experience for making them varies ever so slightly. There is no standard pull request any more There is certain nonobvious elegance in the email-based workflow: it actually standardizes on two tools: git send-email and git am. This standardization means that everyone, regardless of their mail client, will be working with a uniform language for collaboration. Now, many will say that web applications offer a better user experience than emails. That is, first and foremost, a matter of opinion. While web applications offer more graphical bells and whistles, the problem is that in the modern age of a multitude of Git forges every one of them will have slight differences in the language they use and implement pull requests in. So if you regularly collaborate on many platforms the slight idiosyncracies of each forge will get in the way. Not so with git send-email, it’s the same for everyone! Barriers of entry Some forges embrace email based collaboration natively: sourcehut is a newish forge from 2018 which is still in alpha as of October 2020, and it actively promotes an email-based workflow. In fact, the people behind sourcehut are behind the tutorial at git-send-email.io. Even sourcehut recognizes that setting up sendemail in git can be onerous and a lot of people don’t want to work with email. So they built a webpage to handle that part where you can interactively prepare a patch email as if you were using git send-email. It’s still email at the bottom, that’s the cool part! So as a result, don’t think of git and email as some sort of activism mixed with retrocomputing or text-based interfaces, rather, the goal is to rely on a standard way of collaboration, and natively mix discussion and development in the same environment. Because git send-email encourages the use of mailing lists, you no longer need an official IRC channel or subreddit or gitter room or whatever. And forges like sourcehut have made it easy to separate patches in the web interface for mailing lists, as well as having CI for mailing lists (seriously, how cool is that?). Git and email in 5 minutes Email-based workflows in Git are based on two tools: git send-email for sending changes to someone git am for applying changes from someone git send-email is essentially a wrapper around git format-patch. This wrapper calls git format-patch and mails it to the email address in the --to parameter. So $ git send-email --to=&quot;foo@bar.com@&quot; HEAD^ This will call git format-patch HEAD^ and send it to foo@bar.com. Git includes a Perl-based email client that it uses. This mail includes your commit message and the diff of the changes. When foo@bar.com wants to apply your patch, they save the mail and use git am on it. $ git am patch.mbox Now the question is, how do you use git send-email and git am from Emacs so that you don’t have to exit to the shell? Sending patches from Emacs Those daring enough who have configured Emacs as their email client probably think, ok, what’s the big deal, let me just call git format-patch and then mail the patch myself. The workflow would be thus: Prepare some changes. Commit the changes. Use git format-patch to prepare a file foo.patch. Send foo.patch as an email to the intended recipient, e.g. by opening it and then calling M-x message-mode which would open it in a major mode for sending emails. While this makes sense, you’ll still have to edit the intended recipient manually, ensure your subject is formatted properly, and so on. For basic one-off patches this might be sufficient, but you risk deviating from the standard git send-email format. The following is displayed on git-send-email.io, the git &amp; email tutorial: Warning! Some people think that they can get away with sending patches through some means other than git send-email, but you can’t. Your patches will be broken and a nuisance to the maintainers whose inbox they land in. Follow the golden rule: just use git send-email. So it’s safe to say we ought to stick to git send-email. But we can use it interactively from within Emacs. Calling git send-email from Emacs Calling any shell command is pretty easy in Emacs, just type M-! (or M-x shell-command) and type git send-email -1. This will open up a shell command buffer and git send-email will prompt you for the recipient and so on. You can stop this process at any time using C-c C-c if you’re note happy with it. Here’s an example patch generated using git send-email: From: Antoine Kalmbach &lt;ane@iki.fi&gt; Date: Mon, 19 Oct 2020 21:47:50 +0300 Subject: [PATCH] Added a line This should improve the README experience by quite a bit. --- Not sure about the final wording. README.md | 2 ++ 1 file changed, 2 insertions(+) diff --git a/README.md b/README.md index f9e3d61..2e4f197 100644 --- a/README.md +++ b/README.md @@ -1,3 +1,5 @@ # Hello there! Blah blah blah. + +Let&#39;s add this line here. Sometimes it makes sense to annotate your patch with a message that explains what the patch does, but not in a way that it would end up into the commit history. In the example above, that’s the bit under the three dashes ---. To add such an annotation, git send-email specifies a --annotate flag that will preview your patch in your editor specified by the $EDITOR environment variable. If you have your EDITOR set correctly to e.g. emacsclient, this will work just fine provided you’re running an Emacs server. Setting Emacs as $EDITOR If you try --annotate without EDITOR set, git send-email will most likely complain that your terminal has no editor specified, and quit. We’re executing a shell command, so we want to tell the terminal that we’re doing this from the editor. There’s an easy way to do this: Emacs has a with-editor-shell-command which will then set EDITOR to the Emacs process. Just call M-x with-editor-shell-command and type git send-email -1 &amp;. The ampersand tells the shell to execute the command asynchronously, letting us interact with the process while it is running. (If it was executing synchronously we’d have no way of suspending the command execution to spawn an editor buffer.) You can also do directly M-x with-editor-async-shell-command and you can drop the &amp;. You can also call git format-patch to produce the patch and then send it using git send-email which also accepts patch files. That way you can inspect the patch file before sending it, but this is mostly unnecessary since if you pass --annotate to git send-email it will preview the file anyway. I recommend calling $ git config --global sendemail.annotate yes And git send-email will always preview the patch before sending it. Ok now that we’ve successfully sent a patch, how do we turn this around and apply patches sent to us? Applying email patches in Emacs Let’s assume a patch has landed in your email. You need to be able to save this patch in either a mbox or maildir format. If you’re not sure how to do this, you can just copy the mail verbatim into a text file and then pass that to git am. git am will detect the format and use the From: field to set the committer and Subject: and message body will go into the commit message. How to do this in Emacs? For this, we don’t have to just rely only on shell commands anymore. We can use either the wonderful Magit package with its interface for git am opening the patch and sending (piping) the whole buffer to git am Using Magit, this is as simple as pressing w w (magit-am-apply-patches) or w m (magit-am-apply-maildir). Just find the patch email and you’re set. Without Magit you can do this just by opening the patch and piping its output to git am. That is as easy as doing M-| git am. But that requires you to be in the same directory as the repository itself. So you’d have to M-x cd into the directory before applying. But all in all, there are several ways for doing this directly from Emacs, and of course as a last resort you can just open the Emacs shell M-x eshell and do it from thecommand line. Making our own M-x git-am If you’re not too keen on using Magit or cding to the directory every time, I wrote this handy little Emacs Lisp to provide a nice M-x git-am command: (defun git-am (repository) &quot;Run git-am in REPOSITORY with the current buffer. If REPOSITORY is nil, prompt for a directory. If a region is selected, it will pipe the buffer to git am. If the current buffer mode is Rmail, Gnus article, or diff mode, it will call `git am&#39; with the contents of the current buffer. If the current buffer isn&#39;t appropriate and there is no region selected, call git am after prompting for a patch/mbox/maildir. If the current buffer is a `vc-dir-mode&#39;, assume we are in the repository and we want to look for a patch somewhere else. If Magit is available and we&#39;re in a `magit-status-mode&#39; buffer, the same treatment as `vc-dir-mode&#39; is given. With prefix argument ignore the fact we&#39;re in a version control buffer and prompt for the repository anyway.&quot; (interactive (list (if (and (not current-prefix-arg) (memq major-mode &#39;(vc-dir-mode magit-status-mode)) (eq &#39;Git (vc-responsible-backend default-directory))) (vc-git-root default-directory) (read-directory-name &quot;Repository: &quot;)))) (when (not repository) (error &quot;No repository given.&quot;)) (when (not (eq &#39;Git (vc-responsible-backend repository))) (error &quot;Not a git repository: %s&quot; repository)) (let ((default-directory (expand-file-name repository))) (cond ((mark) (shell-command-on-region (region-beginning) (region-end) &quot;git am&quot;)) ;; Use the whole mail buffer when viewing a patch email or patch file. ((memq major-mode &#39;(rmail-mode gnus-article-mode diff-mode)) (shell-command-on-region (point-min) (point-max) &quot;git am&quot;)) (t (shell-command (format &quot;git am %s&quot; (read-file-name &quot;Apply patch (mbox/patch/maildir): &quot; nil nil t))))))) This command works both in version control status buffers, dired buffers, patch files and patch emails. If the user is looking at some version control status buffer, it assumes the repository is the one we’re in, unless the prefix argument is given by pressing C-u M-x git-am. If we’re in a mail buffer or looking at a diff-mode file (*.patch), we’re going to apply this patch to some unknown repository. And if none of this is true we’re going to prompt for the patch as well. Emacs has for a couple of major versions supported the idea of version control as projects. That is, a version controlled directory tree is a project, i.e. a collection of related files. This facility leverages ignore mechanisms like .gitignore by providing an interactive file selection interface but with ignored files filtered out from the search. Whenever you interact with such a project, Emacs registers this repository into its list of known projects. Since these projects map to git repositories, I wrote a wrapper for git-am that will present repositories using project-prompt-project-dir: (defun project-git-am (&amp;optional use-current-project) &quot;Run `git-am&#39; in a project directory. With a prefix argument run in the current project if found, otherwise prompt for a project directory. See the Info node `(emacs) Projects&#39; for what a project is.&quot; (interactive &quot;P&quot;) (let ((root (if (and use-current-project (project-current)) (project-root (project-current)) (project-prompt-project-dir)))) (git-am root))) Looks like this requires installing project.el from GNU ELPA, or using Emacs 28 from Git, which includes this version of project.el. Who knows, maybe all of this will end up in its own package one day! Even without this Elisp code you can easily use git am quite readily in Emacs with the tools already available. If nothing else, this code shows how easily you can do powerful customizations for simple shell commands in Emacs! Conclusion Git + Email = ❤. It’s nice to see a resurgence of Git and email being boosted by sites like sourcehut. I think the first time I used Git and email must have been in maybe 2008? I don’t remember what it was for, but I do remember mailing it to the author directly from alpine. Not long after that GitHub came and made everything different." />
+<link rel="canonical" href="http://ane.iki.fi/emacs/patches.html" />
+<meta property="og:url" content="http://ane.iki.fi/emacs/patches.html" />
+<meta property="og:site_name" content="Antoine Kalmbach’s website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-10-19T12:17:06+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Working with Git and patches in Emacs" />
+<meta name="twitter:site" content="@anewtf" />
+<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<script type="application/ld+json">
+{"headline":"Working with Git and patches in Emacs","dateModified":"2020-10-23T21:54:46+00:00","datePublished":"2020-10-19T12:17:06+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://ane.iki.fi/emacs/patches.html"},"url":"http://ane.iki.fi/emacs/patches.html","author":{"@type":"Person","name":"Antoine Kalmbach"},"description":"Git was initially designed around emails. Modern Git forges have co-opted the term pull request to mean using web-based applications for collaborating using Git. This has become the de facto method of collaboration in the Git world. Before that happened, people actually used plain emails when working with decentralized version control system. There was no notion of requiring a web application for collaboration, you simply mailed your changes to someone and they merged them if they wished. This document demonstrates the way I use email and Git using Emacs. Why Git and email? While working with Git these days you cannot but notice the mainstream collaboration model is completely unlike what this document details. You are expected to use web applications like Github or its copies (Gitlab, etc., see above). Lots of people have written about the pros and cons of each, to highlight a few: Drew Devault in The advantages of email-driven git workflow Joe Nelson in Mailing lists vs. Github My own reason for preferring email is that it promotes discussion. Many forges do not actively promote a discussion forum, which is why things like gitter.im exist. Other alternatives is to have an IRC channel, but those are usually too informal to focus on development. Development forums are essential With an email-based workflow the place for collaboration supports both discussion and actual development work and review. A project mailing list offers an environment for discussing the project and for sending and reviewing patches. When patches are mixed with discussion, it makes it easy for people to follow the current zeitgeist of the project. Changes have more context this way. Contrast this to a forge like GitHub where, if the project doesn’t really state anything, you’re suppose to conduct your discussion in issues before making a pull request. But that can lead to confusion: issues usually are synonymous with bug reports. It would be nicer if issues were, well, issues. In an email-based collaboration model, discussion and development happen in the same place, it’s a vibrant bazaar of development. Email? Seriously? Ok, email and git isn’t for everybody. That’s fine. The folks at GitHub rightly understood that if one were to make sending pull requests easier it would increase the popularity of Git. The point isn’t in elitism or setting high barriers of entry. I don’t think the point is in filtering beginners either, since I wouldn’t want to be hostile to beginners. I suppose advocating Git and email in 2020 is in one sense some kind of activism for simpler solutions from a more elegant time. The argument is also interesting from a technological perspective: git send-email is actually a uniform, standard way of collaborating in Git. As a result, git send-email is actually quite relevant still despite forges having twisted the meaning of pull request. That is why in every forge a pull request is slightly different. Some forges call them merge requests or something similar, and the user experience for making them varies ever so slightly. There is no standard pull request any more There is certain nonobvious elegance in the email-based workflow: it actually standardizes on two tools: git send-email and git am. This standardization means that everyone, regardless of their mail client, will be working with a uniform language for collaboration. Now, many will say that web applications offer a better user experience than emails. That is, first and foremost, a matter of opinion. While web applications offer more graphical bells and whistles, the problem is that in the modern age of a multitude of Git forges every one of them will have slight differences in the language they use and implement pull requests in. So if you regularly collaborate on many platforms the slight idiosyncracies of each forge will get in the way. Not so with git send-email, it’s the same for everyone! Barriers of entry Some forges embrace email based collaboration natively: sourcehut is a newish forge from 2018 which is still in alpha as of October 2020, and it actively promotes an email-based workflow. In fact, the people behind sourcehut are behind the tutorial at git-send-email.io. Even sourcehut recognizes that setting up sendemail in git can be onerous and a lot of people don’t want to work with email. So they built a webpage to handle that part where you can interactively prepare a patch email as if you were using git send-email. It’s still email at the bottom, that’s the cool part! So as a result, don’t think of git and email as some sort of activism mixed with retrocomputing or text-based interfaces, rather, the goal is to rely on a standard way of collaboration, and natively mix discussion and development in the same environment. Because git send-email encourages the use of mailing lists, you no longer need an official IRC channel or subreddit or gitter room or whatever. And forges like sourcehut have made it easy to separate patches in the web interface for mailing lists, as well as having CI for mailing lists (seriously, how cool is that?). Git and email in 5 minutes Email-based workflows in Git are based on two tools: git send-email for sending changes to someone git am for applying changes from someone git send-email is essentially a wrapper around git format-patch. This wrapper calls git format-patch and mails it to the email address in the --to parameter. So $ git send-email --to=&quot;foo@bar.com@&quot; HEAD^ This will call git format-patch HEAD^ and send it to foo@bar.com. Git includes a Perl-based email client that it uses. This mail includes your commit message and the diff of the changes. When foo@bar.com wants to apply your patch, they save the mail and use git am on it. $ git am patch.mbox Now the question is, how do you use git send-email and git am from Emacs so that you don’t have to exit to the shell? Sending patches from Emacs Those daring enough who have configured Emacs as their email client probably think, ok, what’s the big deal, let me just call git format-patch and then mail the patch myself. The workflow would be thus: Prepare some changes. Commit the changes. Use git format-patch to prepare a file foo.patch. Send foo.patch as an email to the intended recipient, e.g. by opening it and then calling M-x message-mode which would open it in a major mode for sending emails. While this makes sense, you’ll still have to edit the intended recipient manually, ensure your subject is formatted properly, and so on. For basic one-off patches this might be sufficient, but you risk deviating from the standard git send-email format. The following is displayed on git-send-email.io, the git &amp; email tutorial: Warning! Some people think that they can get away with sending patches through some means other than git send-email, but you can’t. Your patches will be broken and a nuisance to the maintainers whose inbox they land in. Follow the golden rule: just use git send-email. So it’s safe to say we ought to stick to git send-email. But we can use it interactively from within Emacs. Calling git send-email from Emacs Calling any shell command is pretty easy in Emacs, just type M-! (or M-x shell-command) and type git send-email -1. This will open up a shell command buffer and git send-email will prompt you for the recipient and so on. You can stop this process at any time using C-c C-c if you’re note happy with it. Here’s an example patch generated using git send-email: From: Antoine Kalmbach &lt;ane@iki.fi&gt; Date: Mon, 19 Oct 2020 21:47:50 +0300 Subject: [PATCH] Added a line This should improve the README experience by quite a bit. --- Not sure about the final wording. README.md | 2 ++ 1 file changed, 2 insertions(+) diff --git a/README.md b/README.md index f9e3d61..2e4f197 100644 --- a/README.md +++ b/README.md @@ -1,3 +1,5 @@ # Hello there! Blah blah blah. + +Let&#39;s add this line here. Sometimes it makes sense to annotate your patch with a message that explains what the patch does, but not in a way that it would end up into the commit history. In the example above, that’s the bit under the three dashes ---. To add such an annotation, git send-email specifies a --annotate flag that will preview your patch in your editor specified by the $EDITOR environment variable. If you have your EDITOR set correctly to e.g. emacsclient, this will work just fine provided you’re running an Emacs server. Setting Emacs as $EDITOR If you try --annotate without EDITOR set, git send-email will most likely complain that your terminal has no editor specified, and quit. We’re executing a shell command, so we want to tell the terminal that we’re doing this from the editor. There’s an easy way to do this: Emacs has a with-editor-shell-command which will then set EDITOR to the Emacs process. Just call M-x with-editor-shell-command and type git send-email -1 &amp;. The ampersand tells the shell to execute the command asynchronously, letting us interact with the process while it is running. (If it was executing synchronously we’d have no way of suspending the command execution to spawn an editor buffer.) You can also do directly M-x with-editor-async-shell-command and you can drop the &amp;. You can also call git format-patch to produce the patch and then send it using git send-email which also accepts patch files. That way you can inspect the patch file before sending it, but this is mostly unnecessary since if you pass --annotate to git send-email it will preview the file anyway. I recommend calling $ git config --global sendemail.annotate yes And git send-email will always preview the patch before sending it. Ok now that we’ve successfully sent a patch, how do we turn this around and apply patches sent to us? Applying email patches in Emacs Let’s assume a patch has landed in your email. You need to be able to save this patch in either a mbox or maildir format. If you’re not sure how to do this, you can just copy the mail verbatim into a text file and then pass that to git am. git am will detect the format and use the From: field to set the committer and Subject: and message body will go into the commit message. How to do this in Emacs? For this, we don’t have to just rely only on shell commands anymore. We can use either the wonderful Magit package with its interface for git am opening the patch and sending (piping) the whole buffer to git am Using Magit, this is as simple as pressing w w (magit-am-apply-patches) or w m (magit-am-apply-maildir). Just find the patch email and you’re set. Without Magit you can do this just by opening the patch and piping its output to git am. That is as easy as doing M-| git am. But that requires you to be in the same directory as the repository itself. So you’d have to M-x cd into the directory before applying. But all in all, there are several ways for doing this directly from Emacs, and of course as a last resort you can just open the Emacs shell M-x eshell and do it from thecommand line. Making our own M-x git-am If you’re not too keen on using Magit or cding to the directory every time, I wrote this handy little Emacs Lisp to provide a nice M-x git-am command: (defun git-am (repository) &quot;Run git-am in REPOSITORY with the current buffer. If REPOSITORY is nil, prompt for a directory. If a region is selected, it will pipe the buffer to git am. If the current buffer mode is Rmail, Gnus article, or diff mode, it will call `git am&#39; with the contents of the current buffer. If the current buffer isn&#39;t appropriate and there is no region selected, call git am after prompting for a patch/mbox/maildir. If the current buffer is a `vc-dir-mode&#39;, assume we are in the repository and we want to look for a patch somewhere else. If Magit is available and we&#39;re in a `magit-status-mode&#39; buffer, the same treatment as `vc-dir-mode&#39; is given. With prefix argument ignore the fact we&#39;re in a version control buffer and prompt for the repository anyway.&quot; (interactive (list (if (and (not current-prefix-arg) (memq major-mode &#39;(vc-dir-mode magit-status-mode)) (eq &#39;Git (vc-responsible-backend default-directory))) (vc-git-root default-directory) (read-directory-name &quot;Repository: &quot;)))) (when (not repository) (error &quot;No repository given.&quot;)) (when (not (eq &#39;Git (vc-responsible-backend repository))) (error &quot;Not a git repository: %s&quot; repository)) (let ((default-directory (expand-file-name repository))) (cond ((mark) (shell-command-on-region (region-beginning) (region-end) &quot;git am&quot;)) ;; Use the whole mail buffer when viewing a patch email or patch file. ((memq major-mode &#39;(rmail-mode gnus-article-mode diff-mode)) (shell-command-on-region (point-min) (point-max) &quot;git am&quot;)) (t (shell-command (format &quot;git am %s&quot; (read-file-name &quot;Apply patch (mbox/patch/maildir): &quot; nil nil t))))))) This command works both in version control status buffers, dired buffers, patch files and patch emails. If the user is looking at some version control status buffer, it assumes the repository is the one we’re in, unless the prefix argument is given by pressing C-u M-x git-am. If we’re in a mail buffer or looking at a diff-mode file (*.patch), we’re going to apply this patch to some unknown repository. And if none of this is true we’re going to prompt for the patch as well. Emacs has for a couple of major versions supported the idea of version control as projects. That is, a version controlled directory tree is a project, i.e. a collection of related files. This facility leverages ignore mechanisms like .gitignore by providing an interactive file selection interface but with ignored files filtered out from the search. Whenever you interact with such a project, Emacs registers this repository into its list of known projects. Since these projects map to git repositories, I wrote a wrapper for git-am that will present repositories using project-prompt-project-dir: (defun project-git-am (&amp;optional use-current-project) &quot;Run `git-am&#39; in a project directory. With a prefix argument run in the current project if found, otherwise prompt for a project directory. See the Info node `(emacs) Projects&#39; for what a project is.&quot; (interactive &quot;P&quot;) (let ((root (if (and use-current-project (project-current)) (project-root (project-current)) (project-prompt-project-dir)))) (git-am root))) Looks like this requires installing project.el from GNU ELPA, or using Emacs 28 from Git, which includes this version of project.el. Who knows, maybe all of this will end up in its own package one day! Even without this Elisp code you can easily use git am quite readily in Emacs with the tools already available. If nothing else, this code shows how easily you can do powerful customizations for simple shell commands in Emacs! Conclusion Git + Email = ❤. It’s nice to see a resurgence of Git and email being boosted by sites like sourcehut. I think the first time I used Git and email must have been in maybe 2008? I don’t remember what it was for, but I do remember mailing it to the author directly from alpine. Not long after that GitHub came and made everything different.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/override.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/pygments.css" type="text/css" media="screen" />
+  </head>
+  <body itemscope itemtype="https://schema.org/WebPage" class="home-template">
+    <div class="hyphenate">
+      <h1 style="text-align: center;">
+  Antoine Kalmbach
+</h1>
+<nav class="navbar">
+  <ul>
+    <li class="nav-item ">
+      <a class="nav-link pl-0" href="/" itemprop="url"><span itemprop="name">Home</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/archive.html" itemprop="url"><span itemprop="name">Blog</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/about/" itemprop="url"><span itemprop="name">About</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/tags.html" itemprop="url"><span itemprop="name">Index</span></a>
+    </li>
+
+    <li class="nav-item mr-n2">
+      <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="h-card d-none" style="display: none">
+  <img class="u-photo" src="/images/me.png" />
+  <a class="u-url" href="http://ane.iki.fi/emacs/patches.html"></a>
+  <a class="p-name u-url" href="http://ane.iki.fi">Antoine Kalmbach</a>
+  <a class="u-email" href="mailto:">ane@iki.fi</a>
+</div>
+
+
+      <div class="content">
+        <article class="h-entry">
+  <header>
+    <div>
+      
+      
+      
+        
+          
+          <em><a href="/emacs">Emacs</a> / </em>
+        
+      
+        
+      
+    </div>
+    <h2 class="p-name" style="margin: 0.25rem 0;">
+      Working with Git and patches in Emacs
+    </h2>
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="" />
+  </header>
+  <div class="e-content">
+    <p>Git was initially designed around emails.  Modern <a href="https://en.wikipedia.org/wiki/Forge_(software)">Git forges</a> have co-opted the
+term <em>pull request</em> to mean using web-based applications for collaborating using
+Git.  This has become the de facto method of collaboration in the Git world.
+Before that happened, people actually used plain <em>emails</em> when working with
+decentralized version control system.  There was no notion of requiring a web
+application for collaboration, you simply mailed your changes to someone and
+they merged them if they wished.</p>
+
+<p>This document demonstrates the way I use email and Git using Emacs.</p>
+
+<h3 id="why-git-and-email">Why Git and email?</h3>
+
+<p>While working with Git these days you cannot but notice the mainstream
+collaboration model is completely unlike what this document details.  You are
+expected to use web applications like Github or its copies (Gitlab, etc., see
+above).  Lots of people have written about the pros and cons of each, to
+highlight a few:</p>
+
+<ul>
+  <li>Drew Devault in <a href="https://drewdevault.com/2018/07/02/Email-driven-git.html"><em>The advantages of email-driven git workflow</em></a></li>
+  <li>Joe Nelson in <a href="https://begriffs.com/posts/2018-06-05-mailing-list-vs-github.htm"><em>Mailing lists vs. Github</em></a></li>
+</ul>
+
+<p>My own reason for preferring email is that it <em>promotes discussion</em>.  Many
+forges do not actively promote a discussion forum, which is why things like
+<a href="https://gitter.im">gitter.im</a> exist. Other alternatives is to have an IRC
+channel, but those are usually too informal to focus on development.</p>
+
+<h4 id="development-forums-are-essential">Development forums are essential</h4>
+
+<p>With an email-based workflow the place for collaboration supports both
+discussion and actual development work and review.  A project mailing list
+offers an environment for discussing the project and for sending and reviewing
+patches.</p>
+
+<p>When patches are mixed with discussion, it makes it easy for people to follow
+the current zeitgeist of the project. Changes have more context this
+way. Contrast this to a forge like GitHub where, if the project doesn’t really
+state anything, you’re suppose to conduct your discussion in issues before
+making a pull request.  But that can lead to confusion: issues <em>usually</em> are
+synonymous with <em>bug reports</em>.  It would be nicer if issues were, well, issues.
+In an email-based collaboration model, discussion and development happen in the
+same place, it’s a vibrant
+<a href="http://www.catb.org/~esr/writings/cathedral-bazaar/cathedral-bazaar/index.html#catbmain">bazaar</a>
+of development.</p>
+
+<h4 id="email-seriously">Email? Seriously?</h4>
+
+<p>Ok, email and git isn’t for everybody.  That’s fine.  The folks at GitHub
+rightly understood that if one were to make sending pull requests easier it
+would increase the popularity of Git.  The point isn’t in elitism
+or setting high barriers of entry.  I don’t think the point is in filtering
+beginners either, since I wouldn’t want to be hostile to beginners.</p>
+
+<p>I suppose advocating Git and email in 2020 is in one sense some kind of activism
+for simpler solutions from a more elegant time.  The argument is also
+interesting from a technological perspective: <code class="language-plaintext highlighter-rouge">git send-email</code> is actually a
+uniform, standard way of collaborating in Git.</p>
+
+<p>As a result, <code class="language-plaintext highlighter-rouge">git send-email</code> is actually quite relevant still despite forges
+having twisted the meaning of pull request. That is why in every forge a pull
+request is slightly different. Some forges call them <em>merge requests</em> or
+something similar, and the user experience for making them varies ever so
+slightly.</p>
+
+<h4 id="there-is-no-standard-pull-request-any-more">There is no standard <em>pull request</em> any more</h4>
+
+<p>There is certain nonobvious elegance in the email-based workflow: it actually
+standardizes on two tools: <code class="language-plaintext highlighter-rouge">git send-email</code> and <code class="language-plaintext highlighter-rouge">git am</code>.  This standardization
+means that everyone, regardless of their mail client, will be working with a
+uniform language for collaboration.</p>
+
+<p>Now, many will say that web applications offer a better user experience than
+emails.  That is, first and foremost, a matter of <em>opinion</em>.  While web
+applications offer more graphical bells and whistles, the problem is that in the
+modern age of a multitude of Git forges every one of them will have slight
+differences in the language they use and implement <em>pull requests</em> in.  So if
+you regularly collaborate on many platforms the slight idiosyncracies of each
+forge will get in the way. Not so with <code class="language-plaintext highlighter-rouge">git send-email</code>, it’s the same for
+everyone!</p>
+
+<h4 id="barriers-of-entry">Barriers of entry</h4>
+
+<p>Some forges embrace email based collaboration natively:
+<a href="https://sourcehut.org">sourcehut</a> is a newish forge from 2018 which is still in
+alpha as of October 2020, and it actively promotes an email-based workflow. In
+fact, the people behind sourcehut are behind the tutorial at
+<a href="http://git-send-email.io">git-send-email.io</a>.</p>
+
+<p>Even sourcehut recognizes that setting up <code class="language-plaintext highlighter-rouge">sendemail</code> in git can be onerous and
+a lot of people don’t want to work with email. So they built a webpage to handle
+that part where you can interactively prepare a patch email as if you were using
+<code class="language-plaintext highlighter-rouge">git send-email</code>. It’s still email at the bottom, that’s the cool part!</p>
+
+<p>So as a result, don’t think of git and email as some sort of activism mixed with
+retrocomputing or text-based interfaces, rather, the goal is to</p>
+
+<ul>
+  <li>rely on a standard way of collaboration, and</li>
+  <li>natively mix discussion and development in the same environment.</li>
+</ul>
+
+<p>Because <code class="language-plaintext highlighter-rouge">git send-email</code> encourages the use of mailing lists, you no longer need
+an official IRC channel or subreddit or gitter room or whatever.  And forges
+like sourcehut have made it easy to separate patches in the web interface for
+mailing lists, as well as having <a href="https://sourcehut.org/blog/2020-07-14-setting-up-ci-for-mailing-lists/">CI for mailing
+lists</a>
+(seriously, <em>how cool is that</em>?).</p>
+
+<h3 id="git-and-email-in-5-minutes">Git and email in 5 minutes</h3>
+
+<p>Email-based workflows in Git are based on two tools:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">git send-email</code> for <em>sending changes to someone</em></li>
+  <li><code class="language-plaintext highlighter-rouge">git am</code> for <em>applying changes from someone</em></li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">git send-email</code> is essentially a wrapper around <a href="https://git-scm.com/docs/git-format-patch"><code class="language-plaintext highlighter-rouge">git
+format-patch</code></a>. This wrapper calls
+<code class="language-plaintext highlighter-rouge">git format-patch</code> and mails it to the email address in the <code class="language-plaintext highlighter-rouge">--to</code> parameter. So</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git send-email --to="foo@bar.com@" HEAD^
+</code></pre></div></div>
+
+<p>This will call <code class="language-plaintext highlighter-rouge">git format-patch HEAD^</code> and send it to <code class="language-plaintext highlighter-rouge">foo@bar.com</code>.  Git
+includes a Perl-based email client that it uses.  This mail includes your commit
+message and the diff of the changes. When <code class="language-plaintext highlighter-rouge">foo@bar.com</code> wants to apply your
+patch, they save the mail and use <code class="language-plaintext highlighter-rouge">git am</code> on it.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git am patch.mbox
+</code></pre></div></div>
+
+<p>Now the question is, how do you use <code class="language-plaintext highlighter-rouge">git send-email</code> and <code class="language-plaintext highlighter-rouge">git am</code> from Emacs so
+that you don’t have to exit to the shell?</p>
+
+<h3 id="sending-patches-from-emacs">Sending patches from Emacs</h3>
+
+<p>Those daring enough who have configured Emacs as their email client probably
+think, ok, what’s the big deal, let me just call <code class="language-plaintext highlighter-rouge">git format-patch</code> and then
+mail the patch myself. The workflow would be thus:</p>
+
+<ol>
+  <li>Prepare some changes.</li>
+  <li>Commit the changes.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">git format-patch</code> to prepare a file <code class="language-plaintext highlighter-rouge">foo.patch</code>.</li>
+  <li>Send <code class="language-plaintext highlighter-rouge">foo.patch</code> as an email to the intended recipient, e.g. by opening it
+and then calling <kbd>M-x message-mode</kbd> which would open it in a major
+mode for sending emails.</li>
+</ol>
+
+<p>While this makes sense, you’ll still have to edit the intended recipient
+manually, ensure your subject is formatted properly, and so on. For basic
+one-off patches this might be sufficient, but you risk deviating from the
+standard <code class="language-plaintext highlighter-rouge">git send-email</code> format. The following is displayed on <a href="https://git-send-email.io/#step-3">git-send-email.io,
+the git &amp; email tutorial:</a></p>
+
+<blockquote>
+  <p>Warning! Some people think that they can get away with sending patches through
+  some means other than <code class="language-plaintext highlighter-rouge">git send-email</code>, but you can’t. Your patches will be
+  broken and a nuisance to the maintainers whose inbox they land in. Follow the
+  golden rule: just use git <code class="language-plaintext highlighter-rouge">send-email</code>.</p>
+</blockquote>
+
+<p>So it’s safe to say we ought to stick to <code class="language-plaintext highlighter-rouge">git send-email</code>. But we can use it
+interactively from within Emacs.</p>
+
+<h4 id="calling-git-send-email-from-emacs">Calling <code class="language-plaintext highlighter-rouge">git send-email</code> from Emacs</h4>
+
+<p>Calling any shell command is pretty easy in Emacs, just type <kbd>M-!</kbd>
+(or <code class="language-plaintext highlighter-rouge">M-x shell-command</code>) and type <code class="language-plaintext highlighter-rouge">git send-email -1</code>. This will open up a shell
+command buffer and <code class="language-plaintext highlighter-rouge">git send-email</code> will prompt you for the recipient and so on.
+You can stop this process at any time using <kbd>C-c C-c</kbd> if you’re note
+happy with it. Here’s an example patch generated using <code class="language-plaintext highlighter-rouge">git send-email</code>:</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">From: Antoine Kalmbach &lt;ane@iki.fi&gt;
+Date: Mon, 19 Oct 2020 21:47:50 +0300
+Subject: [PATCH] Added a line
+</span>
+This should improve the README experience by quite a bit.
+<span class="p">---
+Not sure about the final wording.
+</span> README.md | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/README.md b/README.md
+<span class="gh">index f9e3d61..2e4f197 100644
+</span><span class="gd">--- a/README.md
+</span><span class="gi">+++ b/README.md
+</span><span class="p">@@ -1,3 +1,5 @@</span>
+ # Hello there!
+ 
+ Blah blah blah.
+<span class="gi">+
++Let's add this line here.
+</span></code></pre></div></div>
+
+<p>Sometimes it makes sense to annotate your patch with a message that explains
+what the patch does, but not in a way that it would end up into the commit
+history.  In the example above, that’s the bit under the three dashes <code class="language-plaintext highlighter-rouge">---</code>.</p>
+
+<p>To add such an annotation, <code class="language-plaintext highlighter-rouge">git send-email</code> specifies a <code class="language-plaintext highlighter-rouge">--annotate</code> flag that
+will preview your patch in your editor specified by the <code class="language-plaintext highlighter-rouge">$EDITOR</code> environment
+variable. If you have your <code class="language-plaintext highlighter-rouge">EDITOR</code> set correctly to e.g. <code class="language-plaintext highlighter-rouge">emacsclient</code>, this
+will work just fine provided you’re running an Emacs server.</p>
+
+<h4 id="setting-emacs-as-editor">Setting Emacs as <code class="language-plaintext highlighter-rouge">$EDITOR</code></h4>
+
+<p>If you try <code class="language-plaintext highlighter-rouge">--annotate</code> without <code class="language-plaintext highlighter-rouge">EDITOR</code> set, <code class="language-plaintext highlighter-rouge">git send-email</code> will most likely
+complain that your terminal has no editor specified, and quit.  We’re executing
+a shell command, so we want to tell the terminal that we’re doing this from <em>the
+editor</em>. There’s an easy way to do this: Emacs has a <code class="language-plaintext highlighter-rouge">with-editor-shell-command</code>
+which will then set <code class="language-plaintext highlighter-rouge">EDITOR</code> to the Emacs process. Just call <kbd>M-x</kbd>
+<kbd>with-editor-shell-command</kbd> and type <code class="language-plaintext highlighter-rouge">git send-email -1 &amp;</code>.  The
+ampersand tells the shell to execute the command asynchronously, letting us
+interact with the process while it is running.  (If it was executing
+synchronously we’d have no way of suspending the command execution to spawn an
+editor buffer.) You can also do directly <kbd>M-x</kbd>
+<kbd>with-editor-async-shell-command</kbd> and you can drop the <code class="language-plaintext highlighter-rouge">&amp;</code>.</p>
+
+<p>You can also call <code class="language-plaintext highlighter-rouge">git format-patch</code> to produce the patch and then send it using
+<code class="language-plaintext highlighter-rouge">git send-email</code> which also accepts patch files.  That way you can inspect the
+patch file before sending it, but this is mostly unnecessary since if you pass
+<code class="language-plaintext highlighter-rouge">--annotate</code> to <code class="language-plaintext highlighter-rouge">git send-email</code> it will preview the file anyway.  I recommend
+calling</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git config --global sendemail.annotate yes
+</code></pre></div></div>
+
+<p>And <code class="language-plaintext highlighter-rouge">git send-email</code> will always preview the patch before sending it.</p>
+
+<p>Ok now that we’ve successfully sent a patch, how do we turn this around and
+<em>apply</em> patches sent to us?</p>
+
+<h3 id="applying-email-patches-in-emacs">Applying email patches in Emacs</h3>
+
+<p>Let’s assume a patch has landed in your email.  You need to be able to save this
+patch in either a <a href="https://en.wikipedia.org/wiki/Mbox">mbox</a> or
+<a href="https://en.wikipedia.org/wiki/Maildir">maildir</a> format.  If you’re not sure how
+to do this, you can just copy the mail verbatim into a text file and then pass
+that to <code class="language-plaintext highlighter-rouge">git am</code>.  <code class="language-plaintext highlighter-rouge">git am</code> will detect the format and use the <code class="language-plaintext highlighter-rouge">From:</code> field to
+set the committer and <code class="language-plaintext highlighter-rouge">Subject:</code> and message body will go into the commit
+message.</p>
+
+<p>How to do this in Emacs?  For this, we don’t have to just rely only on shell
+commands anymore.  We can use either</p>
+
+<ul>
+  <li>the wonderful <a href="http://magit.vc/">Magit</a> package with its interface for <code class="language-plaintext highlighter-rouge">git
+am</code></li>
+  <li>opening the patch and sending (piping) the whole buffer to <code class="language-plaintext highlighter-rouge">git am</code></li>
+</ul>
+
+<p>Using Magit, this is as simple as pressing <kbd>w w</kbd> (<code class="language-plaintext highlighter-rouge">magit-am-apply-patches</code>) or
+<kbd>w m</kbd> (<code class="language-plaintext highlighter-rouge">magit-am-apply-maildir</code>).  Just find the patch email and you’re
+set.</p>
+
+<p>Without Magit you can do this just by opening the patch and piping its output to
+<code class="language-plaintext highlighter-rouge">git am</code>. That is as easy as doing <kbd>M-|</kbd> <kbd>git am</kbd>. But that
+requires you to be in the same directory as the repository itself. So you’d have
+to <kbd>M-x</kbd> <kbd>cd</kbd> into the directory before applying. But all in
+all, there are several ways for doing this directly from Emacs, and of course as
+a last resort you can just open the Emacs shell <kbd>M-x</kbd> <kbd>eshell</kbd>
+and do it from thecommand line.</p>
+
+<h4 id="making-our-own-m-x-git-am">Making our own <code class="language-plaintext highlighter-rouge">M-x git-am</code></h4>
+
+<p>If you’re not too keen on using Magit or <code class="language-plaintext highlighter-rouge">cd</code>ing to the directory every time, I
+wrote this handy little Emacs Lisp to provide a nice <kbd>M-x</kbd>
+<kbd>git-am</kbd> command:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nb">defun</span> <span class="nv">git-am</span> <span class="p">(</span><span class="nv">repository</span><span class="p">)</span>
+  <span class="s">"Run git-am in REPOSITORY with the current buffer.
+
+If REPOSITORY is nil, prompt for a directory.  If a region is
+selected, it will pipe the buffer to git am.  If the current
+buffer mode is Rmail, Gnus article, or diff mode, it will call
+`git am' with the contents of the current buffer.  
+
+If the current buffer isn't appropriate and there is no region selected,
+call git am after prompting for a patch/mbox/maildir. 
+
+If the current buffer is a `vc-dir-mode', assume we are in
+the repository and we want to look for a patch somewhere else.
+
+If Magit is available and we're in a `magit-status-mode' buffer,
+the same treatment as `vc-dir-mode' is given.
+
+With prefix argument ignore the fact we're in a version control
+buffer and prompt for the repository anyway."</span>
+  <span class="p">(</span><span class="nv">interactive</span>
+   <span class="p">(</span><span class="nb">list</span> <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">and</span> <span class="p">(</span><span class="nb">not</span> <span class="nv">current-prefix-arg</span><span class="p">)</span>
+                  <span class="p">(</span><span class="nv">memq</span> <span class="nv">major-mode</span> <span class="o">'</span><span class="p">(</span><span class="nv">vc-dir-mode</span> <span class="nv">magit-status-mode</span><span class="p">))</span>
+                  <span class="p">(</span><span class="nb">eq</span> <span class="ss">'Git</span> <span class="p">(</span><span class="nv">vc-responsible-backend</span> <span class="nv">default-directory</span><span class="p">)))</span>
+             <span class="p">(</span><span class="nv">vc-git-root</span> <span class="nv">default-directory</span><span class="p">)</span>
+           <span class="p">(</span><span class="nv">read-directory-name</span> <span class="s">"Repository: "</span><span class="p">))))</span>
+  <span class="p">(</span><span class="nb">when</span> <span class="p">(</span><span class="nb">not</span> <span class="nv">repository</span><span class="p">)</span>
+    <span class="p">(</span><span class="nb">error</span> <span class="s">"No repository given."</span><span class="p">))</span>
+  <span class="p">(</span><span class="nb">when</span> <span class="p">(</span><span class="nb">not</span> <span class="p">(</span><span class="nb">eq</span> <span class="ss">'Git</span> <span class="p">(</span><span class="nv">vc-responsible-backend</span> <span class="nv">repository</span><span class="p">)))</span>
+    <span class="p">(</span><span class="nb">error</span> <span class="s">"Not a git repository: %s"</span> <span class="nv">repository</span><span class="p">))</span>
+  <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nv">default-directory</span> <span class="p">(</span><span class="nv">expand-file-name</span> <span class="nv">repository</span><span class="p">)))</span>
+    <span class="p">(</span><span class="nb">cond</span> <span class="p">((</span><span class="nv">mark</span><span class="p">)</span>
+           <span class="p">(</span><span class="nv">shell-command-on-region</span> <span class="p">(</span><span class="nv">region-beginning</span><span class="p">)</span> <span class="p">(</span><span class="nv">region-end</span><span class="p">)</span> <span class="s">"git am"</span><span class="p">))</span>
+
+          <span class="c1">;; Use the whole mail buffer when viewing a patch email or patch file.</span>
+          <span class="p">((</span><span class="nv">memq</span> <span class="nv">major-mode</span> <span class="o">'</span><span class="p">(</span><span class="nv">rmail-mode</span> <span class="nv">gnus-article-mode</span> <span class="nv">diff-mode</span><span class="p">))</span>
+           <span class="p">(</span><span class="nv">shell-command-on-region</span> <span class="p">(</span><span class="nv">point-min</span><span class="p">)</span> <span class="p">(</span><span class="nv">point-max</span><span class="p">)</span> <span class="s">"git am"</span><span class="p">))</span>
+          
+          <span class="p">(</span><span class="no">t</span> <span class="p">(</span><span class="nv">shell-command</span>
+              <span class="p">(</span><span class="nb">format</span> <span class="s">"git am %s"</span>
+                      <span class="p">(</span><span class="nv">read-file-name</span> <span class="s">"Apply patch (mbox/patch/maildir): "</span> <span class="no">nil</span> <span class="no">nil</span> <span class="no">t</span><span class="p">)))))))</span>
+</code></pre></div></div>
+
+<p>This command works both in version control status buffers, dired buffers, patch
+files and patch emails. If the user is looking at some version control status
+buffer, it assumes the repository is the one we’re in, unless the prefix
+argument is given by pressing <kbd>C-u</kbd> <kbd>M-x</kbd>
+<kbd>git-am</kbd>. If we’re in a mail buffer or looking at a diff-mode file
+(<code class="language-plaintext highlighter-rouge">*.patch</code>), we’re going to apply <em>this patch</em> to some unknown repository. And
+if none of this is true we’re going to prompt for the patch as well.</p>
+
+<p>Emacs has for a couple of major versions supported the idea of <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Projects.html">version control</a>
+as projects. That is, a version controlled directory tree is a <em>project</em>, i.e. a
+collection of related files. This facility leverages ignore mechanisms like
+<code class="language-plaintext highlighter-rouge">.gitignore</code> by providing an interactive file selection interface but with ignored
+files filtered out from the search.  Whenever you interact with such a project,
+Emacs registers this repository into its list of known projects.</p>
+
+<p>Since these projects map to git repositories, I wrote a wrapper for <code class="language-plaintext highlighter-rouge">git-am</code>
+that will present repositories using <code class="language-plaintext highlighter-rouge">project-prompt-project-dir</code>:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nb">defun</span> <span class="nv">project-git-am</span> <span class="p">(</span><span class="k">&amp;optional</span> <span class="nv">use-current-project</span><span class="p">)</span>
+  <span class="s">"Run `git-am' in a project directory.
+
+With a prefix argument run in the current project if found, otherwise
+prompt for a project directory.
+
+See the Info node `(emacs) Projects' for what a project is."</span>
+  <span class="p">(</span><span class="nv">interactive</span> <span class="s">"P"</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nv">root</span> <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">and</span> <span class="nv">use-current-project</span> <span class="p">(</span><span class="nv">project-current</span><span class="p">))</span>
+                  <span class="p">(</span><span class="nv">project-root</span> <span class="p">(</span><span class="nv">project-current</span><span class="p">))</span>
+                <span class="p">(</span><span class="nv">project-prompt-project-dir</span><span class="p">))))</span>
+    <span class="p">(</span><span class="nv">git-am</span> <span class="nv">root</span><span class="p">)))</span>
+
+</code></pre></div></div>
+
+<p>Looks like this requires installing <code class="language-plaintext highlighter-rouge">project.el</code> from <a href="http://elpa.gnu.org/packages/project.html">GNU
+ELPA</a>, or using Emacs 28 from Git,
+which includes this version of <code class="language-plaintext highlighter-rouge">project.el</code>.</p>
+
+<p>Who knows, maybe all of this will end up in its own package one day!  Even
+without this Elisp code you can easily use <code class="language-plaintext highlighter-rouge">git am</code> quite readily in Emacs with
+the tools already available. If nothing else, this code shows how easily you can
+do powerful customizations for simple shell commands in Emacs!</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Git + Email = ❤. It’s nice to see a resurgence of Git and email being boosted by
+sites like <a href="http://sourcehut.org">sourcehut</a>.  I think the first time I used Git
+and email must have been in maybe 2008?  I don’t remember what it was for, but I
+do remember mailing it to the author directly from
+<a href="https://en.wikipedia.org/wiki/Alpine_(email_client)">alpine</a>.  Not long after
+that GitHub came and made everything different.</p>
+
+  </div>
+  <time class="dt-published" itemprop="datePublished" datetime="" style="color: #555;">
+    <em>This page was last updated on <time>October 23, 2020.</em>
+    </time>
+</article>
+
+      </div>
+
+      <footer>
+        <hr>
+        <address>
+          
+          
+
+          &copy; <a href="mailto:ane@iki.fi">Antoine Kalmbach</a>, see <a href="/this-site/index.html#copying">copying</a>.
+          Last updated on <a href="/changelog.html">July 28, 2021</a>. Discuss at my <a href="https://lists.sr.ht/~ane/public-inbox">public inbox</a>.
+        </address>
+      </footer>
+    </div>
+    <script src="/assets/hyphenator.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
+         processEscapes: false
+       }
+     });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="/assets/hylo.js" type="text/javascript"></script>
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-58162697-1']);
+     _gaq.push(['_trackPageview']);
+
+     (function () {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+  </body>
+
+</html>

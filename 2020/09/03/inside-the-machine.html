@@ -1,0 +1,269 @@
+<!-- -*- engine:liquid -*- -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
+
+    <title>
+      
+        Inside the machine
+      
+    </title>
+
+    
+      <meta name="description" content="" />
+    
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link type="application/atom+xml" rel="alternate" href="http://ane.iki.fi/feed.xml" title="Antoine Kalmbach's website" />
+    <meta http-equiv="refresh" content="0; url=http://ane.iki.fi/2020/09/03/inside-the-machine.html" />
+    <link rel="canonical" href="http://ane.iki.fi/2020/09/03/inside-the-machine.html"/>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Inside the machine | Antoine Kalmbach’s website</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Inside the machine" />
+<meta name="author" content="Antoine Kalmbach" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="One of the most interesting aspects of programming is the ability to inspect and modify programs while they are running." />
+<meta property="og:description" content="One of the most interesting aspects of programming is the ability to inspect and modify programs while they are running." />
+<link rel="canonical" href="http://ane.iki.fi/2020/09/03/inside-the-machine.html" />
+<meta property="og:url" content="http://ane.iki.fi/2020/09/03/inside-the-machine.html" />
+<meta property="og:site_name" content="Antoine Kalmbach’s website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-09-03T06:34:03+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Inside the machine" />
+<meta name="twitter:site" content="@anewtf" />
+<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<script type="application/ld+json">
+{"headline":"Inside the machine","dateModified":"2020-09-26T13:49:02+00:00","datePublished":"2020-09-03T06:34:03+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://ane.iki.fi/2020/09/03/inside-the-machine.html"},"url":"http://ane.iki.fi/2020/09/03/inside-the-machine.html","author":{"@type":"Person","name":"Antoine Kalmbach"},"description":"One of the most interesting aspects of programming is the ability to inspect and modify programs while they are running.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/override.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/pygments.css" type="text/css" media="screen" />
+  </head>
+  <body itemscope itemtype="https://schema.org/WebPage" class="home-template">
+    <div class="hyphenate">
+      <h1 style="text-align: center;">
+  Antoine Kalmbach
+</h1>
+<nav class="navbar">
+  <ul>
+    <li class="nav-item ">
+      <a class="nav-link pl-0" href="/" itemprop="url"><span itemprop="name">Home</span></a>
+    </li>
+    <li class="nav-item  active">
+      <a class="nav-link" href="/archive.html" itemprop="url"><span itemprop="name">Blog</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/about/" itemprop="url"><span itemprop="name">About</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/tags.html" itemprop="url"><span itemprop="name">Index</span></a>
+    </li>
+
+    <li class="nav-item mr-n2">
+      <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="h-card d-none" style="display: none">
+  <img class="u-photo" src="/images/me.png" />
+  <a class="u-url" href="http://ane.iki.fi/2020/09/03/inside-the-machine.html"></a>
+  <a class="p-name u-url" href="http://ane.iki.fi">Antoine Kalmbach</a>
+  <a class="u-email" href="mailto:">ane@iki.fi</a>
+</div>
+
+
+      <div class="content">
+        <article class="h-entry">
+  <header>
+    
+
+
+
+
+
+  <h2 class="p-name" style="margin: 0.25rem 0;">
+    Inside the machine
+  </h2>
+
+  <p class="post-meta text-muted">
+    <time class="dt-published" itemprop="datePublished" datetime="2020-09-03 06:34:03 +0000">
+      Posted on September 3, 2020
+
+  </p>
+
+
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="/2020/09/03/inside-the-machine.html" />
+  </header>
+  <div class="e-content">
+    <p>One of the most interesting aspects of programming is the ability to inspect <em>and
+modify</em> programs while they are running. <!--break-->We all know debuggers, but
+there are lots of programs which let you interact with them directly while they
+are running. Some programs let you run scripts via embedded interpreters, which
+let you extend the program, but in some instances the programs themselves <em>are</em>
+the interpreters.</p>
+
+<p>The famous story of the <a href="https://en.wikipedia.org/wiki/Deep_Space_1">Deep Space 1</a> probe is an interesting one:</p>
+
+<blockquote> 
+  The Remote Agent software, running on a custom port of Harlequin Common
+  Lisp, flew aboard <a href="http://nmp.jpl.nasa.gov/ds1/"> Deep Space 1</a>
+  (DS1), the first mission of NASA's <a href="http://nmp.jpl.nasa.gov/index_flash.html"> New Millennium
+  program</a>.  Remote Agent controlled DS1 for two days in May of
+  1999.  During that time we were able to debug and fix a race condition
+  that had not shown up during ground testing.  (Debugging a program
+  running on a $100M piece of hardware that is 100 million miles away is
+  an interesting experience.  Having a read-eval-print loop running on the
+  spacecraft proved invaluable in finding and fixing the problem.  The <a href="http://ti.arc.nasa.gov/m/pub-archive/176h/0176%20(Havelund).pdf">story of the
+  Remote Agent bug</a> is an interesting one in and of itself.)
+  <cite class="text-right d-block mt-1">
+    &mdash; Ron Garret, <a href="kakka">Lisping at JPL</a>, (2002)
+  </cite>
+</blockquote>
+
+<h3 id="examples-emacs-stumpwm-nyxt">Examples: Emacs, StumpWM, Nyxt</h3>
+
+<p>Famous examples of programs being nothing but interpreters with a function are
+the <a href="https://en.wikipedia.org/wiki/Emacs"><strong>Emacs</strong></a> family of text editors. Essentially, Emacs itself is a Lisp
+interpreter acting as a text editor. You may at any time open a <a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop">read-eval-print
+loop</a> inside the editor and actually interact with the program directly.</p>
+
+<p>For instance, if I open an Emacs Lisp REPL inside GNU Emacs using <code class="language-plaintext highlighter-rouge">M-x ielm</code>,
+opening and type <code class="language-plaintext highlighter-rouge">(next-buffer)</code>, I actually end up selecting the next buffer!</p>
+
+<p>Something similar to this is <a href="http://stumpwm.github.io/"><strong>StumpWM</strong></a>, a tiling <a href="https://www.x.org/wiki/">X11</a> <a href="https://en.wikipedia.org/wiki/X_window_manager">window manager</a> that is built
+entirely in <a href="https://lisp-lang.org/">Common Lisp</a>. Somewhat similar to Emacs, you can install <a href="https://www.cliki.net/Swank">Swank</a>, a
+REPL over a network connection, as an <a href="http://www.kaashif.co.uk/2015/06/28/hacking-stumpwm-with-common-lisp/index.html">extension inside StumpWM</a>, and then you can
+connect to the REPL using your client of choice. From there, any function inside
+the StumpWM Lisp image is available to you!</p>
+
+<p>Another program that you can REPL into is <a href="https://nyxt.atlas.engineer/"><strong>Nyxt</strong></a>, an extensible web browser built
+on WebKit. By running <code class="language-plaintext highlighter-rouge">C-h s</code> you can start up a Swank session and then you can
+connect to it from, e.g., <a href="https://common-lisp.net/project/slime/">SLIME</a>. Nyxt itself is written in Common Lisp, so
+offering REPLability via Swank is pretty much a no-brainer. I’ve only tried Nyxt
+very briefly, but from what I’ve seen it’s pretty interesting!</p>
+
+<p>I actually tried something similar years ago with Common Lisp, it turned out to
+be super simple. I was building a Lisp-customizable <a href="https://i3wm.org/i3status/">i3 status bar</a> program (I
+ended up <a href="https://github.com/ane/tila">writing it</a> writing it in <a href="https://www.call-cc.org/">CHICKEN Scheme</a>, though). Turns it didn’t
+require much: Swank is available via <a href="https://www.quicklisp.org/beta/">Quicklisp</a>, so you can just add it to your
+Common Lisp program and voilà, you have a REPL connection available. I <a href="https://shell.wilan.org/~ane/repl_live.webm">recorded
+the thing in action</a> via video to
+demonstrate how simple and powerful this concept is.</p>
+
+<p>These days I work with a multitude of application platforms and the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">Java Virtual
+Machine</a> is one of them. Java has powerful introspectability, from its native
+debugger support to protocols like <a href="https://www.oracle.com/java/technologies/javase/javamanagement.html">JMX</a> and even the more modern (and seriously
+amazing!) <a href="https://docs.oracle.com/javacomponents/jmc-5-4/jfr-runtime-guide/about.htm">Java Flight
+Recorder</a>.
+I’ve actually been able to find bugs using JMX, a web server was routinely
+freezing during high traffic hours – but only for 0.5% of the requests or so,
+still, this (barely) under the <a href="https://en.wikipedia.org/wiki/Service-level_agreement">SLA</a> we had for the service. Turns out there was a
+thread starvation issue: when traffic was sufficiently large, other background
+processes were exhausting the thread pool reserved for incoming connections,
+causing the web server to not be able to receive incoming connections for a
+short period of time. Long story short, I found these incidents via JMX, and was
+able to pinpoint the issue. The fix was to use separate thread pools for the web
+server HTTP traffic and then background I/O.</p>
+
+<p>Of course the Java Virtual Machine is not a Lisp interpreter, far from it, but
+it offers things that are <em>similar</em>. Hot code swapping, dynamic class reloading,
+etc. make it quite a powerful platform in terms of introspectability. But it’s a
+far cry from being a Lisp interpreter and a text editor, or a window manager, or
+a web browser.</p>
+
+<h3 id="blazing-fast-development-cycles">Blazing fast development cycles</h3>
+
+<p>I think there is a crucial difference between allowing extensibility via scripts
+(or <em>plugins</em>) and the ability to actually interact completely via a live
+process. The former usually does not offer total control over the program, the
+latter offers total control over the process, because the interpreter <em>is</em> the
+program.</p>
+
+<p>There is something admittedly fascinating about programs being, in a certain
+manner of speaking, living things. Not only does it give you a feeling of
+control, but it’s even more personal: you’re not just using the program, you’re
+inside it.</p>
+
+<p>Having tried Clojure and Figwheel where you can directly REPL into your browser,
+the speed of development if you’re building some application while it’s running
+is quite something. I’ve also tried <a href="http://fennel-lang.org/">Fennel</a>, a Lisp that compiles to <a href="https://www.google.com/search?client=firefox-b-d&amp;q=lua">Lua</a>, using
+the <a href="https://love2d.org/">LÖVE</a> game engine using a Fennel REPL <a href="https://gitlab.com/alexjgriffith/min-love2d-fennel">connected directly into the LÖVE game
+engine</a>. The result is quite <a href="https://github.com/ane/mudrally">unfinished</a> but the speed of development was
+astounding – I could change the game physics on the fly just by evaluating Lisp
+expressions in Emacs and the game would change instantly!</p>
+
+<p>If I’m ever after building some sort of hyper-customizable program I will
+definitely try building it around a Lisp interpreter, possibly using Common
+Lisp.</p>
+
+  </div>
+  <small style="display: flex; justify-content: space-between;">
+    
+      <em>
+        Previous: <a href="/2020/03/07/winding-down.html">Winding down</a>
+      </em>
+    
+
+    
+      <em>
+        Next: <a href="/2020/09/09/rmail.html">Back to Rmail</a>
+      </em>
+    
+  </small>
+</article>
+
+      </div>
+
+      <footer>
+        <hr>
+        <address>
+          
+          
+
+          &copy; <a href="mailto:ane@iki.fi">Antoine Kalmbach</a>, see <a href="/this-site/index.html#copying">copying</a>.
+          Last updated on <a href="/changelog.html">July 28, 2021</a>. Discuss at my <a href="https://lists.sr.ht/~ane/public-inbox">public inbox</a>.
+        </address>
+      </footer>
+    </div>
+    <script src="/assets/hyphenator.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
+         processEscapes: false
+       }
+     });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="/assets/hylo.js" type="text/javascript"></script>
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-58162697-1']);
+     _gaq.push(['_trackPageview']);
+
+     (function () {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+  </body>
+
+</html>

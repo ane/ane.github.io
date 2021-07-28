@@ -1,0 +1,546 @@
+<!-- -*- engine:liquid -*- -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
+
+    <title>
+      
+        Recutils, GOOPS and virtual slots
+      
+    </title>
+
+    
+      <meta name="description" content="" />
+    
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link type="application/atom+xml" rel="alternate" href="http://ane.iki.fi/feed.xml" title="Antoine Kalmbach's website" />
+    <meta http-equiv="refresh" content="0; url=http://ane.iki.fi/programming/lisp/goops-virtual-slots-and-ffi.html" />
+    <link rel="canonical" href="http://ane.iki.fi/programming/lisp/goops-virtual-slots-and-ffi.html"/>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Recutils, GOOPS and virtual slots | Antoine Kalmbach’s website</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Recutils, GOOPS and virtual slots" />
+<meta name="author" content="Antoine Kalmbach" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="For the past month or so I’ve been contributing to GNU Recutils, a set of tools for editing human-readable plain text databases. It’s a cool project in its own right, I’ve been using recutils myself for tracking workouts and storing cooking recipes. The cool part of it is its attempt to be both human-readable and machine-readable, which makes it very easy to use programmatically and then with a simple text editor. The powerful querying facilities of recutils is what turns it into a thing of beauty. In particular, selection expressions are expressions for querying recfiles. For instance, here’s how I would query exercises in my workout log for squats: recsel -t Exercise -e &quot;Name ~ &#39;Squat&#39;&quot; workouts.rec This would match records of type Exercise where the Name field matches regular expressions, so Squat will match all exercise varieties with the word Squat in it. The machine readability makes it easy to write programs or tools that interact with recfiles. I’ve become maintainer of the Emacs recfile major mode rec-mode. The major mode makes heavy use of the command line tools of the recutils suite to do provide automatic fixing and parsing of recfiles. if it’s possible to put Lisp in it, someone will For fun and profit, I’ve also been writing GNU Guile bindings for librec, the library powering recutils itself. The bindings actually interface with the C library directly using Guile’s amazing C extensions. I was interested in using recfiles in a Guile program, and while it would not have been too difficult to write a parser myself, I thought it was more important to not write one myself. What is more, Guile makes it almost too easy to wrap libraries, I had a functioning Scheme interface for parsing records in less than an hour. Let’s explore what that interface looks like. We start with the simplest data type in librec, fields. A recutils record is defined as an ordered collection of fields. Below is a record of three fields: Book: Structure and Interpretation of Computer Programs Author: Harold Abelson Author: Gerald Sussman The inner field type of librec is defined as rec_field_t, which is an opaque data type wrapping rec_field_s: typedef struct rec_field_s *rec_field_t; The underlying rec_field_s structure is a bit more complicated since it includes location data for the field, but for our example imagine it contains just the fields name and value, which are null-terminated strings. You don’t need to know anything about that, since librec offers an extensive API for working with the opaque types. To make a new field, you would write: rec_field_t field = rec_field_new(&quot;Author&quot;, &quot;Harold Abelson&quot;); To get the value and name, you use rec_field_value and rec_field_name: const char *name = rec_field_name(field); /* &quot;Author&quot; */ const char *value = rec_field_value(field); /* &quot;Harold Abelson */ To modify its name or value, you can use: rec_field_set_name(field, &quot;Book&quot;); rec_field_set_value(field, &quot;Structure and Interpretation of Computer Programs&quot;); How do we wrap these into Guile, using C extensions? To start with, we can simply make some Scheme methods that work with plain pointers and pass that pointer value around. SCM_DEFINE (scm_field_new, &quot;new-field&quot;, 2, 0, 0, (SCM scm_name, SCM scm_value), &quot;Make a new field from a string and value.&quot;) { SCM_ASSERT_TYPE(scm_is_string(scm_name), scm_name, 1, &quot;new-field&quot;, &quot;string&quot;); SCM_ASSERT_TYPE(scm_is_string(scm_value), scm_value, 2, &quot;new-field&quot;, &quot;string&quot;); const char *name = scm_to_utf8_string(scm_name); const char *value = scm_to_utf8_string(scm_value); rec_field_t field = rec_field_new (name, value); if (!field) return SCM_BOOL_F; return scm_from_pointer(field, destroy_field); } This defines two functions: destroy_field for letting the garbage collector get rid of unused fields, and then a scm_field_new function defined using the SCM_DEFINE macro. The procedure is straightforward: assert both parameters are strings, convert to const char*, create the field and return it if it was successful, otherwise return Scheme false #f. The last bit creates a pointer object to store the pointer address, and passes the destroy_field as the finalizer parameter for the garbage collector. In the Guile REPL, it looks like this: scheme@(recutils)&gt; (new-field &quot;foo&quot; &quot;bar&quot;) $2 = #&lt;pointer 0x7fc0654040f0&gt; OK, it seems to be a pointer all right. Let’s define some helper methods to work with that: SCM_DEFINE(scm_field_get_name, &quot;field-name&quot;, 1, 0, 0, (SCM ptr), &quot;Get the name of a field&quot;) { rec_field_t field = (rec_field_t)scm_to_pointer(ptr); const char *name = rec_field_name(field); return scm_from_utf8_string(name); } SCM_DEFINE(scm_field_get_value, &quot;field-value&quot;, 1, 0, 0, (SCM ptr), &quot;Get the value of a field&quot;) { rec_field_t field = (rec_field_t)scm_to_pointer(ptr); const char *value = rec_field_value(field); return scm_from_utf8_string(value); } Loading this extension into the REPL, we get scheme@(recutils)&gt; (new-field &quot;foo&quot; &quot;bar&quot;) $1 = #&lt;pointer 0x7fa123d0b980&gt; scheme@(recutils)&gt; (field-name $1) $2 = &quot;foo&quot; scheme@(recutils)&gt; (field-value $1) $3 = &quot;bar&quot; What about modifying the field? Well, that’s easy: SCM_DEFINE(scm_field_set_name, &quot;set-field-name!&quot;, 2, 0, 0, (SCM ptr, SCM scm_name), &quot;Set the name of a field&quot;) { SCM_ASSERT_TYPE(scm_is_string(scm_name), scm_name, 1, &quot;set-field-name!&quot;, &quot;string&quot;); rec_field_t field = (rec_field_t)scm_to_pointer(ptr); const char *name = scm_to_utf8_string(scm_name); bool result = rec_field_set_name(field, name); return scm_from_bool(result); } SCM_DEFINE(scm_field_set_value, &quot;set-field-value!&quot;, 2, 0, 0, (SCM ptr, SCM scm_value), &quot;Set the value of a field&quot;) { SCM_ASSERT_TYPE(scm_is_string(scm_value), scm_value, 1, &quot;set-field-value!&quot;, &quot;string&quot;); rec_field_t field = (rec_field_t)scm_to_pointer(ptr); const char *value = scm_to_utf8_string(scm_value); bool result = rec_field_set_value(field, value); return scm_from_bool(result); } Using all this in the REPL yields: scheme@(recutils)&gt; (new-field &quot;foo&quot; &quot;bar&quot;) $1 = #&lt;pointer 0x7ffcac406530&gt; scheme@(recutils)&gt; (set-field-name! $1 &quot;Blah&quot;) $2 = #t scheme@(recutils)&gt; (set-field-value! $1 &quot;Test&quot;) $3 = #t scheme@(recutils)&gt; (field-name $1) $4 = &quot;Blah&quot; scheme@(recutils)&gt; (field-value $1) $5 = &quot;Test&quot; There we go! the smell of raw pointers OK, this looks great. But somehow it feels funny to pass a raw pointer object around as a parameter. Ideally, I’d like to define some sort of structure that wraps the raw pointer into something less raw. Well, turns out Guile has exactly that in the define-wrapped-pointer-type macro! With the above constructor and procedures, we can go further: (define-wrapped-pointer-type field-ptr field-ptr? wrap-field-ptr unwrap-field-ptr (lambda (ptr port) (format port &quot;#&lt;field-ptr name=~s value=~s 0x~x&gt;&quot; (field-name (unwrap-field-ptr ptr)) (field-value (unwrap-field-ptr ptr)) (pointer-address (unwrap-field-ptr ptr))))) What the macro defines are a type name (field-ptr), a predicate (field-ptr?), methods for wrapping and unwrapping, and lastly a printer for pretty printing our pointer. The printer outputs a human readable representation of the printer, in which we leverage the procedures defined above, field-name and field-value. scheme@(recutils)&gt; (wrap-field-ptr (new-field &quot;Author&quot; &quot;Harold Abelson&quot;)) $2 = #&lt;field-ptr name=&quot;Author&quot; value=&quot;Harold Abelson&quot; 0x7f8a6950b2d0&gt; scheme@(recutils)&gt; (field-ptr? $2) $3 = #t scheme@(recutils)&gt; (unwrap-field-ptr $2) $4 = #&lt;pointer 0x7f8a6950b2d0&gt; This makes it a bit easier to pass around field values so that we can treat them like structures, or records in Scheme parlance. That said, constructing the values is still a bit tedious, especially now that our Scheme user would have to constantly wrap and unwrap values if they are to work with a field. What if we could work with fields as if they were pure Scheme objects and the underlying machinery – pointers and so forth – would be hidden from us? Well, we can use GOOPS, but first let’s digress into the exciting world of FFI. why not dynamic FFI? These days the Guile manual recommends using Dynamic FFI when working with a foreign function interface. That is, the above examples are just C code, but we could have done the same with just regular Scheme using the (system foreign) module. This is what I would do in many other languages (Common Lisp, Python, and so on…). In such a case, I could make my Scheme module completely separate from recutils and librec, since I just need the dynamic library libguile-recutils.so for it to functions. But there are subtle reasons why writing these extensions in C is a good idea. As I went ahead and wrote the bindings, I had a curious thought: I’m writing functionality for working with recfiles from Guile. But what about adding Guile facilities to recutils? What about letting recutils users extend the programs using Scheme? Wouldn’t it be cool if instead of recutils selection expressions I could pass Scheme programs as the query language? Indeed, this was a topic worth exploring! The consequence of this was that now I was adding code to recutils itself to link against Guile, which means I will already have a dependency to the Guile C library libguile. So, since I’m now already working with the C API of Guile, limiting myself to the strange world of dynamic FFI was starting to feel rather tedious. From the start I wanted to work with the real deal: the wrapper types of the Guile extensions would be real wrappers. Each field in Scheme would be represented by a librec C struct underneath. This is so that I can leverage the bidirectional design above, and there is no need to parse or convert values twice when crossing language barriers. So, how do we make a Scheme API that is both nice to use and still C structs underneath? Well, the answer is GOOPS and object-oriented programming! GOOPS, virtual slots, and you Working with raw pointers and even pointer records can be painful. It would be much better if we could make fields like this: (make &lt;field&gt; #:name &quot;Author&quot; #:value &quot;Gerald Sussman&quot;) This is a GOOPS class, of type &lt;field&gt;. The constructor has two keyword arguments #:name and #:value for the rec names. How can we get a class that has both getters and setters (in terms of slot-ref and slot-set!) that work on the underlying pointer? Easy enough, the answer is virtual slots! If we were to define an ordinary class with slots name and value, Guile would allocate memory for those and if we are to juggle the pointer alongside all of this, both the name and value would be in two places: once, behind the pointer (in C world) and in Scheme, as a slot in the class. But first, how do we create a class &lt;field&gt; that wraps a pointer? Easy enough, we can use #:init-form as the slot option: (define-class &lt;field&gt; () ;; Internal pointer type. (ptr #:init-form (wrap-rec-ptr (new-field &quot;&quot; &quot;&quot;)) #:init-keyword #:ptr) The use of #:init-form causes the following expression to be evaluated every time a new class is instantiated, creating a field with an empty name and value. To get the signature we desire above, we need to use virtual accessors. These let us override the getter and setter #:slot-ref and #:slot-set! respectively which will work on the raw pointer, instead of occupying memory like a normal slot would. This is achieved using #:allocation #:virtual: (define-class &lt;field&gt; () (ptr #:init-form (wrap-field-ptr (new-field &quot;&quot; &quot;&quot;)) #:init-keyword #:ptr) (name #:init-keyword #:name #:allocation #:virtual #:accessor field-name #:slot-ref (lambda (field) (%field-name (unwrap-field-ptr (slot-ref field &#39;ptr)))) #:slot-set! (lambda (field name) (set-field-name! (unwrap-field-ptr (slot-ref field &#39;ptr)) name))) (value #:init-keyword #:value #:allocation #:virtual #:accessor field-value #:slot-ref (lambda (field) (%field-value (unwrap-field-ptr (slot-ref field &#39;ptr)))) #:slot-set! (lambda (field value) (set-field-value! (unwrap-field-ptr (slot-ref field &#39;ptr)) value)))) Note that the procedures we defined previously in C were renamed to %field-value since it would otherwise conflict with the #:accessor slot option. So using #:virtual lets us write GOOPS classes and not worry about double allocation. It looks like a regular GOOPS class but actually it is modifying a pointer to a C struct underneath using a C API. Moreover, the biggest benefit of this is the ability to pass values in the constructor. If we didn’t have #:virtual, we’d have to write separate accessor methods like this: (define-method (f-name (field &lt;field&gt;)) (%field-name (unwrap-field-ptr (slot-ref field &#39;ptr)))) (define-method ((setter f-name) (field &lt;field&gt;) name) (set-field-name! (unwrap-field-ptr (slot-ref field &#39;ptr)) name)) But the problem with this and any other approach is that you’d still have memory allocated for the slots. All &lt;field&gt;s will have unnecessary name and value slots allocated. I think the only way to get this behaviour if #:virtual were not available would be to create a custom method for initialize. I think the same applies in other CLOS-like systems (and CLOS itself), but I’m not sure. context is everything, friends I don’t think many Guile users will find Scheme bindings for recutils that useful in itself, as a library. Guix uses recfiles in its search output, but its record generation is hand-written, usage not deep enough to warrant using the library. But I think a case can be made for recutils itself, that is, if recutils were to develop extensibility via Guile, the extension mechanism can load the recutils Scheme module as its base runtime. I discussed the idea over at IRC with Jose Marchesi, the Recutils author and maintainer, and he thought it was a good idea as long as there’s someone there to maintain it. Maybe this will fly, I don’t know. I don’t see any big technical barriers for it to not work, even if it amounts to just adding Scheme bindings without extending recutils itself. That said, every now and then I’m running into the limitations of selection expressions, so being able to use Scheme as a measure of last resort would be interesting, if nothing else. As of early December 2020 I have bindings for parsing and creating records and fields, so expect an early release of the Scheme bindings to appear within the next few months. Have I mentioned I also plan to make Common Lisp bindings as well? Well, now I have, but that’s another story!" />
+<meta property="og:description" content="For the past month or so I’ve been contributing to GNU Recutils, a set of tools for editing human-readable plain text databases. It’s a cool project in its own right, I’ve been using recutils myself for tracking workouts and storing cooking recipes. The cool part of it is its attempt to be both human-readable and machine-readable, which makes it very easy to use programmatically and then with a simple text editor. The powerful querying facilities of recutils is what turns it into a thing of beauty. In particular, selection expressions are expressions for querying recfiles. For instance, here’s how I would query exercises in my workout log for squats: recsel -t Exercise -e &quot;Name ~ &#39;Squat&#39;&quot; workouts.rec This would match records of type Exercise where the Name field matches regular expressions, so Squat will match all exercise varieties with the word Squat in it. The machine readability makes it easy to write programs or tools that interact with recfiles. I’ve become maintainer of the Emacs recfile major mode rec-mode. The major mode makes heavy use of the command line tools of the recutils suite to do provide automatic fixing and parsing of recfiles. if it’s possible to put Lisp in it, someone will For fun and profit, I’ve also been writing GNU Guile bindings for librec, the library powering recutils itself. The bindings actually interface with the C library directly using Guile’s amazing C extensions. I was interested in using recfiles in a Guile program, and while it would not have been too difficult to write a parser myself, I thought it was more important to not write one myself. What is more, Guile makes it almost too easy to wrap libraries, I had a functioning Scheme interface for parsing records in less than an hour. Let’s explore what that interface looks like. We start with the simplest data type in librec, fields. A recutils record is defined as an ordered collection of fields. Below is a record of three fields: Book: Structure and Interpretation of Computer Programs Author: Harold Abelson Author: Gerald Sussman The inner field type of librec is defined as rec_field_t, which is an opaque data type wrapping rec_field_s: typedef struct rec_field_s *rec_field_t; The underlying rec_field_s structure is a bit more complicated since it includes location data for the field, but for our example imagine it contains just the fields name and value, which are null-terminated strings. You don’t need to know anything about that, since librec offers an extensive API for working with the opaque types. To make a new field, you would write: rec_field_t field = rec_field_new(&quot;Author&quot;, &quot;Harold Abelson&quot;); To get the value and name, you use rec_field_value and rec_field_name: const char *name = rec_field_name(field); /* &quot;Author&quot; */ const char *value = rec_field_value(field); /* &quot;Harold Abelson */ To modify its name or value, you can use: rec_field_set_name(field, &quot;Book&quot;); rec_field_set_value(field, &quot;Structure and Interpretation of Computer Programs&quot;); How do we wrap these into Guile, using C extensions? To start with, we can simply make some Scheme methods that work with plain pointers and pass that pointer value around. SCM_DEFINE (scm_field_new, &quot;new-field&quot;, 2, 0, 0, (SCM scm_name, SCM scm_value), &quot;Make a new field from a string and value.&quot;) { SCM_ASSERT_TYPE(scm_is_string(scm_name), scm_name, 1, &quot;new-field&quot;, &quot;string&quot;); SCM_ASSERT_TYPE(scm_is_string(scm_value), scm_value, 2, &quot;new-field&quot;, &quot;string&quot;); const char *name = scm_to_utf8_string(scm_name); const char *value = scm_to_utf8_string(scm_value); rec_field_t field = rec_field_new (name, value); if (!field) return SCM_BOOL_F; return scm_from_pointer(field, destroy_field); } This defines two functions: destroy_field for letting the garbage collector get rid of unused fields, and then a scm_field_new function defined using the SCM_DEFINE macro. The procedure is straightforward: assert both parameters are strings, convert to const char*, create the field and return it if it was successful, otherwise return Scheme false #f. The last bit creates a pointer object to store the pointer address, and passes the destroy_field as the finalizer parameter for the garbage collector. In the Guile REPL, it looks like this: scheme@(recutils)&gt; (new-field &quot;foo&quot; &quot;bar&quot;) $2 = #&lt;pointer 0x7fc0654040f0&gt; OK, it seems to be a pointer all right. Let’s define some helper methods to work with that: SCM_DEFINE(scm_field_get_name, &quot;field-name&quot;, 1, 0, 0, (SCM ptr), &quot;Get the name of a field&quot;) { rec_field_t field = (rec_field_t)scm_to_pointer(ptr); const char *name = rec_field_name(field); return scm_from_utf8_string(name); } SCM_DEFINE(scm_field_get_value, &quot;field-value&quot;, 1, 0, 0, (SCM ptr), &quot;Get the value of a field&quot;) { rec_field_t field = (rec_field_t)scm_to_pointer(ptr); const char *value = rec_field_value(field); return scm_from_utf8_string(value); } Loading this extension into the REPL, we get scheme@(recutils)&gt; (new-field &quot;foo&quot; &quot;bar&quot;) $1 = #&lt;pointer 0x7fa123d0b980&gt; scheme@(recutils)&gt; (field-name $1) $2 = &quot;foo&quot; scheme@(recutils)&gt; (field-value $1) $3 = &quot;bar&quot; What about modifying the field? Well, that’s easy: SCM_DEFINE(scm_field_set_name, &quot;set-field-name!&quot;, 2, 0, 0, (SCM ptr, SCM scm_name), &quot;Set the name of a field&quot;) { SCM_ASSERT_TYPE(scm_is_string(scm_name), scm_name, 1, &quot;set-field-name!&quot;, &quot;string&quot;); rec_field_t field = (rec_field_t)scm_to_pointer(ptr); const char *name = scm_to_utf8_string(scm_name); bool result = rec_field_set_name(field, name); return scm_from_bool(result); } SCM_DEFINE(scm_field_set_value, &quot;set-field-value!&quot;, 2, 0, 0, (SCM ptr, SCM scm_value), &quot;Set the value of a field&quot;) { SCM_ASSERT_TYPE(scm_is_string(scm_value), scm_value, 1, &quot;set-field-value!&quot;, &quot;string&quot;); rec_field_t field = (rec_field_t)scm_to_pointer(ptr); const char *value = scm_to_utf8_string(scm_value); bool result = rec_field_set_value(field, value); return scm_from_bool(result); } Using all this in the REPL yields: scheme@(recutils)&gt; (new-field &quot;foo&quot; &quot;bar&quot;) $1 = #&lt;pointer 0x7ffcac406530&gt; scheme@(recutils)&gt; (set-field-name! $1 &quot;Blah&quot;) $2 = #t scheme@(recutils)&gt; (set-field-value! $1 &quot;Test&quot;) $3 = #t scheme@(recutils)&gt; (field-name $1) $4 = &quot;Blah&quot; scheme@(recutils)&gt; (field-value $1) $5 = &quot;Test&quot; There we go! the smell of raw pointers OK, this looks great. But somehow it feels funny to pass a raw pointer object around as a parameter. Ideally, I’d like to define some sort of structure that wraps the raw pointer into something less raw. Well, turns out Guile has exactly that in the define-wrapped-pointer-type macro! With the above constructor and procedures, we can go further: (define-wrapped-pointer-type field-ptr field-ptr? wrap-field-ptr unwrap-field-ptr (lambda (ptr port) (format port &quot;#&lt;field-ptr name=~s value=~s 0x~x&gt;&quot; (field-name (unwrap-field-ptr ptr)) (field-value (unwrap-field-ptr ptr)) (pointer-address (unwrap-field-ptr ptr))))) What the macro defines are a type name (field-ptr), a predicate (field-ptr?), methods for wrapping and unwrapping, and lastly a printer for pretty printing our pointer. The printer outputs a human readable representation of the printer, in which we leverage the procedures defined above, field-name and field-value. scheme@(recutils)&gt; (wrap-field-ptr (new-field &quot;Author&quot; &quot;Harold Abelson&quot;)) $2 = #&lt;field-ptr name=&quot;Author&quot; value=&quot;Harold Abelson&quot; 0x7f8a6950b2d0&gt; scheme@(recutils)&gt; (field-ptr? $2) $3 = #t scheme@(recutils)&gt; (unwrap-field-ptr $2) $4 = #&lt;pointer 0x7f8a6950b2d0&gt; This makes it a bit easier to pass around field values so that we can treat them like structures, or records in Scheme parlance. That said, constructing the values is still a bit tedious, especially now that our Scheme user would have to constantly wrap and unwrap values if they are to work with a field. What if we could work with fields as if they were pure Scheme objects and the underlying machinery – pointers and so forth – would be hidden from us? Well, we can use GOOPS, but first let’s digress into the exciting world of FFI. why not dynamic FFI? These days the Guile manual recommends using Dynamic FFI when working with a foreign function interface. That is, the above examples are just C code, but we could have done the same with just regular Scheme using the (system foreign) module. This is what I would do in many other languages (Common Lisp, Python, and so on…). In such a case, I could make my Scheme module completely separate from recutils and librec, since I just need the dynamic library libguile-recutils.so for it to functions. But there are subtle reasons why writing these extensions in C is a good idea. As I went ahead and wrote the bindings, I had a curious thought: I’m writing functionality for working with recfiles from Guile. But what about adding Guile facilities to recutils? What about letting recutils users extend the programs using Scheme? Wouldn’t it be cool if instead of recutils selection expressions I could pass Scheme programs as the query language? Indeed, this was a topic worth exploring! The consequence of this was that now I was adding code to recutils itself to link against Guile, which means I will already have a dependency to the Guile C library libguile. So, since I’m now already working with the C API of Guile, limiting myself to the strange world of dynamic FFI was starting to feel rather tedious. From the start I wanted to work with the real deal: the wrapper types of the Guile extensions would be real wrappers. Each field in Scheme would be represented by a librec C struct underneath. This is so that I can leverage the bidirectional design above, and there is no need to parse or convert values twice when crossing language barriers. So, how do we make a Scheme API that is both nice to use and still C structs underneath? Well, the answer is GOOPS and object-oriented programming! GOOPS, virtual slots, and you Working with raw pointers and even pointer records can be painful. It would be much better if we could make fields like this: (make &lt;field&gt; #:name &quot;Author&quot; #:value &quot;Gerald Sussman&quot;) This is a GOOPS class, of type &lt;field&gt;. The constructor has two keyword arguments #:name and #:value for the rec names. How can we get a class that has both getters and setters (in terms of slot-ref and slot-set!) that work on the underlying pointer? Easy enough, the answer is virtual slots! If we were to define an ordinary class with slots name and value, Guile would allocate memory for those and if we are to juggle the pointer alongside all of this, both the name and value would be in two places: once, behind the pointer (in C world) and in Scheme, as a slot in the class. But first, how do we create a class &lt;field&gt; that wraps a pointer? Easy enough, we can use #:init-form as the slot option: (define-class &lt;field&gt; () ;; Internal pointer type. (ptr #:init-form (wrap-rec-ptr (new-field &quot;&quot; &quot;&quot;)) #:init-keyword #:ptr) The use of #:init-form causes the following expression to be evaluated every time a new class is instantiated, creating a field with an empty name and value. To get the signature we desire above, we need to use virtual accessors. These let us override the getter and setter #:slot-ref and #:slot-set! respectively which will work on the raw pointer, instead of occupying memory like a normal slot would. This is achieved using #:allocation #:virtual: (define-class &lt;field&gt; () (ptr #:init-form (wrap-field-ptr (new-field &quot;&quot; &quot;&quot;)) #:init-keyword #:ptr) (name #:init-keyword #:name #:allocation #:virtual #:accessor field-name #:slot-ref (lambda (field) (%field-name (unwrap-field-ptr (slot-ref field &#39;ptr)))) #:slot-set! (lambda (field name) (set-field-name! (unwrap-field-ptr (slot-ref field &#39;ptr)) name))) (value #:init-keyword #:value #:allocation #:virtual #:accessor field-value #:slot-ref (lambda (field) (%field-value (unwrap-field-ptr (slot-ref field &#39;ptr)))) #:slot-set! (lambda (field value) (set-field-value! (unwrap-field-ptr (slot-ref field &#39;ptr)) value)))) Note that the procedures we defined previously in C were renamed to %field-value since it would otherwise conflict with the #:accessor slot option. So using #:virtual lets us write GOOPS classes and not worry about double allocation. It looks like a regular GOOPS class but actually it is modifying a pointer to a C struct underneath using a C API. Moreover, the biggest benefit of this is the ability to pass values in the constructor. If we didn’t have #:virtual, we’d have to write separate accessor methods like this: (define-method (f-name (field &lt;field&gt;)) (%field-name (unwrap-field-ptr (slot-ref field &#39;ptr)))) (define-method ((setter f-name) (field &lt;field&gt;) name) (set-field-name! (unwrap-field-ptr (slot-ref field &#39;ptr)) name)) But the problem with this and any other approach is that you’d still have memory allocated for the slots. All &lt;field&gt;s will have unnecessary name and value slots allocated. I think the only way to get this behaviour if #:virtual were not available would be to create a custom method for initialize. I think the same applies in other CLOS-like systems (and CLOS itself), but I’m not sure. context is everything, friends I don’t think many Guile users will find Scheme bindings for recutils that useful in itself, as a library. Guix uses recfiles in its search output, but its record generation is hand-written, usage not deep enough to warrant using the library. But I think a case can be made for recutils itself, that is, if recutils were to develop extensibility via Guile, the extension mechanism can load the recutils Scheme module as its base runtime. I discussed the idea over at IRC with Jose Marchesi, the Recutils author and maintainer, and he thought it was a good idea as long as there’s someone there to maintain it. Maybe this will fly, I don’t know. I don’t see any big technical barriers for it to not work, even if it amounts to just adding Scheme bindings without extending recutils itself. That said, every now and then I’m running into the limitations of selection expressions, so being able to use Scheme as a measure of last resort would be interesting, if nothing else. As of early December 2020 I have bindings for parsing and creating records and fields, so expect an early release of the Scheme bindings to appear within the next few months. Have I mentioned I also plan to make Common Lisp bindings as well? Well, now I have, but that’s another story!" />
+<link rel="canonical" href="http://ane.iki.fi/programming/lisp/goops-virtual-slots-and-ffi.html" />
+<meta property="og:url" content="http://ane.iki.fi/programming/lisp/goops-virtual-slots-and-ffi.html" />
+<meta property="og:site_name" content="Antoine Kalmbach’s website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-12-06T11:56:09+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Recutils, GOOPS and virtual slots" />
+<meta name="twitter:site" content="@anewtf" />
+<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<script type="application/ld+json">
+{"headline":"Recutils, GOOPS and virtual slots","dateModified":"2020-12-09T11:03:53+00:00","datePublished":"2020-12-06T11:56:09+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://ane.iki.fi/programming/lisp/goops-virtual-slots-and-ffi.html"},"url":"http://ane.iki.fi/programming/lisp/goops-virtual-slots-and-ffi.html","author":{"@type":"Person","name":"Antoine Kalmbach"},"description":"For the past month or so I’ve been contributing to GNU Recutils, a set of tools for editing human-readable plain text databases. It’s a cool project in its own right, I’ve been using recutils myself for tracking workouts and storing cooking recipes. The cool part of it is its attempt to be both human-readable and machine-readable, which makes it very easy to use programmatically and then with a simple text editor. The powerful querying facilities of recutils is what turns it into a thing of beauty. In particular, selection expressions are expressions for querying recfiles. For instance, here’s how I would query exercises in my workout log for squats: recsel -t Exercise -e &quot;Name ~ &#39;Squat&#39;&quot; workouts.rec This would match records of type Exercise where the Name field matches regular expressions, so Squat will match all exercise varieties with the word Squat in it. The machine readability makes it easy to write programs or tools that interact with recfiles. I’ve become maintainer of the Emacs recfile major mode rec-mode. The major mode makes heavy use of the command line tools of the recutils suite to do provide automatic fixing and parsing of recfiles. if it’s possible to put Lisp in it, someone will For fun and profit, I’ve also been writing GNU Guile bindings for librec, the library powering recutils itself. The bindings actually interface with the C library directly using Guile’s amazing C extensions. I was interested in using recfiles in a Guile program, and while it would not have been too difficult to write a parser myself, I thought it was more important to not write one myself. What is more, Guile makes it almost too easy to wrap libraries, I had a functioning Scheme interface for parsing records in less than an hour. Let’s explore what that interface looks like. We start with the simplest data type in librec, fields. A recutils record is defined as an ordered collection of fields. Below is a record of three fields: Book: Structure and Interpretation of Computer Programs Author: Harold Abelson Author: Gerald Sussman The inner field type of librec is defined as rec_field_t, which is an opaque data type wrapping rec_field_s: typedef struct rec_field_s *rec_field_t; The underlying rec_field_s structure is a bit more complicated since it includes location data for the field, but for our example imagine it contains just the fields name and value, which are null-terminated strings. You don’t need to know anything about that, since librec offers an extensive API for working with the opaque types. To make a new field, you would write: rec_field_t field = rec_field_new(&quot;Author&quot;, &quot;Harold Abelson&quot;); To get the value and name, you use rec_field_value and rec_field_name: const char *name = rec_field_name(field); /* &quot;Author&quot; */ const char *value = rec_field_value(field); /* &quot;Harold Abelson */ To modify its name or value, you can use: rec_field_set_name(field, &quot;Book&quot;); rec_field_set_value(field, &quot;Structure and Interpretation of Computer Programs&quot;); How do we wrap these into Guile, using C extensions? To start with, we can simply make some Scheme methods that work with plain pointers and pass that pointer value around. SCM_DEFINE (scm_field_new, &quot;new-field&quot;, 2, 0, 0, (SCM scm_name, SCM scm_value), &quot;Make a new field from a string and value.&quot;) { SCM_ASSERT_TYPE(scm_is_string(scm_name), scm_name, 1, &quot;new-field&quot;, &quot;string&quot;); SCM_ASSERT_TYPE(scm_is_string(scm_value), scm_value, 2, &quot;new-field&quot;, &quot;string&quot;); const char *name = scm_to_utf8_string(scm_name); const char *value = scm_to_utf8_string(scm_value); rec_field_t field = rec_field_new (name, value); if (!field) return SCM_BOOL_F; return scm_from_pointer(field, destroy_field); } This defines two functions: destroy_field for letting the garbage collector get rid of unused fields, and then a scm_field_new function defined using the SCM_DEFINE macro. The procedure is straightforward: assert both parameters are strings, convert to const char*, create the field and return it if it was successful, otherwise return Scheme false #f. The last bit creates a pointer object to store the pointer address, and passes the destroy_field as the finalizer parameter for the garbage collector. In the Guile REPL, it looks like this: scheme@(recutils)&gt; (new-field &quot;foo&quot; &quot;bar&quot;) $2 = #&lt;pointer 0x7fc0654040f0&gt; OK, it seems to be a pointer all right. Let’s define some helper methods to work with that: SCM_DEFINE(scm_field_get_name, &quot;field-name&quot;, 1, 0, 0, (SCM ptr), &quot;Get the name of a field&quot;) { rec_field_t field = (rec_field_t)scm_to_pointer(ptr); const char *name = rec_field_name(field); return scm_from_utf8_string(name); } SCM_DEFINE(scm_field_get_value, &quot;field-value&quot;, 1, 0, 0, (SCM ptr), &quot;Get the value of a field&quot;) { rec_field_t field = (rec_field_t)scm_to_pointer(ptr); const char *value = rec_field_value(field); return scm_from_utf8_string(value); } Loading this extension into the REPL, we get scheme@(recutils)&gt; (new-field &quot;foo&quot; &quot;bar&quot;) $1 = #&lt;pointer 0x7fa123d0b980&gt; scheme@(recutils)&gt; (field-name $1) $2 = &quot;foo&quot; scheme@(recutils)&gt; (field-value $1) $3 = &quot;bar&quot; What about modifying the field? Well, that’s easy: SCM_DEFINE(scm_field_set_name, &quot;set-field-name!&quot;, 2, 0, 0, (SCM ptr, SCM scm_name), &quot;Set the name of a field&quot;) { SCM_ASSERT_TYPE(scm_is_string(scm_name), scm_name, 1, &quot;set-field-name!&quot;, &quot;string&quot;); rec_field_t field = (rec_field_t)scm_to_pointer(ptr); const char *name = scm_to_utf8_string(scm_name); bool result = rec_field_set_name(field, name); return scm_from_bool(result); } SCM_DEFINE(scm_field_set_value, &quot;set-field-value!&quot;, 2, 0, 0, (SCM ptr, SCM scm_value), &quot;Set the value of a field&quot;) { SCM_ASSERT_TYPE(scm_is_string(scm_value), scm_value, 1, &quot;set-field-value!&quot;, &quot;string&quot;); rec_field_t field = (rec_field_t)scm_to_pointer(ptr); const char *value = scm_to_utf8_string(scm_value); bool result = rec_field_set_value(field, value); return scm_from_bool(result); } Using all this in the REPL yields: scheme@(recutils)&gt; (new-field &quot;foo&quot; &quot;bar&quot;) $1 = #&lt;pointer 0x7ffcac406530&gt; scheme@(recutils)&gt; (set-field-name! $1 &quot;Blah&quot;) $2 = #t scheme@(recutils)&gt; (set-field-value! $1 &quot;Test&quot;) $3 = #t scheme@(recutils)&gt; (field-name $1) $4 = &quot;Blah&quot; scheme@(recutils)&gt; (field-value $1) $5 = &quot;Test&quot; There we go! the smell of raw pointers OK, this looks great. But somehow it feels funny to pass a raw pointer object around as a parameter. Ideally, I’d like to define some sort of structure that wraps the raw pointer into something less raw. Well, turns out Guile has exactly that in the define-wrapped-pointer-type macro! With the above constructor and procedures, we can go further: (define-wrapped-pointer-type field-ptr field-ptr? wrap-field-ptr unwrap-field-ptr (lambda (ptr port) (format port &quot;#&lt;field-ptr name=~s value=~s 0x~x&gt;&quot; (field-name (unwrap-field-ptr ptr)) (field-value (unwrap-field-ptr ptr)) (pointer-address (unwrap-field-ptr ptr))))) What the macro defines are a type name (field-ptr), a predicate (field-ptr?), methods for wrapping and unwrapping, and lastly a printer for pretty printing our pointer. The printer outputs a human readable representation of the printer, in which we leverage the procedures defined above, field-name and field-value. scheme@(recutils)&gt; (wrap-field-ptr (new-field &quot;Author&quot; &quot;Harold Abelson&quot;)) $2 = #&lt;field-ptr name=&quot;Author&quot; value=&quot;Harold Abelson&quot; 0x7f8a6950b2d0&gt; scheme@(recutils)&gt; (field-ptr? $2) $3 = #t scheme@(recutils)&gt; (unwrap-field-ptr $2) $4 = #&lt;pointer 0x7f8a6950b2d0&gt; This makes it a bit easier to pass around field values so that we can treat them like structures, or records in Scheme parlance. That said, constructing the values is still a bit tedious, especially now that our Scheme user would have to constantly wrap and unwrap values if they are to work with a field. What if we could work with fields as if they were pure Scheme objects and the underlying machinery – pointers and so forth – would be hidden from us? Well, we can use GOOPS, but first let’s digress into the exciting world of FFI. why not dynamic FFI? These days the Guile manual recommends using Dynamic FFI when working with a foreign function interface. That is, the above examples are just C code, but we could have done the same with just regular Scheme using the (system foreign) module. This is what I would do in many other languages (Common Lisp, Python, and so on…). In such a case, I could make my Scheme module completely separate from recutils and librec, since I just need the dynamic library libguile-recutils.so for it to functions. But there are subtle reasons why writing these extensions in C is a good idea. As I went ahead and wrote the bindings, I had a curious thought: I’m writing functionality for working with recfiles from Guile. But what about adding Guile facilities to recutils? What about letting recutils users extend the programs using Scheme? Wouldn’t it be cool if instead of recutils selection expressions I could pass Scheme programs as the query language? Indeed, this was a topic worth exploring! The consequence of this was that now I was adding code to recutils itself to link against Guile, which means I will already have a dependency to the Guile C library libguile. So, since I’m now already working with the C API of Guile, limiting myself to the strange world of dynamic FFI was starting to feel rather tedious. From the start I wanted to work with the real deal: the wrapper types of the Guile extensions would be real wrappers. Each field in Scheme would be represented by a librec C struct underneath. This is so that I can leverage the bidirectional design above, and there is no need to parse or convert values twice when crossing language barriers. So, how do we make a Scheme API that is both nice to use and still C structs underneath? Well, the answer is GOOPS and object-oriented programming! GOOPS, virtual slots, and you Working with raw pointers and even pointer records can be painful. It would be much better if we could make fields like this: (make &lt;field&gt; #:name &quot;Author&quot; #:value &quot;Gerald Sussman&quot;) This is a GOOPS class, of type &lt;field&gt;. The constructor has two keyword arguments #:name and #:value for the rec names. How can we get a class that has both getters and setters (in terms of slot-ref and slot-set!) that work on the underlying pointer? Easy enough, the answer is virtual slots! If we were to define an ordinary class with slots name and value, Guile would allocate memory for those and if we are to juggle the pointer alongside all of this, both the name and value would be in two places: once, behind the pointer (in C world) and in Scheme, as a slot in the class. But first, how do we create a class &lt;field&gt; that wraps a pointer? Easy enough, we can use #:init-form as the slot option: (define-class &lt;field&gt; () ;; Internal pointer type. (ptr #:init-form (wrap-rec-ptr (new-field &quot;&quot; &quot;&quot;)) #:init-keyword #:ptr) The use of #:init-form causes the following expression to be evaluated every time a new class is instantiated, creating a field with an empty name and value. To get the signature we desire above, we need to use virtual accessors. These let us override the getter and setter #:slot-ref and #:slot-set! respectively which will work on the raw pointer, instead of occupying memory like a normal slot would. This is achieved using #:allocation #:virtual: (define-class &lt;field&gt; () (ptr #:init-form (wrap-field-ptr (new-field &quot;&quot; &quot;&quot;)) #:init-keyword #:ptr) (name #:init-keyword #:name #:allocation #:virtual #:accessor field-name #:slot-ref (lambda (field) (%field-name (unwrap-field-ptr (slot-ref field &#39;ptr)))) #:slot-set! (lambda (field name) (set-field-name! (unwrap-field-ptr (slot-ref field &#39;ptr)) name))) (value #:init-keyword #:value #:allocation #:virtual #:accessor field-value #:slot-ref (lambda (field) (%field-value (unwrap-field-ptr (slot-ref field &#39;ptr)))) #:slot-set! (lambda (field value) (set-field-value! (unwrap-field-ptr (slot-ref field &#39;ptr)) value)))) Note that the procedures we defined previously in C were renamed to %field-value since it would otherwise conflict with the #:accessor slot option. So using #:virtual lets us write GOOPS classes and not worry about double allocation. It looks like a regular GOOPS class but actually it is modifying a pointer to a C struct underneath using a C API. Moreover, the biggest benefit of this is the ability to pass values in the constructor. If we didn’t have #:virtual, we’d have to write separate accessor methods like this: (define-method (f-name (field &lt;field&gt;)) (%field-name (unwrap-field-ptr (slot-ref field &#39;ptr)))) (define-method ((setter f-name) (field &lt;field&gt;) name) (set-field-name! (unwrap-field-ptr (slot-ref field &#39;ptr)) name)) But the problem with this and any other approach is that you’d still have memory allocated for the slots. All &lt;field&gt;s will have unnecessary name and value slots allocated. I think the only way to get this behaviour if #:virtual were not available would be to create a custom method for initialize. I think the same applies in other CLOS-like systems (and CLOS itself), but I’m not sure. context is everything, friends I don’t think many Guile users will find Scheme bindings for recutils that useful in itself, as a library. Guix uses recfiles in its search output, but its record generation is hand-written, usage not deep enough to warrant using the library. But I think a case can be made for recutils itself, that is, if recutils were to develop extensibility via Guile, the extension mechanism can load the recutils Scheme module as its base runtime. I discussed the idea over at IRC with Jose Marchesi, the Recutils author and maintainer, and he thought it was a good idea as long as there’s someone there to maintain it. Maybe this will fly, I don’t know. I don’t see any big technical barriers for it to not work, even if it amounts to just adding Scheme bindings without extending recutils itself. That said, every now and then I’m running into the limitations of selection expressions, so being able to use Scheme as a measure of last resort would be interesting, if nothing else. As of early December 2020 I have bindings for parsing and creating records and fields, so expect an early release of the Scheme bindings to appear within the next few months. Have I mentioned I also plan to make Common Lisp bindings as well? Well, now I have, but that’s another story!","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/override.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/pygments.css" type="text/css" media="screen" />
+  </head>
+  <body itemscope itemtype="https://schema.org/WebPage" class="home-template">
+    <div class="hyphenate">
+      <h1 style="text-align: center;">
+  Antoine Kalmbach
+</h1>
+<nav class="navbar">
+  <ul>
+    <li class="nav-item ">
+      <a class="nav-link pl-0" href="/" itemprop="url"><span itemprop="name">Home</span></a>
+    </li>
+    <li class="nav-item  active">
+      <a class="nav-link" href="/archive.html" itemprop="url"><span itemprop="name">Blog</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/about/" itemprop="url"><span itemprop="name">About</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/tags.html" itemprop="url"><span itemprop="name">Index</span></a>
+    </li>
+
+    <li class="nav-item mr-n2">
+      <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="h-card d-none" style="display: none">
+  <img class="u-photo" src="/images/me.png" />
+  <a class="u-url" href="http://ane.iki.fi/programming/lisp/goops-virtual-slots-and-ffi.html"></a>
+  <a class="p-name u-url" href="http://ane.iki.fi">Antoine Kalmbach</a>
+  <a class="u-email" href="mailto:">ane@iki.fi</a>
+</div>
+
+
+      <div class="content">
+        <article class="h-entry">
+  <header>
+    
+
+
+
+
+
+  <h2 class="p-name" style="margin: 0.25rem 0;">
+    Recutils, GOOPS and virtual slots
+  </h2>
+
+  <p class="post-meta text-muted">
+    <time class="dt-published" itemprop="datePublished" datetime="2020-12-06 11:56:09 +0000">
+      Created on December 6, 2020
+
+  </p>
+
+
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="/programming/lisp/goops-virtual-slots-and-ffi.html" />
+  </header>
+  <div class="e-content">
+    <p>For the past month or so I’ve been contributing to <a href="https://www.gnu.org/software/recutils/">GNU
+Recutils</a>, a set of tools for editing
+human-readable plain text databases. It’s a cool project in its own right, I’ve
+been using recutils myself for tracking workouts and storing cooking
+recipes. The cool part of it is its attempt to be both human-readable <em>and</em>
+machine-readable, which makes it very easy to use programmatically and then with
+a simple text editor.</p>
+
+<p>The powerful <a href="https://www.gnu.org/software/recutils/manual/Querying-Recfiles.html#Querying-Recfiles">querying
+facilities</a>
+of recutils is what turns it into a thing of beauty. In particular, <a href="https://www.gnu.org/software/recutils/manual/Selecting-by-predicate.html#Selecting-by-predicate">selection
+expressions</a>
+are expressions for querying recfiles. For instance, here’s how I would query
+exercises in my workout log for squats:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>recsel -t Exercise -e "Name ~ 'Squat'" workouts.rec
+</code></pre></div></div>
+
+<p>This would match records of type <code class="language-plaintext highlighter-rouge">Exercise</code> where the <code class="language-plaintext highlighter-rouge">Name</code> field matches
+regular expressions, so <code class="language-plaintext highlighter-rouge">Squat</code> will match all exercise varieties with the word
+<em>Squat</em> in it.</p>
+
+<p>The machine readability makes it easy to write programs or tools that interact
+with recfiles. I’ve become maintainer of the Emacs recfile major mode
+<a href="https://elpa.gnu.org/packages/rec-mode.html">rec-mode</a>. The major mode makes
+heavy use of the command line tools of the recutils suite to do provide
+automatic fixing and parsing of recfiles.</p>
+
+<h3 id="if-its-possible-to-put-lisp-in-it-someone-will">if it’s possible to put Lisp in it, someone will</h3>
+
+<p>For fun and profit, I’ve also been writing <a href="https://www.gnu.org/software/guile/">GNU
+Guile</a> bindings for librec, the library
+powering recutils itself.  The bindings actually interface with the C library
+directly using Guile’s amazing <a href="https://www.gnu.org/software/guile/manual/html_node/C-Extensions.html">C
+extensions</a>. I
+was interested in using recfiles in a Guile program, and while it would not have
+been too difficult to write a parser myself, I thought it was more important to
+<em>not</em> write one myself. What is more, Guile makes it almost too easy to wrap
+libraries, I had a functioning Scheme interface for parsing records in less than
+an hour.</p>
+
+<p>Let’s explore what that interface looks like. We start with the simplest data
+type in librec, <em>fields</em>.</p>
+
+<p>A recutils record is defined as an ordered collection of fields. Below is a
+record of three fields:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Book: Structure and Interpretation of Computer Programs
+Author: Harold Abelson
+Author: Gerald Sussman
+</code></pre></div></div>
+
+<p>The inner field type of librec is defined as <code class="language-plaintext highlighter-rouge">rec_field_t</code>, which is an opaque
+data type wrapping <code class="language-plaintext highlighter-rouge">rec_field_s</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span> <span class="n">rec_field_s</span> <span class="o">*</span><span class="n">rec_field_t</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>The underlying <code class="language-plaintext highlighter-rouge">rec_field_s</code> structure is a bit more complicated since it
+includes location data for the field, but for our example imagine it contains
+just the fields <code class="language-plaintext highlighter-rouge">name</code> and <code class="language-plaintext highlighter-rouge">value</code>, which are null-terminated strings. You don’t
+need to know anything about that, since librec offers an extensive API for
+working with the opaque types.</p>
+
+<p>To make a new field, you would write:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rec_field_t</span> <span class="n">field</span> <span class="o">=</span> <span class="n">rec_field_new</span><span class="p">(</span><span class="s">"Author"</span><span class="p">,</span> <span class="s">"Harold Abelson"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>To get the value and name, you use <code class="language-plaintext highlighter-rouge">rec_field_value</code> and <code class="language-plaintext highlighter-rouge">rec_field_name</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span> <span class="o">=</span> <span class="n">rec_field_name</span><span class="p">(</span><span class="n">field</span><span class="p">);</span> <span class="cm">/* "Author" */</span>
+<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="n">rec_field_value</span><span class="p">(</span><span class="n">field</span><span class="p">);</span> <span class="cm">/* "Harold Abelson */</span>
+</code></pre></div></div>
+
+<p>To modify its name or value, you can use:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rec_field_set_name</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="s">"Book"</span><span class="p">);</span>
+<span class="n">rec_field_set_value</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="s">"Structure and Interpretation of Computer Programs"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>How do we wrap these into Guile, using C extensions? To start with, we can
+simply make some Scheme methods that work with plain pointers and pass that
+pointer value around.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SCM_DEFINE</span> <span class="p">(</span><span class="n">scm_field_new</span><span class="p">,</span> <span class="s">"new-field"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">SCM</span> <span class="n">scm_name</span><span class="p">,</span> <span class="n">SCM</span> <span class="n">scm_value</span><span class="p">),</span>
+            <span class="s">"Make a new field from a string and value."</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">SCM_ASSERT_TYPE</span><span class="p">(</span><span class="n">scm_is_string</span><span class="p">(</span><span class="n">scm_name</span><span class="p">),</span> <span class="n">scm_name</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s">"new-field"</span><span class="p">,</span> <span class="s">"string"</span><span class="p">);</span>
+  <span class="n">SCM_ASSERT_TYPE</span><span class="p">(</span><span class="n">scm_is_string</span><span class="p">(</span><span class="n">scm_value</span><span class="p">),</span> <span class="n">scm_value</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s">"new-field"</span><span class="p">,</span> <span class="s">"string"</span><span class="p">);</span>
+
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span> <span class="o">=</span> <span class="n">scm_to_utf8_string</span><span class="p">(</span><span class="n">scm_name</span><span class="p">);</span>
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="n">scm_to_utf8_string</span><span class="p">(</span><span class="n">scm_value</span><span class="p">);</span>
+
+  <span class="n">rec_field_t</span> <span class="n">field</span> <span class="o">=</span> <span class="n">rec_field_new</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">field</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">SCM_BOOL_F</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="n">scm_from_pointer</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">destroy_field</span><span class="p">);</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p>This defines two functions: <code class="language-plaintext highlighter-rouge">destroy_field</code> for letting the garbage collector
+get rid of unused fields, and then a <code class="language-plaintext highlighter-rouge">scm_field_new</code> function defined using the
+<code class="language-plaintext highlighter-rouge">SCM_DEFINE</code> macro. The procedure is straightforward: assert both parameters are
+strings, convert to <code class="language-plaintext highlighter-rouge">const char*</code>, create the field and return it if it was
+successful, otherwise return Scheme false <code class="language-plaintext highlighter-rouge">#f</code>. The last bit creates a <a href="https://www.gnu.org/software/guile/manual/html_node/Foreign-Variables.html">pointer
+object</a>
+to store the pointer address, and passes the <code class="language-plaintext highlighter-rouge">destroy_field</code> as the finalizer
+parameter for the garbage collector.</p>
+
+<p>In the Guile REPL, it looks like this:</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">scheme@</span><span class="p">(</span><span class="nf">recutils</span><span class="p">)</span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">new-field</span> <span class="s">"foo"</span> <span class="s">"bar"</span><span class="p">)</span>
+<span class="nv">$2</span> <span class="nv">=</span> <span class="o">#</span><span class="nv">&lt;pointer</span> <span class="mi">0</span><span class="nv">x7fc0654040f0&gt;</span>
+</code></pre></div></div>
+
+<p>OK, it seems to be a pointer all right. Let’s define some helper methods to work
+with that:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SCM_DEFINE</span><span class="p">(</span><span class="n">scm_field_get_name</span><span class="p">,</span> <span class="s">"field-name"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">SCM</span> <span class="n">ptr</span><span class="p">),</span>
+           <span class="s">"Get the name of a field"</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">rec_field_t</span> <span class="n">field</span> <span class="o">=</span> <span class="p">(</span><span class="n">rec_field_t</span><span class="p">)</span><span class="n">scm_to_pointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">);</span>
+
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span> <span class="o">=</span> <span class="n">rec_field_name</span><span class="p">(</span><span class="n">field</span><span class="p">);</span>
+  
+  <span class="k">return</span> <span class="n">scm_from_utf8_string</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">SCM_DEFINE</span><span class="p">(</span><span class="n">scm_field_get_value</span><span class="p">,</span> <span class="s">"field-value"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">SCM</span> <span class="n">ptr</span><span class="p">),</span>
+           <span class="s">"Get the value of a field"</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">rec_field_t</span> <span class="n">field</span> <span class="o">=</span> <span class="p">(</span><span class="n">rec_field_t</span><span class="p">)</span><span class="n">scm_to_pointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">);</span>
+
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="n">rec_field_value</span><span class="p">(</span><span class="n">field</span><span class="p">);</span>
+  
+  <span class="k">return</span> <span class="n">scm_from_utf8_string</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Loading this extension into the REPL, we get</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">scheme@</span><span class="p">(</span><span class="nf">recutils</span><span class="p">)</span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">new-field</span> <span class="s">"foo"</span> <span class="s">"bar"</span><span class="p">)</span>
+<span class="nv">$1</span> <span class="nv">=</span> <span class="o">#</span><span class="nv">&lt;pointer</span> <span class="mi">0</span><span class="nv">x7fa123d0b980&gt;</span>
+<span class="nv">scheme@</span><span class="p">(</span><span class="nf">recutils</span><span class="p">)</span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">field-name</span> <span class="nv">$1</span><span class="p">)</span>
+<span class="nv">$2</span> <span class="nv">=</span> <span class="s">"foo"</span>
+<span class="nv">scheme@</span><span class="p">(</span><span class="nf">recutils</span><span class="p">)</span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">field-value</span> <span class="nv">$1</span><span class="p">)</span>
+<span class="nv">$3</span> <span class="nv">=</span> <span class="s">"bar"</span>
+</code></pre></div></div>
+
+<p>What about modifying the field? Well, that’s easy:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SCM_DEFINE</span><span class="p">(</span><span class="n">scm_field_set_name</span><span class="p">,</span> <span class="s">"set-field-name!"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">SCM</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">SCM</span> <span class="n">scm_name</span><span class="p">),</span>
+           <span class="s">"Set the name of a field"</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">SCM_ASSERT_TYPE</span><span class="p">(</span><span class="n">scm_is_string</span><span class="p">(</span><span class="n">scm_name</span><span class="p">),</span> <span class="n">scm_name</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s">"set-field-name!"</span><span class="p">,</span> <span class="s">"string"</span><span class="p">);</span>
+  <span class="n">rec_field_t</span> <span class="n">field</span> <span class="o">=</span> <span class="p">(</span><span class="n">rec_field_t</span><span class="p">)</span><span class="n">scm_to_pointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">);</span>
+
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span> <span class="o">=</span> <span class="n">scm_to_utf8_string</span><span class="p">(</span><span class="n">scm_name</span><span class="p">);</span>
+
+  <span class="n">bool</span> <span class="n">result</span> <span class="o">=</span> <span class="n">rec_field_set_name</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">scm_from_bool</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+
+<span class="n">SCM_DEFINE</span><span class="p">(</span><span class="n">scm_field_set_value</span><span class="p">,</span> <span class="s">"set-field-value!"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">SCM</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">SCM</span> <span class="n">scm_value</span><span class="p">),</span>
+           <span class="s">"Set the value of a field"</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">SCM_ASSERT_TYPE</span><span class="p">(</span><span class="n">scm_is_string</span><span class="p">(</span><span class="n">scm_value</span><span class="p">),</span> <span class="n">scm_value</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s">"set-field-value!"</span><span class="p">,</span> <span class="s">"string"</span><span class="p">);</span>
+  <span class="n">rec_field_t</span> <span class="n">field</span> <span class="o">=</span> <span class="p">(</span><span class="n">rec_field_t</span><span class="p">)</span><span class="n">scm_to_pointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">);</span>
+
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="n">scm_to_utf8_string</span><span class="p">(</span><span class="n">scm_value</span><span class="p">);</span>
+
+  <span class="n">bool</span> <span class="n">result</span> <span class="o">=</span> <span class="n">rec_field_set_value</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">scm_from_bool</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Using all this in the REPL yields:</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">scheme@</span><span class="p">(</span><span class="nf">recutils</span><span class="p">)</span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">new-field</span> <span class="s">"foo"</span> <span class="s">"bar"</span><span class="p">)</span>
+<span class="nv">$1</span> <span class="nv">=</span> <span class="o">#</span><span class="nv">&lt;pointer</span> <span class="mi">0</span><span class="nv">x7ffcac406530&gt;</span>
+<span class="nv">scheme@</span><span class="p">(</span><span class="nf">recutils</span><span class="p">)</span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">set-field-name!</span> <span class="nv">$1</span> <span class="s">"Blah"</span><span class="p">)</span>
+<span class="nv">$2</span> <span class="nv">=</span> <span class="no">#t</span>
+<span class="nv">scheme@</span><span class="p">(</span><span class="nf">recutils</span><span class="p">)</span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">set-field-value!</span> <span class="nv">$1</span> <span class="s">"Test"</span><span class="p">)</span>
+<span class="nv">$3</span> <span class="nv">=</span> <span class="no">#t</span>
+<span class="nv">scheme@</span><span class="p">(</span><span class="nf">recutils</span><span class="p">)</span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">field-name</span> <span class="nv">$1</span><span class="p">)</span>
+<span class="nv">$4</span> <span class="nv">=</span> <span class="s">"Blah"</span>
+<span class="nv">scheme@</span><span class="p">(</span><span class="nf">recutils</span><span class="p">)</span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">field-value</span> <span class="nv">$1</span><span class="p">)</span>
+<span class="nv">$5</span> <span class="nv">=</span> <span class="s">"Test"</span>
+</code></pre></div></div>
+
+<p>There we go!</p>
+
+<h3 id="the-smell-of-raw-pointers">the smell of raw pointers</h3>
+
+<p>OK, this looks great. But somehow it feels funny to pass a raw pointer object
+around as a parameter. Ideally, I’d like to define some sort of structure that
+wraps the raw pointer into something less <em>raw</em>. Well, turns out Guile has
+exactly that in the <a href="https://www.gnu.org/software/guile/manual/html_node/Void-Pointers-and-Byte-Access.html"><code class="language-plaintext highlighter-rouge">define-wrapped-pointer-type</code></a> macro! With the above
+constructor and procedures, we can go further:</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">define-wrapped-pointer-type</span>
+  <span class="nv">field-ptr</span> <span class="nv">field-ptr?</span> <span class="nv">wrap-field-ptr</span> <span class="nv">unwrap-field-ptr</span>
+  <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">ptr</span> <span class="nv">port</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">format</span> <span class="nv">port</span> <span class="s">"#&lt;field-ptr name=~s value=~s 0x~x&gt;"</span>
+            <span class="p">(</span><span class="nf">field-name</span> <span class="p">(</span><span class="nf">unwrap-field-ptr</span> <span class="nv">ptr</span><span class="p">))</span>
+            <span class="p">(</span><span class="nf">field-value</span> <span class="p">(</span><span class="nf">unwrap-field-ptr</span> <span class="nv">ptr</span><span class="p">))</span>
+            <span class="p">(</span><span class="nf">pointer-address</span> <span class="p">(</span><span class="nf">unwrap-field-ptr</span> <span class="nv">ptr</span><span class="p">)))))</span>
+</code></pre></div></div>
+
+<p>What the macro defines are a type name (<code class="language-plaintext highlighter-rouge">field-ptr</code>), a predicate
+(<code class="language-plaintext highlighter-rouge">field-ptr?</code>), methods for wrapping and unwrapping, and lastly a <em>printer</em>
+for pretty printing our pointer. The printer outputs a human readable
+representation of the printer, in which we leverage the procedures defined
+above, <code class="language-plaintext highlighter-rouge">field-name</code> and <code class="language-plaintext highlighter-rouge">field-value</code>.</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">scheme@</span><span class="p">(</span><span class="nf">recutils</span><span class="p">)</span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">wrap-field-ptr</span> <span class="p">(</span><span class="nf">new-field</span> <span class="s">"Author"</span> <span class="s">"Harold Abelson"</span><span class="p">))</span>
+<span class="nv">$2</span> <span class="nv">=</span> <span class="o">#</span><span class="nv">&lt;field-ptr</span> <span class="nv">name=</span><span class="s">"Author"</span> <span class="nv">value=</span><span class="s">"Harold Abelson"</span> <span class="mi">0</span><span class="nv">x7f8a6950b2d0&gt;</span>
+<span class="nv">scheme@</span><span class="p">(</span><span class="nf">recutils</span><span class="p">)</span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">field-ptr?</span> <span class="nv">$2</span><span class="p">)</span>
+<span class="nv">$3</span> <span class="nv">=</span> <span class="no">#t</span>
+<span class="nv">scheme@</span><span class="p">(</span><span class="nf">recutils</span><span class="p">)</span><span class="nv">&gt;</span> <span class="p">(</span><span class="nf">unwrap-field-ptr</span> <span class="nv">$2</span><span class="p">)</span>
+<span class="nv">$4</span> <span class="nv">=</span> <span class="o">#</span><span class="nv">&lt;pointer</span> <span class="mi">0</span><span class="nv">x7f8a6950b2d0&gt;</span>
+</code></pre></div></div>
+
+<p>This makes it a bit easier to pass around field values so that we can treat them
+like structures, or records in Scheme parlance. That said, constructing the
+values is still a bit tedious, especially now that our Scheme user would have to
+constantly wrap and unwrap values if they are to work with a field.</p>
+
+<p>What if we could work with fields as if they were pure Scheme objects and the
+underlying machinery – pointers and so forth – would be hidden from us? Well,
+we can use
+<a href="https://www.gnu.org/software/guile/manual/html_node/GOOPS.html">GOOPS</a>, but
+first let’s digress into the exciting world of FFI.</p>
+
+<h3 id="why-not-dynamic-ffi">why not dynamic FFI?</h3>
+
+<p>These days the Guile manual recommends using <a href="https://www.gnu.org/software/guile/manual/html_node/Dynamic-FFI.html">Dynamic
+FFI</a> when
+working with a foreign function interface. That is, the above examples are just
+C code, but we could have done the same with just regular Scheme using the
+<code class="language-plaintext highlighter-rouge">(system foreign)</code> module. This is what I would do in many other languages
+(Common Lisp, Python, and so on…). In such a case, I could make my Scheme
+module completely separate from recutils and librec, since I just need the
+dynamic library <code class="language-plaintext highlighter-rouge">libguile-recutils.so</code> for it to functions. But there are subtle
+reasons why writing these extensions in C is a good idea.</p>
+
+<p>As I went ahead and wrote the bindings, I had a curious thought: I’m writing
+functionality for working with recfiles from Guile. But what about adding Guile
+facilities to recutils? What about letting recutils users extend the programs
+using Scheme? Wouldn’t it be cool if instead of recutils selection expressions
+I could pass Scheme programs as the query language? Indeed, this was a topic
+worth exploring!</p>
+
+<p>The consequence of this was that now I was adding code to recutils itself to
+link against Guile, which means I will already have a dependency to the Guile C
+library <code class="language-plaintext highlighter-rouge">libguile</code>. So, since I’m now already working with the C API of Guile,
+limiting myself to the strange world of dynamic FFI was starting to feel rather
+tedious.</p>
+
+<p>From the start I wanted to work with the real deal: the wrapper types of the
+Guile extensions would be real wrappers. Each field in Scheme would be
+represented by a librec C struct underneath. This is so that I can leverage the
+bidirectional design above, and there is no need to parse or convert values twice
+when crossing language barriers. So, how do we make a Scheme API that is both
+nice to use and still C structs underneath? Well, the answer is GOOPS and
+object-oriented programming!</p>
+
+<h3 id="goops-virtual-slots-and-you">GOOPS, virtual slots, and you</h3>
+
+<p>Working with raw pointers and even pointer records can be painful. It would be
+much better if we could make fields like this:</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">make</span> <span class="nv">&lt;field&gt;</span> <span class="o">#</span><span class="nv">:name</span> <span class="s">"Author"</span> <span class="o">#</span><span class="nv">:value</span> <span class="s">"Gerald Sussman"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>This is a GOOPS
+<a href="https://www.gnu.org/software/guile/manual/html_node/Class-Definition.html">class</a>,
+of type <code class="language-plaintext highlighter-rouge">&lt;field&gt;</code>. The constructor has two keyword arguments <code class="language-plaintext highlighter-rouge">#:name</code> and
+<code class="language-plaintext highlighter-rouge">#:value</code> for the rec names.</p>
+
+<p>How can we get a class that has both getters and setters (in terms of <code class="language-plaintext highlighter-rouge">slot-ref</code>
+and <code class="language-plaintext highlighter-rouge">slot-set!</code>) that work on the underlying pointer? Easy enough, the answer is
+<a href="https://www.gnu.org/software/guile/manual/html_node/Slot-Description-Example.html"><em>virtual
+slots</em></a>!
+If we were to define an ordinary class with slots <code class="language-plaintext highlighter-rouge">name</code> and <code class="language-plaintext highlighter-rouge">value</code>, Guile
+would allocate memory for those and if we are to juggle the pointer alongside
+all of this, both the name and value would be in two places: once, behind the
+pointer (in C world) and in Scheme, as a slot in the class.</p>
+
+<p>But first, how do we create a class <code class="language-plaintext highlighter-rouge">&lt;field&gt;</code> that wraps a pointer? Easy enough,
+we can use <code class="language-plaintext highlighter-rouge">#:init-form</code> as the <a href="https://www.gnu.org/software/guile/manual/html_node/Slot-Options.html">slot
+option</a>:</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">define-class</span> <span class="nv">&lt;field&gt;</span> <span class="p">()</span>
+  <span class="c1">;; Internal pointer type.</span>
+  <span class="p">(</span><span class="nf">ptr</span> <span class="o">#</span><span class="nv">:init-form</span> <span class="p">(</span><span class="nf">wrap-rec-ptr</span> <span class="p">(</span><span class="nf">new-field</span> <span class="s">""</span> <span class="s">""</span><span class="p">))</span>
+       <span class="o">#</span><span class="nv">:init-keyword</span> <span class="o">#</span><span class="nv">:ptr</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The use of <code class="language-plaintext highlighter-rouge">#:init-form</code> causes the following expression to be evaluated every
+time a new class is instantiated, creating a field with an empty name and value.
+To get the signature we desire above, we need to use <em>virtual accessors</em>. These
+let us override the getter and setter <code class="language-plaintext highlighter-rouge">#:slot-ref</code> and <code class="language-plaintext highlighter-rouge">#:slot-set!</code>
+respectively which will work on the raw pointer, instead of occupying memory
+like a normal slot would. This is achieved using <code class="language-plaintext highlighter-rouge">#:allocation #:virtual</code>:</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">define-class</span> <span class="nv">&lt;field&gt;</span> <span class="p">()</span>
+  <span class="p">(</span><span class="nf">ptr</span> <span class="o">#</span><span class="nv">:init-form</span> <span class="p">(</span><span class="nf">wrap-field-ptr</span> <span class="p">(</span><span class="nf">new-field</span> <span class="s">""</span> <span class="s">""</span><span class="p">))</span>
+       <span class="o">#</span><span class="nv">:init-keyword</span> <span class="o">#</span><span class="nv">:ptr</span><span class="p">)</span>
+
+  <span class="p">(</span><span class="nf">name</span> <span class="o">#</span><span class="nv">:init-keyword</span> <span class="o">#</span><span class="nv">:name</span> <span class="o">#</span><span class="nv">:allocation</span> <span class="o">#</span><span class="nv">:virtual</span>
+        <span class="o">#</span><span class="nv">:accessor</span> <span class="nv">field-name</span>
+        <span class="o">#</span><span class="nv">:slot-ref</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">field</span><span class="p">)</span>
+                     <span class="p">(</span><span class="nf">%field-name</span> <span class="p">(</span><span class="nf">unwrap-field-ptr</span> <span class="p">(</span><span class="nf">slot-ref</span> <span class="nv">field</span> <span class="ss">'ptr</span><span class="p">))))</span>
+        <span class="o">#</span><span class="nv">:slot-set!</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">field</span> <span class="nv">name</span><span class="p">)</span>
+                      <span class="p">(</span><span class="nf">set-field-name!</span>
+                       <span class="p">(</span><span class="nf">unwrap-field-ptr</span> <span class="p">(</span><span class="nf">slot-ref</span> <span class="nv">field</span> <span class="ss">'ptr</span><span class="p">))</span> <span class="nv">name</span><span class="p">)))</span>
+  
+  <span class="p">(</span><span class="nf">value</span> <span class="o">#</span><span class="nv">:init-keyword</span> <span class="o">#</span><span class="nv">:value</span> <span class="o">#</span><span class="nv">:allocation</span> <span class="o">#</span><span class="nv">:virtual</span>
+         <span class="o">#</span><span class="nv">:accessor</span> <span class="nv">field-value</span>
+         <span class="o">#</span><span class="nv">:slot-ref</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">field</span><span class="p">)</span>
+                      <span class="p">(</span><span class="nf">%field-value</span> <span class="p">(</span><span class="nf">unwrap-field-ptr</span> <span class="p">(</span><span class="nf">slot-ref</span> <span class="nv">field</span> <span class="ss">'ptr</span><span class="p">))))</span>
+         <span class="o">#</span><span class="nv">:slot-set!</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">field</span> <span class="nv">value</span><span class="p">)</span>
+                       <span class="p">(</span><span class="nf">set-field-value!</span> <span class="p">(</span><span class="nf">unwrap-field-ptr</span> <span class="p">(</span><span class="nf">slot-ref</span> <span class="nv">field</span> <span class="ss">'ptr</span><span class="p">))</span> <span class="nv">value</span><span class="p">))))</span>
+</code></pre></div></div>
+
+<p>Note that the procedures we defined previously in C were renamed to
+<code class="language-plaintext highlighter-rouge">%field-value</code> since it would otherwise conflict with the <code class="language-plaintext highlighter-rouge">#:accessor</code> slot option.</p>
+
+<p>So using <code class="language-plaintext highlighter-rouge">#:virtual</code> lets us write GOOPS classes and not worry about double
+allocation. It looks like a regular GOOPS class but actually it is modifying a
+pointer to a C struct underneath using a C API. Moreover, the biggest benefit of
+this is the ability to pass values in the constructor. If we didn’t have
+<code class="language-plaintext highlighter-rouge">#:virtual</code>, we’d have to write separate accessor methods like this:</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nf">define-method</span> <span class="p">(</span><span class="nf">f-name</span> <span class="p">(</span><span class="nf">field</span> <span class="nv">&lt;field&gt;</span><span class="p">))</span>
+  <span class="p">(</span><span class="nf">%field-name</span> <span class="p">(</span><span class="nf">unwrap-field-ptr</span> <span class="p">(</span><span class="nf">slot-ref</span> <span class="nv">field</span> <span class="ss">'ptr</span><span class="p">))))</span>
+
+<span class="p">(</span><span class="nf">define-method</span> <span class="p">((</span><span class="nf">setter</span> <span class="nv">f-name</span><span class="p">)</span> <span class="p">(</span><span class="nf">field</span> <span class="nv">&lt;field&gt;</span><span class="p">)</span> <span class="nv">name</span><span class="p">)</span>
+  <span class="p">(</span><span class="nf">set-field-name!</span> <span class="p">(</span><span class="nf">unwrap-field-ptr</span> <span class="p">(</span><span class="nf">slot-ref</span> <span class="nv">field</span> <span class="ss">'ptr</span><span class="p">))</span> <span class="nv">name</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>But the problem with this and any other approach is that you’d still have memory
+allocated for the slots. All <code class="language-plaintext highlighter-rouge">&lt;field&gt;</code>s will have unnecessary <code class="language-plaintext highlighter-rouge">name</code> and <code class="language-plaintext highlighter-rouge">value</code>
+slots allocated. I think the only way to get this behaviour if <code class="language-plaintext highlighter-rouge">#:virtual</code> were
+not available would be to create a custom method for <code class="language-plaintext highlighter-rouge">initialize</code>. I think the
+same applies in other CLOS-like systems (and CLOS itself), but I’m not sure.</p>
+
+<h3 id="context-is-everything-friends">context is everything, friends</h3>
+
+<p>I don’t think many Guile users will find Scheme bindings for recutils that useful in
+itself, as a library. Guix uses recfiles in its search output, but its record
+generation is
+<a href="https://git.savannah.gnu.org/cgit/guix.git/tree/guix/ui.scm#n1505">hand-written</a>,
+usage not deep enough to warrant using the library.</p>
+
+<p>But I think a case can be made for recutils <em>itself</em>, that is, if recutils were
+to develop extensibility via Guile, the extension mechanism can load the
+<code class="language-plaintext highlighter-rouge">recutils</code> Scheme module as its base runtime. I discussed the idea over at IRC
+with Jose Marchesi, the Recutils author and maintainer, and he thought it was a
+good idea as long as there’s someone there to maintain it.</p>
+
+<p>Maybe this will fly, I don’t know. I don’t see any big technical barriers for it
+to <em>not</em> work, even if it amounts to just adding Scheme bindings without
+extending recutils itself. That said, every now and then I’m running into the
+limitations of selection expressions, so being able to use Scheme as a measure
+of last resort would be interesting, if nothing else.</p>
+
+<p>As of early December 2020 I have bindings for parsing and creating records and
+fields, so expect an early release of the Scheme bindings to appear within the
+next few months.</p>
+
+<p>Have I mentioned I also plan to make Common Lisp bindings as well? Well, now I have,
+but that’s another story!</p>
+
+  </div>
+  <small style="display: flex; justify-content: space-between;">
+    
+      <em>
+        Previous: <a href="/programming/lisp/guile-test-driver.html">A Guile test runner with an exit code</a>
+      </em>
+    
+
+    
+  </small>
+</article>
+
+      </div>
+
+      <footer>
+        <hr>
+        <address>
+          
+          
+
+          &copy; <a href="mailto:ane@iki.fi">Antoine Kalmbach</a>, see <a href="/this-site/index.html#copying">copying</a>.
+          Last updated on <a href="/changelog.html">July 28, 2021</a>. Discuss at my <a href="https://lists.sr.ht/~ane/public-inbox">public inbox</a>.
+        </address>
+      </footer>
+    </div>
+    <script src="/assets/hyphenator.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
+         processEscapes: false
+       }
+     });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="/assets/hylo.js" type="text/javascript"></script>
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-58162697-1']);
+     _gaq.push(['_trackPageview']);
+
+     (function () {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+  </body>
+
+</html>

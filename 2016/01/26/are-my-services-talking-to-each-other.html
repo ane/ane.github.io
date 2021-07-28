@@ -1,0 +1,368 @@
+<!-- -*- engine:liquid -*- -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
+
+    <title>
+      
+        Are my services talking to each other?
+      
+    </title>
+
+    
+      <meta name="description" content="" />
+    
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link type="application/atom+xml" rel="alternate" href="http://ane.iki.fi/feed.xml" title="Antoine Kalmbach's website" />
+    <meta http-equiv="refresh" content="0; url=http://ane.iki.fi/2016/01/26/are-my-services-talking-to-each-other.html" />
+    <link rel="canonical" href="http://ane.iki.fi/2016/01/26/are-my-services-talking-to-each-other.html"/>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Are my services talking to each other? | Antoine Kalmbach’s website</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Are my services talking to each other?" />
+<meta name="author" content="Antoine Kalmbach" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I am faced with an interesting thought experiment, which asks: If I can see two of my friends, and I know they should be communicating to each other, what is the simplest way of making sure they are doing so? Your first instinct is to look at them and listen. What if the communication method is subtler than that? What if you are, metaphorically speaking, deaf, and cannot eavesdrop on their conversation?" />
+<meta property="og:description" content="I am faced with an interesting thought experiment, which asks: If I can see two of my friends, and I know they should be communicating to each other, what is the simplest way of making sure they are doing so? Your first instinct is to look at them and listen. What if the communication method is subtler than that? What if you are, metaphorically speaking, deaf, and cannot eavesdrop on their conversation?" />
+<link rel="canonical" href="http://ane.iki.fi/2016/01/26/are-my-services-talking-to-each-other.html" />
+<meta property="og:url" content="http://ane.iki.fi/2016/01/26/are-my-services-talking-to-each-other.html" />
+<meta property="og:site_name" content="Antoine Kalmbach’s website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-01-26T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Are my services talking to each other?" />
+<meta name="twitter:site" content="@anewtf" />
+<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<script type="application/ld+json">
+{"headline":"Are my services talking to each other?","dateModified":"2019-02-21T09:28:06+00:00","datePublished":"2016-01-26T00:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://ane.iki.fi/2016/01/26/are-my-services-talking-to-each-other.html"},"url":"http://ane.iki.fi/2016/01/26/are-my-services-talking-to-each-other.html","author":{"@type":"Person","name":"Antoine Kalmbach"},"description":"I am faced with an interesting thought experiment, which asks: If I can see two of my friends, and I know they should be communicating to each other, what is the simplest way of making sure they are doing so? Your first instinct is to look at them and listen. What if the communication method is subtler than that? What if you are, metaphorically speaking, deaf, and cannot eavesdrop on their conversation?","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/override.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/pygments.css" type="text/css" media="screen" />
+  </head>
+  <body itemscope itemtype="https://schema.org/WebPage" class="home-template">
+    <div class="hyphenate">
+      <h1 style="text-align: center;">
+  Antoine Kalmbach
+</h1>
+<nav class="navbar">
+  <ul>
+    <li class="nav-item ">
+      <a class="nav-link pl-0" href="/" itemprop="url"><span itemprop="name">Home</span></a>
+    </li>
+    <li class="nav-item  active">
+      <a class="nav-link" href="/archive.html" itemprop="url"><span itemprop="name">Blog</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/about/" itemprop="url"><span itemprop="name">About</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/tags.html" itemprop="url"><span itemprop="name">Index</span></a>
+    </li>
+
+    <li class="nav-item mr-n2">
+      <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="h-card d-none" style="display: none">
+  <img class="u-photo" src="/images/me.png" />
+  <a class="u-url" href="http://ane.iki.fi/2016/01/26/are-my-services-talking-to-each-other.html"></a>
+  <a class="p-name u-url" href="http://ane.iki.fi">Antoine Kalmbach</a>
+  <a class="u-email" href="mailto:">ane@iki.fi</a>
+</div>
+
+
+      <div class="content">
+        <article class="h-entry">
+  <header>
+    
+
+
+
+
+
+  <h2 class="p-name" style="margin: 0.25rem 0;">
+    Are my services talking to each other?
+  </h2>
+
+  <p class="post-meta text-muted">
+    <time class="dt-published" itemprop="datePublished" datetime="2016-01-26 00:00:00 +0000">
+      Posted on January 26, 2016
+
+  </p>
+
+
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="/2016/01/26/are-my-services-talking-to-each-other.html" />
+  </header>
+  <div class="e-content">
+    <p>I am faced with an interesting thought experiment, which asks:</p>
+
+<blockquote>
+  <p>If I can see two of my friends, and I know they should be communicating to each other, what is the
+simplest way of making sure they are doing so?</p>
+</blockquote>
+
+<p>Your first instinct is to <em>look</em> at them and <em>listen</em>. What if the communication method is
+subtler than that? What if you are, metaphorically speaking, <em>deaf</em>, and cannot eavesdrop on their
+conversation?
+<!--break--></p>
+
+<p>A problem like arises when you have a non-trivial amount of distributed components talking to each
+other, forming a complex network. Let’s start from the basics and consider a simple one:</p>
+
+<p class="text-center"><img src="/images/are-my-services-1-simple.png" alt="A simple example" /></p>
+
+<p class="text-center"><em>arrows indicate flows of information, i.e. x → y means x sends information to y</em></p>
+
+<p>You could assume <strong>A</strong> is an event log, for example, of financial transactions; <strong>B</strong> is a message
+queue and <strong>C</strong> is a fast queryable cache for the transactions. We want to be able to query the
+cache quickly for log events and rely on the message queue of transporting them from <strong>A</strong> to <strong>C</strong>,
+while preferably not having a hard software dependency from <strong>A</strong> to <strong>C</strong>.</p>
+
+<p>The illusion is that while there are neither code nor protocol dependencies between <strong>A</strong> and <strong>C</strong>,
+a semantic dependency exists: the one in our heads! <strong>A</strong> is content on dumping information
+towards <strong>B</strong>, but what we’re really interested in is messages getting through all the way to
+<strong>C</strong>. So in reality, if we superimpose our perceived dependencies on top of information flows, we
+end up with this:</p>
+
+<p class="text-center"><img src="/images/are-my-services-3-simple.png" alt="A simple example, part two." /></p>
+
+<h2 id="tolerating-faults">Tolerating faults</h2>
+
+<p>What if the chain breaks? What happens when A can’t push messages onward to B, and we get a
+blackout? Who gets notified? C doesn’t know what’s happening in A, it’s just not getting
+information! In line of the original question, if I can see both A and C are doing fine, but they’re
+not talking to each other, where is or <em>who</em> is the broken phone?</p>
+
+<p>With such a simple case as above, pointing this out is easy, so let’s make our network a bit more
+complicated.</p>
+
+<p class="text-center"><img src="/images/are-my-services-2-not-so-simple.png" alt="A slightly more complex example" /></p>
+
+<p class="text-center mx-5"><small>
+<em>A - an event log; B - a message queue; C - a cache; E - app back-end; P - a user-facing
+application; I - a business intelligence system; S - a storage system</em>
+</small></p>
+
+<p>Let’s assume each one of these components is an independent service, each load balanced and with
+redundancies that aren’t visible beyond the node itself<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>, and that communication is done over a
+computer network using some protocol.</p>
+
+<p>The depicted network consists of a set of applications that all in one way or the other build on top
+of an event log, A. In one branch, there’s a fast queryable cache for the transaction log, the app
+back-end is an interface for the cache (like a REST API), and the storage acts as a long-term backup
+system. The second branch consists of a business intelligence system that analyzes the event log
+data and does something with it.</p>
+
+<p>Indirectly, there are dependency arrows emanating from the root of the network tree (A) to its
+leaves S, P and I. From an observer’s perspective, these are the relationships that matter. These
+are the <em>implicit dependencies</em>. Furthermore, we can see those dependencies, but we build the code
+in such a way that it does not! The event log simply dumps data to a message queue, and that’s
+it. What is worse, is that the implicit dependencies each propagate up the chain. Not only does the
+leaf node depend on the root node, it also depends on the intermediate nodes.</p>
+
+<p class="text-center"><img src="/images/are-my-services-4-not-so-simple.png" alt="A slightly more complex example" /></p>
+
+<p class="text-center"><small>
+<em>Implicit dependencies</em>
+</small></p>
+
+<p>The inherent hazard in all this, of course, is that there’s a communication error. Even though we
+(hopefully) built the system following the
+<a href="https://en.wikipedia.org/wiki/Robustness_principle">robustness principle</a>, data isn’t flowing from
+the root node to the leaf nodes and we have to quickly identify where the disconnect happened.</p>
+
+<h2 id="seeing-is-not-enough">Seeing is not enough</h2>
+
+<p>Our first instinct is to peer at the logs. So we go through each <em>edge</em> in the network and see if
+there’s a fault. This means for <code class="language-plaintext highlighter-rouge">n</code> nodes looking at least at <em>n-1</em> edges for each fault! Moreover,
+the problem isn’t fixed by using something that gives me <em>visibility</em> of the nodes, like ZooKeeper
+or other service discovery tools. This is because I am interested in the flow of information from
+one node to another. The thought experiment already assumes that the nodes are there, only the
+communication between them is broken.</p>
+
+<p>In the Internet world, with the
+<a href="https://en.wikipedia.org/wiki/Transmission_Control_Protocol">Transmission Control Protocol</a> ,
+communication is made reliable using error-checking and acknowledgments. That means, if A were a
+network element and wanted to send things over to C, in case of a successful delivery C will
+acknowledge this back to A.</p>
+
+<p>For various reasons, it may be that in a distributed service network this approach is not
+feasible. This is the cost of abstractions: when you enforce loose coupling, you have to deal with
+the consequences of looseness. We <em>could</em> build the transaction log aware of the user-facing
+Application but that may be overkill.</p>
+
+<p>For the particular problem of <em>acknowledging</em> from a message queue root to a consumer leaf, there
+are various solutions. You either implement this on your own, which while laborious, essentially
+follows the principle of error-checking. The caveat is this grows in complexity with every new node.
+Another option is to use a message queue
+(<a href="https://en.wikipedia.org/wiki/Apache_Kafka">one of these things is not like the others</a>) that supports
+this natively.</p>
+
+<h2 id="the-rescue-signal">The rescue signal</h2>
+
+<p>We could build a centralized logging system to which each node logs its events. This centralized
+system contains <em>all</em> events from <em>all</em> nodes. To make the data meaningful, you need to construct a
+way to determine the flow of information, that is, grouping events together semantically. Worse, the
+system will require manual or semi-automated inspection to determine when any event is missing its
+acknowledgment, that is, A logged an event of sending <code class="language-plaintext highlighter-rouge">Foo</code> to message queue but the user
+application back-end <code class="language-plaintext highlighter-rouge">E</code> never processed it.</p>
+
+<p>A system like this could work using a
+<a href="https://en.wikipedia.org/wiki/Functional_reactive_programming">FRP</a> approach: since FRP signals map
+<em>exactly</em> to discrete events, one could build a rule engine. By
+<a href="https://wiki.haskell.org/Functional_Reactive_Programming">integrating time flow and compositional events</a>,
+a centralized system could use its rule engine to listen to signals. A signal can be any event,
+e.g., a financial transaction that was logged into the event log. You can combine this signal with
+another event in a system that <em>consumes</em> transactions and does something with them, like the
+business intelligence system. The sum of these two signals imply that “a financial transaction was
+consumed by the business intelligence system”. This is also a signal!</p>
+
+<p>Building a FRP-based rule engine isn’t easy, you’d need to construct a rule engine that can map
+diverse data events into high-level <em>signals</em> and then create additional logic for <em>summing</em> the
+signals.</p>
+
+<p class="text-center"><img src="/images/are-my-services-5-frp.png" alt="The FRP approach" /></p>
+
+<p class="text-center"><small>
+<em>The sum of two signals is another signal. (Oh hey, this makes it a <a href="https://en.wikipedia.org/wiki/Semigroup">semigroup</a>!)</em>
+</small></p>
+
+<p>Once such a system is built, it can be queried to determine the state of the network quite
+efficiently (and perhaps elegantly), but it does not introduce any fault tolerance and will only
+tell you where data <strong>is</strong> moving, but not where it isn’t.</p>
+
+<h2 id="lurking-in-the-shadows">Lurking in the shadows</h2>
+
+<p>I guess that most of this stuff underlines the difficulties of unraveling a monolith into a
+microservice. Keeping track of network traffic is really hard, even at the hardware level (!), so
+when we push this abstraction to the software level, it is not a surprise that this can cause
+problems.</p>
+
+<p>Playing with some toy solutions I thought of something I call a <em>shadow network</em>. Let’s say our
+principal information source is an event monitor <strong>X</strong> and we have a <strong>leaf node</strong> in the
+information dependency tree that is interested in data originating from <strong>X</strong>.</p>
+
+<p class="text-center"><img src="/images/are-my-services-6-shadow.png" alt="Shadows" /></p>
+
+<p class="text-center"><small>
+<em>Each leaf node sends its data to the shadow node. The shadow node understands the data and can
+tell where it originated from, thereby seeing the implicit dependencies. The shadow node is
+effectively a <em>mirror</em> of the root node(s).</em>
+</small></p>
+
+<p>In the shadow network, <strong>X</strong> does not receive any new dependencies nor do the intermediaries, but
+the leaf nodes each push their actions to the <em>shadow node</em>. The shadow node contains a <em>rule
+engine</em> that can parse leaf events. A <em>rule</em> is something that identifies a <strong>source</strong>. It could be
+anything, from a simple parser (“this looks like Apache logs” → “it came from Apache!”) to something
+more sophisticated. This introduces a dependency only to leaf nodes, but the problem is that the
+shadow node has to be kept up to date on how to correctly map events to sources. When you change the
+format of the data traveling across the network, you have to update the rule engine.</p>
+
+<p>Unfortunately, this doesn’t really help us: you can query the shadow node to get the <em>implied
+dependencies</em>, but that’s it. So while it requires less effort to develop, disregarding cases where
+creating rules causes difficulties, it suffers from the same flaw than the centralized FRP engine:
+it can only tell when data <strong>is</strong> flowing but not when it <strong>isn’t</strong>.</p>
+
+<h2 id="no-easy-answers">No easy answers</h2>
+
+<p>This makes both solutions rather untenable for monitoring a microservice architecture, but they can
+be used in cases where the service network grows large and you are working with opaque layers, that
+is, you <em>don’t know</em> what’s between the leaves and the root, and you want to construct the implicit
+dependency graph.</p>
+
+<p>Bolting temporal awareness in the shadow network works if the data is supposed to be regular. If the
+consuming leaf expects a tick from the origin(s) every <code class="language-plaintext highlighter-rouge">n</code> seconds, the shadow rule engine can be
+built to be aware of this. If ticks aren’t happening when they are supposed to, you can create a
+fault on the implicit dependency. Alas, only regularly occurring data works here, so we’re out of
+luck for irregular events.</p>
+
+<p>Either way, the original problem is an interesting one. I suppose the only reliable way of doing
+things is to do what the Internet Protocol does: acknowledgment and error checking. While certainly
+a lot of work, it will be reliable. We all love reinventing wheels, don’t we?</p>
+
+<p>My opinion? Don’t fix what isn’t broken! While we all benefit from loose coupling, and while
+microservices definitely are <em>most of the time</em> an improvement over monoliths, both bring hurdles
+and challenges of their own. The bottom line is that networking is not easy, and if one forgets
+this, problems <em>will</em> occur.</p>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>So for all intents and purposes the nodes represent services as a whole instead of individual
+physical units, whatever they may be. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div>
+  <small style="display: flex; justify-content: space-between;">
+    
+      <em>
+        Previous: <a href="/2016/01/08/the-expression-problem-as-a-litmus-test.html">The expression problem as a litmus test</a>
+      </em>
+    
+
+    
+      <em>
+        Next: <a href="/2016/03/17/imprecision-and-abstraction.html">Imprecision and abstraction</a>
+      </em>
+    
+  </small>
+</article>
+
+      </div>
+
+      <footer>
+        <hr>
+        <address>
+          
+          
+
+          &copy; <a href="mailto:ane@iki.fi">Antoine Kalmbach</a>, see <a href="/this-site/index.html#copying">copying</a>.
+          Last updated on <a href="/changelog.html">July 28, 2021</a>. Discuss at my <a href="https://lists.sr.ht/~ane/public-inbox">public inbox</a>.
+        </address>
+      </footer>
+    </div>
+    <script src="/assets/hyphenator.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
+         processEscapes: false
+       }
+     });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="/assets/hylo.js" type="text/javascript"></script>
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-58162697-1']);
+     _gaq.push(['_trackPageview']);
+
+     (function () {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+  </body>
+
+</html>

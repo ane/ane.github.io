@@ -1,0 +1,403 @@
+<!-- -*- engine:liquid -*- -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
+
+    <title>
+      
+        Implicit power
+      
+    </title>
+
+    
+      <meta name="description" content="" />
+    
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link type="application/atom+xml" rel="alternate" href="http://ane.iki.fi/feed.xml" title="Antoine Kalmbach's website" />
+    <meta http-equiv="refresh" content="0; url=http://ane.iki.fi/2017/03/15/implicit-power.html" />
+    <link rel="canonical" href="http://ane.iki.fi/2017/03/15/implicit-power.html"/>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Implicit power | Antoine Kalmbach’s website</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Implicit power" />
+<meta name="author" content="Antoine Kalmbach" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Scala gets lots of flak for implicits. Some of the feedback is justified: implicits in Scala can be quite intimidating or confusing for beginners. That does not justify their dismissal, as implicits, in all of their flavours, when used correctly, can be actually quite simple and powerful. I recently had to do a refactoring for large program. The codebase was old, and wasn’t designed to cope with the sort of change I was going to introduce, and I didn’t have much time either. Pressed for time, but compelled by a modicum of professional pride, I didn’t want to half-ass the task by adding jury-rigged solutions that would have left me feeling dirty and empty inside, at worst, leaving a rotting mess to future developers—me." />
+<meta property="og:description" content="Scala gets lots of flak for implicits. Some of the feedback is justified: implicits in Scala can be quite intimidating or confusing for beginners. That does not justify their dismissal, as implicits, in all of their flavours, when used correctly, can be actually quite simple and powerful. I recently had to do a refactoring for large program. The codebase was old, and wasn’t designed to cope with the sort of change I was going to introduce, and I didn’t have much time either. Pressed for time, but compelled by a modicum of professional pride, I didn’t want to half-ass the task by adding jury-rigged solutions that would have left me feeling dirty and empty inside, at worst, leaving a rotting mess to future developers—me." />
+<link rel="canonical" href="http://ane.iki.fi/2017/03/15/implicit-power.html" />
+<meta property="og:url" content="http://ane.iki.fi/2017/03/15/implicit-power.html" />
+<meta property="og:site_name" content="Antoine Kalmbach’s website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-03-15T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Implicit power" />
+<meta name="twitter:site" content="@anewtf" />
+<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<script type="application/ld+json">
+{"headline":"Implicit power","dateModified":"2017-04-13T10:11:04+00:00","datePublished":"2017-03-15T00:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://ane.iki.fi/2017/03/15/implicit-power.html"},"url":"http://ane.iki.fi/2017/03/15/implicit-power.html","author":{"@type":"Person","name":"Antoine Kalmbach"},"description":"Scala gets lots of flak for implicits. Some of the feedback is justified: implicits in Scala can be quite intimidating or confusing for beginners. That does not justify their dismissal, as implicits, in all of their flavours, when used correctly, can be actually quite simple and powerful. I recently had to do a refactoring for large program. The codebase was old, and wasn’t designed to cope with the sort of change I was going to introduce, and I didn’t have much time either. Pressed for time, but compelled by a modicum of professional pride, I didn’t want to half-ass the task by adding jury-rigged solutions that would have left me feeling dirty and empty inside, at worst, leaving a rotting mess to future developers—me.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/override.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/pygments.css" type="text/css" media="screen" />
+  </head>
+  <body itemscope itemtype="https://schema.org/WebPage" class="home-template">
+    <div class="hyphenate">
+      <h1 style="text-align: center;">
+  Antoine Kalmbach
+</h1>
+<nav class="navbar">
+  <ul>
+    <li class="nav-item ">
+      <a class="nav-link pl-0" href="/" itemprop="url"><span itemprop="name">Home</span></a>
+    </li>
+    <li class="nav-item  active">
+      <a class="nav-link" href="/archive.html" itemprop="url"><span itemprop="name">Blog</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/about/" itemprop="url"><span itemprop="name">About</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/tags.html" itemprop="url"><span itemprop="name">Index</span></a>
+    </li>
+
+    <li class="nav-item mr-n2">
+      <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="h-card d-none" style="display: none">
+  <img class="u-photo" src="/images/me.png" />
+  <a class="u-url" href="http://ane.iki.fi/2017/03/15/implicit-power.html"></a>
+  <a class="p-name u-url" href="http://ane.iki.fi">Antoine Kalmbach</a>
+  <a class="u-email" href="mailto:">ane@iki.fi</a>
+</div>
+
+
+      <div class="content">
+        <article class="h-entry">
+  <header>
+    
+
+
+
+
+
+  <h2 class="p-name" style="margin: 0.25rem 0;">
+    Implicit power
+  </h2>
+
+  <p class="post-meta text-muted">
+    <time class="dt-published" itemprop="datePublished" datetime="2017-03-15 00:00:00 +0000">
+      Posted on March 15, 2017
+
+  </p>
+
+
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="/2017/03/15/implicit-power.html" />
+  </header>
+  <div class="e-content">
+    <p>Scala gets lots of flak for implicits. Some of the feedback is justified: implicits in Scala can be
+quite intimidating or confusing for beginners. That does not justify their dismissal, as implicits,
+in all of their flavours, when used correctly, can be actually quite simple and powerful.</p>
+
+<p>I recently had to do a refactoring for large program. The codebase was old, and wasn’t designed to
+cope with the sort of change I was going to introduce, and I didn’t have much time either. Pressed
+for time, but compelled by a modicum of professional pride, I didn’t want to half-ass the task by
+adding jury-rigged solutions that would have left me feeling dirty and empty inside, at worst,
+leaving a rotting mess to future developers—me.
+<!--break-->
+The codebase itself was simple, but large. Its task was more or less to serve as a REST API in front
+of a high-availability, fast database (Cassandra). One part of the program provided abstractions
+called <em>collections</em> of database tables. Each collection had a set of methods (such as <code class="language-plaintext highlighter-rouge">get</code>) that
+were then translated to a database query to fetch <em>entities</em>. An entity is a piece of data
+encapsulating some value. Using a fictional and simplified example of an <code class="language-plaintext highlighter-rouge">Bork</code> from a database:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">Bork</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span>
+                <span class="n">date</span><span class="k">:</span> <span class="kt">ZonedDateTime</span><span class="o">,</span>
+                <span class="n">frobnicate</span><span class="k">:</span> <span class="kt">Decimal</span><span class="o">)</span>
+
+<span class="k">trait</span> <span class="nc">Borks</span> <span class="o">{</span>
+  <span class="c1">// find a bork by id</span>
+  <span class="k">def</span> <span class="nf">get</span><span class="o">(</span><span class="n">by</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">Bork</span><span class="o">]]</span>
+<span class="o">}</span>
+
+<span class="c1">// ... in another place, another module</span>
+
+<span class="k">class</span> <span class="nc">BorksImpl</span> <span class="k">extends</span> <span class="nc">Borks</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">get</span><span class="o">(</span><span class="n">by</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">Bork</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
+      <span class="c1">// fetch by UUID from the database</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Each collection trait was implemented by a real class (like <code class="language-plaintext highlighter-rouge">RealEntries</code>), hiding database logic
+behind a concrete implementation. Other parts of the program accessed these entities via the
+collection trait, like the API front here:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">borks</span><span class="k">:</span> <span class="kt">Borks</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="c1">// spray dsl</span>
+<span class="nf">pathNamespace</span><span class="o">(</span><span class="s">"borks"</span> <span class="o">/</span> <span class="nc">IntNumber</span><span class="o">)</span> <span class="o">{</span> <span class="n">id</span> <span class="k">=&gt;</span>
+  <span class="n">get</span> <span class="o">{</span>
+    <span class="n">complete</span> <span class="o">{</span>
+      <span class="nv">borks</span><span class="o">.</span><span class="py">get</span><span class="o">(</span><span class="n">id</span><span class="o">).</span><span class="py">toJson</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>The database in question was Cassandra, in which this <em>database</em> abstraction doesn’t really exist,
+as databases in Cassandra are actually just prefixes called <em>keyspaces</em> that map to physical
+directories on the disk. These keyspaces have some properties that separate one keyspace from
+another, but the point is that they are unlike traditional SQL databases: you need not <em>connect</em> to
+a database, you can simply switch your query for the table <code class="language-plaintext highlighter-rouge">Foo</code>, in keyspace <code class="language-plaintext highlighter-rouge">A</code> to <code class="language-plaintext highlighter-rouge">B</code>, by
+switching <code class="language-plaintext highlighter-rouge">A.Foo</code> to <code class="language-plaintext highlighter-rouge">B.Foo</code>. So, in Cassandra, these keyspaces are opaque and you can simply choose
+the appropriate keyspace with the right namespace in the table name part of the query.</p>
+
+<p>The task was to support multiple, concurrent databases of entries. Previously, this program operated as a
+monolith, i.e. there was ever only <em>one</em> database it was operating on. Support was needed for
+concurrent access to several (possibly non-finite) databases, and the support had to come quickly.</p>
+
+<p>Turns out the simple solution – instantiate one <code class="language-plaintext highlighter-rouge">BorksImpl</code> for each keyspace – was not available,
+as there could be entities in one <em>shared</em> keyspace mapping to other keyspaces. So, one collection
+like <code class="language-plaintext highlighter-rouge">BorksImpl</code> needed to know which keyspaces it was supposed to query, because this information
+is unavailable to the caller.</p>
+
+<p>A way around the splitting and namespacing was consolidation, but this introduced security
+problems. We couldn’t simply consolidate all the entries into the same database, as we had access
+limitations – callers of <code class="language-plaintext highlighter-rouge">get</code> acting on keyspace <code class="language-plaintext highlighter-rouge">Foo</code> were not allowed to see the data in
+keyspace <code class="language-plaintext highlighter-rouge">Bar</code>. This justified the creation of a split by keyspace, isolating data for the purposes
+of permission control. This also destroyed the possibility of the above solution, i.e., instantiate
+one <code class="language-plaintext highlighter-rouge">BorksImpl</code> for each keyspace, because <em>one</em> <code class="language-plaintext highlighter-rouge">BorksImpl</code> might have needed to query for data
+from many keyspaces.</p>
+
+<p>So, a request with an id <code class="language-plaintext highlighter-rouge">123</code> comes in at <code class="language-plaintext highlighter-rouge">/borks/123</code>, the application uses the central lookup
+table to find the target keyspace. The initial implementation looked like this.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">Borks</span> <span class="o">{</span>
+  <span class="c1">// find a bork by id</span>
+  <span class="k">def</span> <span class="nf">get</span><span class="o">(</span><span class="n">namespace</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">by</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Bork</span><span class="o">]</span>
+<span class="o">}</span>
+
+<span class="c1">// ... in another place, another module</span>
+
+<span class="k">class</span> <span class="nc">BorksImpl</span> <span class="k">extends</span> <span class="nc">Borks</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">get</span><span class="o">(</span><span class="n">namespace</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">by</span><span class="k">:</span> <span class="kt">UUID</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Bork</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+      <span class="c1">// fetch by UUID from the database</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>And update the caller API:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">borks</span><span class="k">:</span> <span class="kt">Borks</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="nf">pathPrefix</span><span class="o">(</span><span class="s">"borks"</span> <span class="o">/</span> <span class="nc">IntNumber</span><span class="o">)</span> <span class="o">{</span> <span class="n">id</span> <span class="k">=&gt;</span>
+  <span class="nf">queryNamespace</span><span class="o">(</span><span class="n">id</span><span class="o">)</span> <span class="o">{</span> <span class="n">namespace</span> <span class="k">=&gt;</span>
+    <span class="n">get</span> <span class="o">{</span>
+      <span class="n">complete</span> <span class="o">{</span>
+        <span class="nv">borks</span><span class="o">.</span><span class="py">get</span><span class="o">(</span><span class="n">namespace</span><span class="o">,</span> <span class="n">borkId</span><span class="o">).</span><span class="py">toJson</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>This was fairly simple, but painful, as the <code class="language-plaintext highlighter-rouge">get</code> methods of collections like <code class="language-plaintext highlighter-rouge">Borks</code> may have
+called other methods on other collections, nesting calls ever downward, as shown below in the
+example, where <code class="language-plaintext highlighter-rouge">Borks</code> calls <code class="language-plaintext highlighter-rouge">barks.get</code> and so forth.  As a result, I had to deal with adding the
+<code class="language-plaintext highlighter-rouge">namespace: String</code> parameter to <em>all</em> methods on all collections. Remember, adding the namespace
+method as a <em>field</em> was not an option – the namespace was an extra parameter to every method
+invocation.</p>
+
+<p>So I was dealing with transforming code that looked like this:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">barksImpl</span><span class="k">:</span> <span class="kt">Barks</span> <span class="o">=</span> <span class="o">...</span>
+<span class="k">def</span> <span class="nf">aggregateWithBarks</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">barks</span><span class="k">:</span> <span class="kt">Set</span><span class="o">[</span><span class="kt">Int</span><span class="o">])</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Borks</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
+   <span class="k">val</span> <span class="nv">aggregates</span> <span class="k">=</span> <span class="nf">get</span><span class="o">(</span><span class="n">id</span><span class="o">)</span> <span class="n">map</span> <span class="o">{</span> <span class="n">b</span> <span class="k">=&gt;</span>
+     <span class="n">b</span> <span class="n">map</span> <span class="o">{</span> <span class="n">bork</span> <span class="k">=&gt;</span> 
+       <span class="n">barks</span> <span class="n">flatMap</span> <span class="o">{</span> <span class="n">bark</span> <span class="k">=&gt;</span>
+         <span class="nv">barksImpl</span><span class="o">.</span><span class="py">get</span><span class="o">(</span><span class="nv">bark</span><span class="o">.</span><span class="py">id</span><span class="o">)</span> <span class="k">match</span> <span class="o">{</span>
+            <span class="o">...</span>
+         <span class="o">}</span>
+       <span class="o">}</span>
+     <span class="o">}</span>
+   <span class="o">}</span>
+   <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>and by adding <code class="language-plaintext highlighter-rouge">namespace</code> everywhere, I had to transform it into</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">barksImpl</span><span class="k">:</span> <span class="kt">Barks</span> <span class="o">=</span> <span class="o">...</span>
+<span class="k">def</span> <span class="nf">aggregateWithBarks</span><span class="o">(</span><span class="n">namespace</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">id</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">barks</span><span class="k">:</span> <span class="kt">Set</span><span class="o">[</span><span class="kt">Int</span><span class="o">])</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Borks</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
+   <span class="k">val</span> <span class="nv">aggregates</span> <span class="k">=</span> <span class="nf">get</span><span class="o">(</span><span class="n">namespace</span><span class="o">,</span> <span class="n">id</span><span class="o">)</span> <span class="n">map</span> <span class="o">{</span> <span class="n">b</span> <span class="k">=&gt;</span>
+     <span class="n">b</span> <span class="n">map</span> <span class="o">{</span> <span class="n">bork</span> <span class="k">=&gt;</span> 
+       <span class="n">barks</span> <span class="n">flatMap</span> <span class="o">{</span> <span class="n">bark</span> <span class="k">=&gt;</span>
+         <span class="nv">barksImpl</span><span class="o">.</span><span class="py">get</span><span class="o">(</span><span class="n">namespace</span><span class="o">,</span> <span class="nv">bark</span><span class="o">.</span><span class="py">id</span><span class="o">)</span> <span class="k">match</span> <span class="o">{</span>
+            <span class="o">...</span>
+         <span class="o">}</span>
+       <span class="o">}</span>
+     <span class="o">}</span>
+   <span class="o">}</span>
+   <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>So I had to add <code class="language-plaintext highlighter-rouge">namespace: String</code> to <code class="language-plaintext highlighter-rouge">barks.get</code> and <code class="language-plaintext highlighter-rouge">borks.aggregateWithBarks</code>. Sounds tedious?
+Well, imagine there weren’t just one call to <code class="language-plaintext highlighter-rouge">barksImpl.get</code>, but tens, and imagine there weren’t
+just two collections, but a hundred – and tens of thousands of lines to refactor.</p>
+
+<p>Specifically, I didn’t want to keep adding <code class="language-plaintext highlighter-rouge">namespace, </code> into every method call inside a method call,
+but chose to make it implicit instead.  This way, I needed only pass the implicit parameter around,
+and I didn’t need to modify any of the nested method calls. I typed the namespace with a custom case
+class and added it as an implicit argument:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">Namespace</span><span class="o">(</span><span class="n">namespace</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+
+<span class="k">trait</span> <span class="nc">Borks</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">get</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)(</span><span class="k">implicit</span> <span class="n">namespace</span><span class="k">:</span> <span class="kt">Namespace</span><span class="o">)</span> <span class="k">=</span> <span class="o">...</span>
+  <span class="k">def</span> <span class="nf">aggregateWithBarks</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">barks</span><span class="k">:</span> <span class="kt">Set</span><span class="o">[</span><span class="kt">Int</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">namespace</span><span class="k">:</span> <span class="kt">Namespace</span><span class="o">)</span> <span class="k">=</span> <span class="o">...</span>
+<span class="o">}</span>
+
+<span class="k">trait</span> <span class="nc">Barks</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">get</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)(</span><span class="k">implicit</span> <span class="n">namespace</span><span class="k">:</span> <span class="kt">Namespace</span><span class="o">)</span> <span class="k">=</span> <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>So, that was one particularly nice use case for implicit parameters. The good thing is that if the
+datastore is redesigned cleanly so that you cannot access from one namespace (keyspace) to another,
+all you need is to instantiate BorksImpl and set <code class="language-plaintext highlighter-rouge">implicit val namespace = ...</code> upon instantiation, and
+the code will work just fine. Implicit parameters let me implement a painful refactoring very
+quickly.</p>
+
+<p>Naturally, had I had more time, I would’ve done the separation properly, implemented namespacing
+rules more clearly, completely redesigning the database, and so forth. Anyway, with Scala implicits,
+I was able to do a non-proper solution in a way that did not elicit a “jesus christ what a hack”
+feeling. It didn’t pollute my code too much and it will be easy to <em>refactor out</em> when it’s no
+longer needed.</p>
+
+<p>And, it turned out, I was able to benefit from other implicits: conversions and arguments. I needed
+the ability to convert from the <code class="language-plaintext highlighter-rouge">Namespace</code> entity into a <code class="language-plaintext highlighter-rouge">String</code>, as I had in the querybuilder
+syntax. I needed only to insert <code class="language-plaintext highlighter-rouge">namespace</code> instead of having to write <code class="language-plaintext highlighter-rouge">namespace.namespace</code>.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">Namespace</span> <span class="o">{</span>
+  <span class="k">implicit</span> <span class="k">def</span> <span class="nf">namespace2String</span><span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">Namespace</span><span class="o">)</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="nv">n</span><span class="o">.</span><span class="py">namespace</span>
+<span class="o">}</span>
+
+<span class="nv">Session</span><span class="o">.</span><span class="py">prepare</span><span class="o">(</span><span class="nv">QueryBuilder</span><span class="o">.</span><span class="py">insertInto</span><span class="o">(</span><span class="n">namespace</span><span class="o">,</span> <span class="n">table</span><span class="o">).</span><span class="py">values</span><span class="o">(...))</span>
+</code></pre></div></div>
+
+<p>Another nice thing was using implicit arguments. The REST API gets the namespace from the URI segment
+as a parameter to the anonymous function. If I called <code class="language-plaintext highlighter-rouge">borks.get</code> I would have needed to put an
+<code class="language-plaintext highlighter-rouge">implicit val n: Namespace = namespace</code>. I avoided that using the implicit argument method:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">borks</span><span class="k">:</span> <span class="kt">Borks</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="nf">pathPrefix</span><span class="o">(</span><span class="s">"borks"</span> <span class="o">/</span> <span class="nc">IntNumber</span><span class="o">)</span> <span class="o">{</span> <span class="n">id</span> <span class="k">=&gt;</span>
+  <span class="nf">queryNamespace</span><span class="o">(</span><span class="n">id</span><span class="o">)</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">namespace</span><span class="k">:</span> <span class="kt">Namespace</span> <span class="o">=&gt;</span>
+    <span class="n">get</span> <span class="o">{</span>
+      <span class="n">complete</span> <span class="o">{</span>
+        <span class="nv">borks</span><span class="o">.</span><span class="py">get</span><span class="o">(</span><span class="n">borkId</span><span class="o">).</span><span class="py">toJson</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">implicit namespace: Namespace =&gt;</code> is equivalent to having <code class="language-plaintext highlighter-rouge">namespace =&gt; implicit val n:
+Namespace = namespace; ...</code>. Very useful if you’re calling methods requiring implicits in closures,
+though potentially hazardous, if you’re not typing your implicits! A simpler example:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">Vyx</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">frobnicate</span><span class="o">(</span><span class="n">num</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span>
+<span class="o">}</span>
+
+<span class="c1">// contrived example, makes no sense</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)(</span><span class="k">implicit</span> <span class="n">vyx</span><span class="k">:</span> <span class="kt">Vyx</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
+   <span class="n">i</span> <span class="o">*</span> <span class="nv">vyx</span><span class="o">.</span><span class="py">frobnicate</span><span class="o">(</span><span class="n">num</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">val</span> <span class="nv">foo</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span><span class="s">"one"</span><span class="o">,</span> <span class="s">"two"</span><span class="o">,</span> <span class="s">"three"</span><span class="o">)</span> <span class="n">map</span> <span class="o">{</span> <span class="k">implicit</span> <span class="n">v</span><span class="k">:</span> <span class="kt">Vyx</span> <span class="o">=&gt;</span> <span class="nf">foo</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">}</span>
+</code></pre></div></div>
+
+<p>It’s a good idea to type your implicit values as defining an <code class="language-plaintext highlighter-rouge">implicit x: X</code> will yoink any implicit
+<code class="language-plaintext highlighter-rouge">X</code> in scope, and if this <code class="language-plaintext highlighter-rouge">X</code> happens to be a basic type like <code class="language-plaintext highlighter-rouge">String</code>, and you’re not careful, you
+end up with the wrong implicit value.</p>
+
+<p>Implicits weren’t a new thing to me, this was just a scenario where I was able to simultaneously
+benefit from many kinds of implicits Scala has to offer (parameters, conversions and
+arguments). They let me perform an annoying refactoring quickly and painlessly, in a manner that was
+also future-proof.</p>
+
+
+  </div>
+  <small style="display: flex; justify-content: space-between;">
+    
+      <em>
+        Previous: <a href="/2017/03/08/camel-abstractions.html">Apache Camel and the price of abstractions</a>
+      </em>
+    
+
+    
+      <em>
+        Next: <a href="/2017/03/23/useless-interfaces.html">Useless interfaces</a>
+      </em>
+    
+  </small>
+</article>
+
+      </div>
+
+      <footer>
+        <hr>
+        <address>
+          
+          
+
+          &copy; <a href="mailto:ane@iki.fi">Antoine Kalmbach</a>, see <a href="/this-site/index.html#copying">copying</a>.
+          Last updated on <a href="/changelog.html">July 28, 2021</a>. Discuss at my <a href="https://lists.sr.ht/~ane/public-inbox">public inbox</a>.
+        </address>
+      </footer>
+    </div>
+    <script src="/assets/hyphenator.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
+         processEscapes: false
+       }
+     });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="/assets/hylo.js" type="text/javascript"></script>
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-58162697-1']);
+     _gaq.push(['_trackPageview']);
+
+     (function () {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+  </body>
+
+</html>

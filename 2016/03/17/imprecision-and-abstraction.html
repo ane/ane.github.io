@@ -1,0 +1,239 @@
+<!-- -*- engine:liquid -*- -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
+
+    <title>
+      
+        Imprecision and abstraction
+      
+    </title>
+
+    
+      <meta name="description" content="" />
+    
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link type="application/atom+xml" rel="alternate" href="http://ane.iki.fi/feed.xml" title="Antoine Kalmbach's website" />
+    <meta http-equiv="refresh" content="0; url=http://ane.iki.fi/2016/03/17/imprecision-and-abstraction.html" />
+    <link rel="canonical" href="http://ane.iki.fi/2016/03/17/imprecision-and-abstraction.html"/>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Imprecision and abstraction | Antoine Kalmbach’s website</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Imprecision and abstraction" />
+<meta name="author" content="Antoine Kalmbach" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="What is the point of abstractions? We want to hide things. We want to generalize things. We want to extend things. Why are mathematical abstractions so intractable? Why is the Wikipedia page on functors incomprehensible to someone not used to mathematical formalisms? Why does it sound so vague? When approaching abstractions, for educational purposes, it is sometimes easier to think of analogies or similes. We can conceptualize the idea of functors of “procedures” that operate on things inside “boxes”, or we can study relational algebra using Venn diagrams." />
+<meta property="og:description" content="What is the point of abstractions? We want to hide things. We want to generalize things. We want to extend things. Why are mathematical abstractions so intractable? Why is the Wikipedia page on functors incomprehensible to someone not used to mathematical formalisms? Why does it sound so vague? When approaching abstractions, for educational purposes, it is sometimes easier to think of analogies or similes. We can conceptualize the idea of functors of “procedures” that operate on things inside “boxes”, or we can study relational algebra using Venn diagrams." />
+<link rel="canonical" href="http://ane.iki.fi/2016/03/17/imprecision-and-abstraction.html" />
+<meta property="og:url" content="http://ane.iki.fi/2016/03/17/imprecision-and-abstraction.html" />
+<meta property="og:site_name" content="Antoine Kalmbach’s website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-03-17T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Imprecision and abstraction" />
+<meta name="twitter:site" content="@anewtf" />
+<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<script type="application/ld+json">
+{"headline":"Imprecision and abstraction","dateModified":"2017-04-13T10:11:04+00:00","datePublished":"2016-03-17T00:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://ane.iki.fi/2016/03/17/imprecision-and-abstraction.html"},"url":"http://ane.iki.fi/2016/03/17/imprecision-and-abstraction.html","author":{"@type":"Person","name":"Antoine Kalmbach"},"description":"What is the point of abstractions? We want to hide things. We want to generalize things. We want to extend things. Why are mathematical abstractions so intractable? Why is the Wikipedia page on functors incomprehensible to someone not used to mathematical formalisms? Why does it sound so vague? When approaching abstractions, for educational purposes, it is sometimes easier to think of analogies or similes. We can conceptualize the idea of functors of “procedures” that operate on things inside “boxes”, or we can study relational algebra using Venn diagrams.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/override.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/pygments.css" type="text/css" media="screen" />
+  </head>
+  <body itemscope itemtype="https://schema.org/WebPage" class="home-template">
+    <div class="hyphenate">
+      <h1 style="text-align: center;">
+  Antoine Kalmbach
+</h1>
+<nav class="navbar">
+  <ul>
+    <li class="nav-item ">
+      <a class="nav-link pl-0" href="/" itemprop="url"><span itemprop="name">Home</span></a>
+    </li>
+    <li class="nav-item  active">
+      <a class="nav-link" href="/archive.html" itemprop="url"><span itemprop="name">Blog</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/about/" itemprop="url"><span itemprop="name">About</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/tags.html" itemprop="url"><span itemprop="name">Index</span></a>
+    </li>
+
+    <li class="nav-item mr-n2">
+      <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="h-card d-none" style="display: none">
+  <img class="u-photo" src="/images/me.png" />
+  <a class="u-url" href="http://ane.iki.fi/2016/03/17/imprecision-and-abstraction.html"></a>
+  <a class="p-name u-url" href="http://ane.iki.fi">Antoine Kalmbach</a>
+  <a class="u-email" href="mailto:">ane@iki.fi</a>
+</div>
+
+
+      <div class="content">
+        <article class="h-entry">
+  <header>
+    
+
+
+
+
+
+  <h2 class="p-name" style="margin: 0.25rem 0;">
+    Imprecision and abstraction
+  </h2>
+
+  <p class="post-meta text-muted">
+    <time class="dt-published" itemprop="datePublished" datetime="2016-03-17 00:00:00 +0000">
+      Posted on March 17, 2016
+
+  </p>
+
+
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="/2016/03/17/imprecision-and-abstraction.html" />
+  </header>
+  <div class="e-content">
+    <p>What is the point of abstractions?</p>
+
+<p>We want to hide things. We want to generalize things. We want to extend things.</p>
+
+<p>Why are mathematical abstractions so intractable? Why is the 
+<a href="https://en.wikipedia.org/wiki/Functor">Wikipedia page on functors</a> incomprehensible to someone not
+used to mathematical formalisms? Why does it sound so vague?</p>
+
+<p>When approaching abstractions, for educational purposes, it is sometimes easier to think of
+analogies or similes. We can conceptualize the idea of functors of “procedures” that operate on things inside
+“boxes”, or we can study relational algebra using Venn diagrams.<!--break--></p>
+
+<p>These analogies are dangerous, because they are vague. Formalisms leave no room for interpretation
+because they are exact not whimsically, but because of the pervasive imprecision of the human mind.</p>
+
+<p>Let’s take an analogy that’s very approachable but quite dangerous. Explaining modular arithmetic
+can done with clocks. The analogy would go like this:</p>
+
+<blockquote>
+  <p>You see, when you have a number modulo 12, think of it as a clock. If x is over 12, think
+of like like the hand of a clock looping over, and you’re back where you started.</p>
+</blockquote>
+
+<p>The problem with such an analogy is that not everybody uses 12-hour clocks. Most of Europe uses a
+24-hour clock with no distinction between AM and PM. Of course, they are also taught to understand
+that “sixteen” means “four” since nobody builds 24-hour analog clocks (yet). That aside, it’s still
+very possible, that when explaining the above analogy to someone accustomed to 24-hour clocks,
+they’ll get confused since what comes after 12, is 13, not 0.</p>
+
+<p>This is a basic but fundamental example: things like functors, semigroups, monads, and categories,
+are a bit intractable for a reason: there’s no room left for interpretation.</p>
+
+<p>Mathematical formalisms pare fundamental ideas into pure forms. Your intuition can’t get in the way
+and corrupt them.</p>
+
+<p>The obvious downside is that these formalisms are harder to understand. I wager that this is for the
+better because down the road there are concepts so high-level one can’t even begin to think in
+analogies, and it will only slow one down.</p>
+
+<p>There was a turning point in my math studies when I stopped trying to grok things using
+analogies. My approach to topology was geometrical. I tried to visualize
+<a href="https://en.wikipedia.org/wiki/Limit_point">limit points</a> in my mind and in vain, because the mind
+can’t bend itself around more than three spatial dimensions. Granted, visualizing
+<a href="https://en.wikipedia.org/wiki/Hypercube">hypercubes</a> was possible (“like a cube is made of sides, a
+hypercube is made of cubes”)… kind of.</p>
+
+<p>Stopping this perilous habit, I started to memorize laws instead. That changed the language of maths
+for me, forever. I wasn’t understanding relations via shapes or arrows, but by basic axioms and
+mathematical laws. It wasn’t too long before I started to visualize concepts using these laws.</p>
+
+<p>I stopped staring concepts in the eye, looking for hidden meanings behind
+<a href="https://en.wikipedia.org/wiki/Bounded_set">bounded sets</a>. I simply read
+the definition, thought “huh”, and memorized it. Slowly, by building towards other related concepts
+and set theory I quickly understood what the law meant, without trying to grok the hidden meaning.</p>
+
+<p>Once that became a habit, it became easy and changed my approach forever: let go of
+intuition. Abstract ideas are hard by definition and they need to be understood piece by piece, from
+the ground up.</p>
+
+<p>This is why any explanation of a precise thought, like a mathematical formalism, using something
+imprecise like an analogy, is a fallacy doomed to fail.</p>
+
+<p>When functional programmers try to explain basic ideas like semigroups or functors, they often find
+themselves in an apologetic mire of simplifications. This is doomed to fail. Give concrete examples
+of how a functor works. Don’t illustrate them as operations that can map stuff in boxes to other
+boxes. Invent a problem and solve it using a functor. After all, they’re such a basic concept, even
+those writing non-functional code end up doing them all the time.</p>
+
+<p>Let the abstraction sink in, it’s the only thing that will survive.</p>
+
+
+  </div>
+  <small style="display: flex; justify-content: space-between;">
+    
+      <em>
+        Previous: <a href="/2016/01/26/are-my-services-talking-to-each-other.html">Are my services talking to each other?</a>
+      </em>
+    
+
+    
+      <em>
+        Next: <a href="/2016/03/25/focus.html">Focus</a>
+      </em>
+    
+  </small>
+</article>
+
+      </div>
+
+      <footer>
+        <hr>
+        <address>
+          
+          
+
+          &copy; <a href="mailto:ane@iki.fi">Antoine Kalmbach</a>, see <a href="/this-site/index.html#copying">copying</a>.
+          Last updated on <a href="/changelog.html">July 28, 2021</a>. Discuss at my <a href="https://lists.sr.ht/~ane/public-inbox">public inbox</a>.
+        </address>
+      </footer>
+    </div>
+    <script src="/assets/hyphenator.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
+         processEscapes: false
+       }
+     });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="/assets/hylo.js" type="text/javascript"></script>
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-58162697-1']);
+     _gaq.push(['_trackPageview']);
+
+     (function () {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+  </body>
+
+</html>

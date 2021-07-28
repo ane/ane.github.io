@@ -1,0 +1,285 @@
+<!-- -*- engine:liquid -*- -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
+
+    <title>
+      
+        Useless interfaces
+      
+    </title>
+
+    
+      <meta name="description" content="" />
+    
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link type="application/atom+xml" rel="alternate" href="http://ane.iki.fi/feed.xml" title="Antoine Kalmbach's website" />
+    <meta http-equiv="refresh" content="0; url=http://ane.iki.fi/2017/03/23/useless-interfaces.html" />
+    <link rel="canonical" href="http://ane.iki.fi/2017/03/23/useless-interfaces.html"/>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Useless interfaces | Antoine Kalmbach’s website</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Useless interfaces" />
+<meta name="author" content="Antoine Kalmbach" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A feature that often frustrates me in object-oriented code is the prevalence of useless interfaces. Interface isn’t meant literally here: this applies to traits of Rust/Scala and protocols of Clojure as well." />
+<meta property="og:description" content="A feature that often frustrates me in object-oriented code is the prevalence of useless interfaces. Interface isn’t meant literally here: this applies to traits of Rust/Scala and protocols of Clojure as well." />
+<link rel="canonical" href="http://ane.iki.fi/2017/03/23/useless-interfaces.html" />
+<meta property="og:url" content="http://ane.iki.fi/2017/03/23/useless-interfaces.html" />
+<meta property="og:site_name" content="Antoine Kalmbach’s website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-03-23T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Useless interfaces" />
+<meta name="twitter:site" content="@anewtf" />
+<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<script type="application/ld+json">
+{"headline":"Useless interfaces","dateModified":"2019-02-21T09:28:06+00:00","datePublished":"2017-03-23T00:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://ane.iki.fi/2017/03/23/useless-interfaces.html"},"url":"http://ane.iki.fi/2017/03/23/useless-interfaces.html","author":{"@type":"Person","name":"Antoine Kalmbach"},"description":"A feature that often frustrates me in object-oriented code is the prevalence of useless interfaces. Interface isn’t meant literally here: this applies to traits of Rust/Scala and protocols of Clojure as well.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/override.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/pygments.css" type="text/css" media="screen" />
+  </head>
+  <body itemscope itemtype="https://schema.org/WebPage" class="home-template">
+    <div class="hyphenate">
+      <h1 style="text-align: center;">
+  Antoine Kalmbach
+</h1>
+<nav class="navbar">
+  <ul>
+    <li class="nav-item ">
+      <a class="nav-link pl-0" href="/" itemprop="url"><span itemprop="name">Home</span></a>
+    </li>
+    <li class="nav-item  active">
+      <a class="nav-link" href="/archive.html" itemprop="url"><span itemprop="name">Blog</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/about/" itemprop="url"><span itemprop="name">About</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/tags.html" itemprop="url"><span itemprop="name">Index</span></a>
+    </li>
+
+    <li class="nav-item mr-n2">
+      <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="h-card d-none" style="display: none">
+  <img class="u-photo" src="/images/me.png" />
+  <a class="u-url" href="http://ane.iki.fi/2017/03/23/useless-interfaces.html"></a>
+  <a class="p-name u-url" href="http://ane.iki.fi">Antoine Kalmbach</a>
+  <a class="u-email" href="mailto:">ane@iki.fi</a>
+</div>
+
+
+      <div class="content">
+        <article class="h-entry">
+  <header>
+    
+
+
+
+
+
+  <h2 class="p-name" style="margin: 0.25rem 0;">
+    Useless interfaces
+  </h2>
+
+  <p class="post-meta text-muted">
+    <time class="dt-published" itemprop="datePublished" datetime="2017-03-23 00:00:00 +0000">
+      Posted on March 23, 2017
+
+  </p>
+
+
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="/2017/03/23/useless-interfaces.html" />
+  </header>
+  <div class="e-content">
+    <p>A feature that often frustrates me in object-oriented code is the prevalence of useless
+interfaces. Interface isn’t meant literally here: this applies to traits of Rust/Scala and protocols
+of Clojure as well.
+<!--break--></p>
+
+<p>The advice of <em>planning for the interface</em> is just and solid, but people tend to follow this tip to
+the extreme. It is not uncommon to see people design a module or class by defining its interface
+first, with an actual implementation following later.</p>
+
+<p>One eagerly designs an interface as follows:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">Mediator</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">validate</span><span class="o">(</span><span class="n">r</span><span class="k">:</span> <span class="kt">Request</span><span class="o">)</span><span class="k">:</span> <span class="kt">Boolean</span>
+  <span class="k">def</span> <span class="nf">postpone</span><span class="o">(</span><span class="n">r</span><span class="k">:</span> <span class="kt">Request</span><span class="o">,</span> <span class="n">d</span><span class="k">:</span> <span class="kt">Duration</span><span class="o">)</span><span class="k">:</span> <span class="kt">Postponed</span><span class="o">[</span><span class="kt">Request</span><span class="o">]</span>
+  <span class="k">def</span> <span class="nf">frobnicate</span><span class="o">(</span><span class="n">a</span><span class="k">:</span> <span class="kt">Request</span><span class="o">,</span> <span class="n">b</span><span class="k">:</span> <span class="kt">Request</span><span class="o">)</span><span class="k">:</span> <span class="kt">Frobnicated</span><span class="o">[</span><span class="kt">Request</span><span class="o">]</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Then, the implementation, in a class called <code class="language-plaintext highlighter-rouge">MainMediator</code> or <code class="language-plaintext highlighter-rouge">DefaultMediator</code>, in a separate
+directory, implements the <code class="language-plaintext highlighter-rouge">Mediator</code> interface:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MediatorImpl</span> <span class="k">extends</span> <span class="nc">Mediator</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">validate</span><span class="o">(</span><span class="n">r</span><span class="k">:</span> <span class="kt">Request</span><span class="o">)</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+  <span class="k">def</span> <span class="nf">postpone</span><span class="o">(</span><span class="n">r</span><span class="k">:</span> <span class="kt">Request</span><span class="o">,</span> <span class="n">d</span><span class="k">:</span> <span class="kt">Duration</span><span class="o">)</span><span class="k">:</span> <span class="kt">Postponed</span><span class="o">[</span><span class="kt">Request</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+  <span class="k">def</span> <span class="nf">frobnicate</span><span class="o">(</span><span class="n">a</span><span class="k">:</span> <span class="kt">Request</span><span class="o">,</span> <span class="n">b</span><span class="k">:</span> <span class="kt">Request</span><span class="o">)</span><span class="k">:</span> <span class="kt">Frobnicated</span><span class="o">[</span><span class="kt">Request</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Dependents of the <code class="language-plaintext highlighter-rouge">Mediator</code> trait then naturally get their dependency provided with a constructor
+argument:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Resequencer</span><span class="o">(</span><span class="n">m</span><span class="k">:</span> <span class="kt">Mediator</span><span class="o">,</span> <span class="n">c</span><span class="k">:</span> <span class="kt">Clock</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">resequence</span><span class="o">(</span><span class="n">requests</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Request</span><span class="o">])</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Postponed</span><span class="o">[</span><span class="kt">Request</span><span class="o">]]</span> <span class="k">=</span> 
+    <span class="n">requests</span> <span class="n">map</span> <span class="o">{</span> <span class="n">r</span> <span class="k">=&gt;</span> <span class="nv">m</span><span class="o">.</span><span class="py">postpone</span><span class="o">(</span><span class="n">r</span><span class="o">,</span> <span class="nv">c</span><span class="o">.</span><span class="py">randomDelay</span><span class="o">())</span> <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="k">val</span> <span class="nv">m</span> <span class="k">=</span> <span class="nc">Mediator</span><span class="o">()</span>
+<span class="k">val</span> <span class="nv">c</span> <span class="k">=</span> <span class="nc">Clock</span><span class="o">()</span>
+<span class="k">val</span> <span class="nv">foo</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">(</span><span class="n">m</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>This pattern is older than the sun, and has been a characteristic of modern, inheritance-based
+object-oriented programming for ages. Fundamentally, it is alright to separate implementation from
+specification, but where it goes wrong is the <em>overuse</em> of this paradigm, or when this separation is
+superfluous.</p>
+
+<p>This separation is superfluous when it serves no purpose. You could as well call it dependency
+injection on the toilet. There is no fundamental reason why a class or module like <code class="language-plaintext highlighter-rouge">Mediator</code>
+warrants an interface <em>when it is likely that there will never be an alternative implementation</em>.</p>
+
+<p>At a glance, Guy Steele’s influential <em>plan for growth</em> idea from his “Growing a Language” talk
+seems to contradict what I just said. Shouldn’t defining an interface help us plan for future,
+alternative implementations of the <code class="language-plaintext highlighter-rouge">Mediator</code>? Perhaps a different kind of a <code class="language-plaintext highlighter-rouge">Mediator</code>?</p>
+
+<p>Removing the <code class="language-plaintext highlighter-rouge">Mediator</code> trait and simply renaming its only implementation will still keep the code
+working, with the benefit that there are fewer lines of code now, and it isn’t any harder to extend.</p>
+
+<p>This is actually more in line with Steele’s idea. It doesn’t say anywhere a trait or interface
+cannot be <em>distilled</em> from a set of basic implementations. In other words, when our intuition says
+to <em>prepare</em> for repetition, we should <em>identify</em> them. The Gang of Four book was never a
+recipe book for building great programs. It was a catalog! They observed several kinds of
+large-scale systems and programs and extracted repetetive behaviours in the code, patterns. They
+never said that to do things right, one ought to use the visitor pattern, or this other pattern,
+otherwise your programs will be bad.</p>
+
+<p>Back to interface distillation. Programming is about getting rid of repetition. The more experienced
+the programmer, the better they get at noticing patterns of repetition. The downside is that this
+may also lead to overengineering for repetition.</p>
+
+<p>So, an experienced programmer thinks, this behaviour I have specificed may be repetitive, let me
+<em>first</em> create a construct that lets me share the repetition (an interface), and then proceed with
+the implementation. This is fine if the actual code is known to be repeated, but by seeing
+interfaces as a hammer and every bit of code as a nail, you will soon bury yourself in pointless
+dependency injection scenarios.</p>
+
+<p>It may be just as easy to first create a base implementation and once you must duplicate its
+behaviour, only <em>then</em> create the abstract implementation. You might actually need to spend <em>less</em>
+total time wiring up the interface, since you observed the repetition. Creating an abstract
+implementation first always involves a deal of speculation and this is not reliable.</p>
+
+<p>The more experienced programmer understands that you don’t always need to plan for repetition. In
+fact, repetition is good sometimes. Not every shared functionality needs to be extracted to its own
+module, because sometimes, shared dependencies will be bad.</p>
+
+<p>The approach I suggest is to in order to produce modularity as a side effect, structure your program
+into small, reusable pieces. Don’t create huge, monolithic interfaces. Functional programming shows
+us that dependency injection can be done just by passing a function.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Foo</span><span class="o">(</span><span class="n">postponer</span><span class="k">:</span> <span class="kt">Request</span> <span class="o">=&gt;</span> <span class="nc">Postponed</span><span class="o">[</span><span class="kt">Request</span><span class="o">],</span> <span class="n">delayer</span><span class="k">:</span> <span class="o">=&gt;</span><span class="nc">Duration</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">resequence</span><span class="o">(</span><span class="n">requests</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Request</span><span class="o">])</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Postponed</span><span class="o">[</span><span class="kt">Request</span><span class="o">]]</span> <span class="k">=</span> 
+    <span class="n">requests</span> <span class="n">map</span> <span class="o">{</span> <span class="n">r</span> <span class="k">=&gt;</span> <span class="nf">postponer</span><span class="o">(</span><span class="n">r</span><span class="o">,</span> <span class="nf">delayer</span><span class="o">())</span> <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// ...</span>
+<span class="k">val</span> <span class="nv">m</span> <span class="k">=</span> <span class="nc">Mediator</span><span class="o">()</span>
+<span class="k">val</span> <span class="nv">c</span> <span class="k">=</span> <span class="nc">Clock</span><span class="o">()</span>
+<span class="k">val</span> <span class="nv">foo</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">(</span><span class="nv">m</span><span class="o">.</span><span class="py">postpone</span><span class="o">,</span> <span class="nv">c</span><span class="o">.</span><span class="py">randomDelay</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>One sees that a higher-order function like the above can be just as well represented by a trait with
+a single method. If you only need that method, you should depend only on that. With a structural
+type system it is easy to decompose types. An alternative is to stack traits, and in languages like
+Scala this is fairly easy. You could as well decompose <code class="language-plaintext highlighter-rouge">Mediator</code> into <code class="language-plaintext highlighter-rouge">Validator</code>, <code class="language-plaintext highlighter-rouge">Postponer</code>, et
+cetera, ideally interfaces should be fairly homogenous in their purpose: if your interface defines
+methods for reading, keep that interface separate from the writing interface, and if you need read
+and write just compose the interfaces together, and so on.</p>
+
+<p>It also helps if your language is powerful enough to do without excessive DI – the reason why
+horrors like Spring exist is that Java simply wasn’t expressive enough to do dependency injection
+the traditional way without setting your hair on fire. That, and for some odd reason, people thought
+writing constructor arguments was so painful it warranted a gigantic framework for it.</p>
+
+<p>Overall, it’s usually a good idea to toy around first with the concrete, and then extract the
+abstraction. Going the other way around is a dangerous swamp. It’s certainly something I’ve used to
+do – overengineer for patterns <em>a priori</em> – but I found better results by getting my hands dirty,
+by writing repetitive code first and then cleaning it up.</p>
+
+  </div>
+  <small style="display: flex; justify-content: space-between;">
+    
+      <em>
+        Previous: <a href="/2017/03/15/implicit-power.html">Implicit power</a>
+      </em>
+    
+
+    
+      <em>
+        Next: <a href="/2018/02/10/envisioning-a-new-tracing-system.html">Envisioning a new tracing system</a>
+      </em>
+    
+  </small>
+</article>
+
+      </div>
+
+      <footer>
+        <hr>
+        <address>
+          
+          
+
+          &copy; <a href="mailto:ane@iki.fi">Antoine Kalmbach</a>, see <a href="/this-site/index.html#copying">copying</a>.
+          Last updated on <a href="/changelog.html">July 28, 2021</a>. Discuss at my <a href="https://lists.sr.ht/~ane/public-inbox">public inbox</a>.
+        </address>
+      </footer>
+    </div>
+    <script src="/assets/hyphenator.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
+         processEscapes: false
+       }
+     });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="/assets/hylo.js" type="text/javascript"></script>
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-58162697-1']);
+     _gaq.push(['_trackPageview']);
+
+     (function () {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+  </body>
+
+</html>

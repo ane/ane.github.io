@@ -1,0 +1,296 @@
+<!-- -*- engine:liquid -*- -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
+
+    <title>
+      
+        The Joy of AsciiDoc
+      
+    </title>
+
+    
+      <meta name="description" content="" />
+    
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link type="application/atom+xml" rel="alternate" href="http://ane.iki.fi/feed.xml" title="Antoine Kalmbach's website" />
+    <meta http-equiv="refresh" content="0; url=http://ane.iki.fi/2018/03/22/the-joy-of-asciidoc.html" />
+    <link rel="canonical" href="http://ane.iki.fi/2018/03/22/the-joy-of-asciidoc.html"/>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>The Joy of AsciiDoc | Antoine Kalmbach’s website</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="The Joy of AsciiDoc" />
+<meta name="author" content="Antoine Kalmbach" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Markdown has many limitations, AsciiDoc has few. Converting this site to AsciiDoc was not as easy as I thought, as I had to ditch the standard Github Jekyll integration, and build my own." />
+<meta property="og:description" content="Markdown has many limitations, AsciiDoc has few. Converting this site to AsciiDoc was not as easy as I thought, as I had to ditch the standard Github Jekyll integration, and build my own." />
+<link rel="canonical" href="http://ane.iki.fi/2018/03/22/the-joy-of-asciidoc.html" />
+<meta property="og:url" content="http://ane.iki.fi/2018/03/22/the-joy-of-asciidoc.html" />
+<meta property="og:site_name" content="Antoine Kalmbach’s website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-03-22T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="The Joy of AsciiDoc" />
+<meta name="twitter:site" content="@anewtf" />
+<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<script type="application/ld+json">
+{"headline":"The Joy of AsciiDoc","dateModified":"2019-02-21T09:28:06+00:00","datePublished":"2018-03-22T00:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://ane.iki.fi/2018/03/22/the-joy-of-asciidoc.html"},"url":"http://ane.iki.fi/2018/03/22/the-joy-of-asciidoc.html","author":{"@type":"Person","name":"Antoine Kalmbach"},"description":"Markdown has many limitations, AsciiDoc has few. Converting this site to AsciiDoc was not as easy as I thought, as I had to ditch the standard Github Jekyll integration, and build my own.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/override.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/pygments.css" type="text/css" media="screen" />
+  </head>
+  <body itemscope itemtype="https://schema.org/WebPage" class="home-template">
+    <div class="hyphenate">
+      <h1 style="text-align: center;">
+  Antoine Kalmbach
+</h1>
+<nav class="navbar">
+  <ul>
+    <li class="nav-item ">
+      <a class="nav-link pl-0" href="/" itemprop="url"><span itemprop="name">Home</span></a>
+    </li>
+    <li class="nav-item  active">
+      <a class="nav-link" href="/archive.html" itemprop="url"><span itemprop="name">Blog</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/about/" itemprop="url"><span itemprop="name">About</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/tags.html" itemprop="url"><span itemprop="name">Index</span></a>
+    </li>
+
+    <li class="nav-item mr-n2">
+      <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="h-card d-none" style="display: none">
+  <img class="u-photo" src="/images/me.png" />
+  <a class="u-url" href="http://ane.iki.fi/2018/03/22/the-joy-of-asciidoc.html"></a>
+  <a class="p-name u-url" href="http://ane.iki.fi">Antoine Kalmbach</a>
+  <a class="u-email" href="mailto:">ane@iki.fi</a>
+</div>
+
+
+      <div class="content">
+        <article class="h-entry">
+  <header>
+    
+
+
+
+
+
+  <h2 class="p-name" style="margin: 0.25rem 0;">
+    The Joy of AsciiDoc
+  </h2>
+
+  <p class="post-meta text-muted">
+    <time class="dt-published" itemprop="datePublished" datetime="2018-03-22 00:00:00 +0000">
+      Posted on March 22, 2018
+
+  </p>
+
+
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="/2018/03/22/the-joy-of-asciidoc.html" />
+  </header>
+  <div class="e-content">
+    <div class="paragraph">
+<p>I have always used <a href="https://jekyllrb.com/">Jekyll</a> on
+<a href="https://pages.github.com/">Github Pages</a> to host this site. It&#8217;s always been very
+pleasant to use, since Github Pages builds your site automatically. On the other
+hand, you can only use <a href="https://pages.github.com/versions/">a limited set of
+plugins</a>, so if you want a Jekyll extension, you might be out of luck, as I was
+recently.</p>
+</div>
+<div class="paragraph">
+<p>I don&#8217;t mind Markdown as an input format, but it&#8217;s a very limited format. So
+there are several extensions to Markdown like <a href="http://commonmark.org/">CommonMark</a>
+and <a href="https://kramdown.gettalong.org/">kramdown</a> addressing the deficiencies of
+Markdown. Even those extensions have limits.</p>
+</div>
+<div class="paragraph">
+<p>My solution was to convert to
+<a href="https://asciidoctor.org/docs/what-is-asciidoc/">AsciiDoc</a>&#8201;&#8212;&#8201;a much richer text
+markup language. It contains every feature Markdown extensions have and
+more. Tables of contents, admonitions, and <strong>diagrams</strong>! Yes, that includes
+Graphviz, PlantUML and even Ditaa. I use those tools a lot, but so far haven&#8217;t
+used them that much here.</p>
+</div>
+<div class="paragraph">
+<p>So the elephant in the room is that AsciiDoc doesn&#8217;t work on the default Github
+Pages installation since it&#8217;s not in the plugin whitelist. I had several choices:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Switch to another static site generator, manually upload the published HTML
+to github</p>
+</li>
+<li>
+<p>Do the above but use another hosting system, my own VPS, whatever</p>
+</li>
+<li>
+<p>Stick with Github pages but build yourself and upload manually&#8201;&#8212;&#8201;<em>ugh!</em></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>I didn&#8217;t want to switch site generators as I like Jekyll. Support is easy to get
+from the web and it&#8217;s fairly mature and popular.</p>
+</div>
+<div class="paragraph">
+<p>I couldn&#8217;t be bothered to switch hosting systems, so I was to find another way
+around it. I instantly realized that option C can be solved by automating the
+build process. All you&#8217;re doing is running <code>bundle exec jekyll build</code> anyway,
+and uploading <code>_site</code> somewhere! This has got to be easy to automate on
+<a href="https://travis-ci.org/">Travis</a>.</p>
+</div>
+<div class="paragraph">
+<p>Turned out Travis did have a
+<a href="https://docs.travis-ci.com/user/deployment/pages/">Githug Pages</a> deployment
+plugin, so that was easy. Hooray, my automation problems were solved!</p>
+</div>
+<div class="paragraph">
+<p>Well, not so fast.</p>
+</div>
+<div class="paragraph">
+<p>I wanted the <a href="https://asciidoctor.org/docs/asciidoctor-diagram/">Asciidoctor
+diagram plugin</a> but that required the presence of the diagramming binaries, so
+in order for it to work I had to have the <code>graphviz</code>, <code>plantuml</code> and <code>ditaa</code>
+executables installed on the machine. And here is where I ran into problems.
+Travis (as of 2018) runs Ubuntu Trusty (14.04) on the default container
+platform, and this version of Ubuntu doesn&#8217;t have <code>plantuml</code> as a package.</p>
+</div>
+<div class="paragraph">
+<p>That package is available in the unstable Debian source list, but that doesn&#8217;t
+work on Ubuntu anymore given Debian unstable switched over to using <code>.tar.xz</code>
+and the apt packager of Ubuntu doesn&#8217;t understand that.</p>
+</div>
+<div class="paragraph">
+<p>Unstable builds are unstable. Who knew?</p>
+</div>
+<div class="paragraph">
+<p>So, the fix was to add <code>sudo: required</code> to the <code>.travis.yml</code> file, and add a PPA
+that contains plantuml. This worked, but because I&#8217;m using sudo, my builds run
+on a virtual machine. Without sudo I could run on a container which build really
+fast. So building the site takes now about two minutes. That&#8217;s not too bad, but
+with a container-based build that could be less than 30 seconds. So finally, I
+ended up with this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="yaml"><span></span><span class="tok-l tok-l-Scalar tok-l-Scalar-Plain">Unresolved directive in 2018-03-22-the-joy-of-asciidoc.adoc - include::.travis.yml[]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Anyway, after banging my head against the beast that is dependency management, I
+am now happily running my own custom Jekyll build that is fully automated: I
+don&#8217;t have to do anything except push new content via Git, and there it is.</p>
+</div>
+<div class="paragraph">
+<p>And I&#8217;m using AsciiDoc! Here&#8217;s a pretty <a href="http://ditaa.sourceforge.net/">ditaa</a>
+picture:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/images/example.svg" alt="example" width="660" height="224">
+</div>
+<div class="title">Figure 1. A diagram</div>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s the source I used:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="asciidoc"><span></span>[ditaa]
+....
+                                          +------------------+
+                                          |cEEE              |
+                                     +---&gt;|      Nice!       |
+                                     |    |                  |
+     +-------------------+           |    +------------------+
+     |  Art with text?   +-----------+
+     +---------+---------+
+               ^                             /--------------\
+               |                             |cPNK          |
+               +----------------------------&gt;|   colors!    |
+                                             |              |
+                                             \--------------/
+....</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Neat, huh? It&#8217;s a beautiful day!</p>
+</div>
+  </div>
+  <small style="display: flex; justify-content: space-between;">
+    
+      <em>
+        Previous: <a href="/2018/02/10/envisioning-a-new-tracing-system.html">Envisioning a new tracing system</a>
+      </em>
+    
+
+    
+      <em>
+        Next: <a href="/2018/04/26/software-customization.html">Software customization is really hard</a>
+      </em>
+    
+  </small>
+</article>
+
+      </div>
+
+      <footer>
+        <hr>
+        <address>
+          
+          
+
+          &copy; <a href="mailto:ane@iki.fi">Antoine Kalmbach</a>, see <a href="/this-site/index.html#copying">copying</a>.
+          Last updated on <a href="/changelog.html">July 28, 2021</a>. Discuss at my <a href="https://lists.sr.ht/~ane/public-inbox">public inbox</a>.
+        </address>
+      </footer>
+    </div>
+    <script src="/assets/hyphenator.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
+         processEscapes: false
+       }
+     });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="/assets/hylo.js" type="text/javascript"></script>
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-58162697-1']);
+     _gaq.push(['_trackPageview']);
+
+     (function () {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+  </body>
+
+</html>

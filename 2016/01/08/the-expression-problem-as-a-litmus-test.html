@@ -1,0 +1,382 @@
+<!-- -*- engine:liquid -*- -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
+
+    <title>
+      
+        The expression problem as a litmus test
+      
+    </title>
+
+    
+      <meta name="description" content="" />
+    
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link type="application/atom+xml" rel="alternate" href="http://ane.iki.fi/feed.xml" title="Antoine Kalmbach's website" />
+    <meta http-equiv="refresh" content="0; url=http://ane.iki.fi/2016/01/08/the-expression-problem-as-a-litmus-test.html" />
+    <link rel="canonical" href="http://ane.iki.fi/2016/01/08/the-expression-problem-as-a-litmus-test.html"/>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>The expression problem as a litmus test | Antoine Kalmbach’s website</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="The expression problem as a litmus test" />
+<meta name="author" content="Antoine Kalmbach" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The expression problem is a famous problem in programming languages. “The Expression Problem is a new name for an old problem. The goal is to define a datatype by cases, where one can add new cases to the datatype and new functions over the datatype, without recompiling existing code, and while retaining static type safety (e.g., no casts).” Using interfaces (like in Java) as the datatype example, the problem simply asks whether it is possible to derive the interface and add new methods to the interface, without having to recompile existing code or to resort to using casts." />
+<meta property="og:description" content="The expression problem is a famous problem in programming languages. “The Expression Problem is a new name for an old problem. The goal is to define a datatype by cases, where one can add new cases to the datatype and new functions over the datatype, without recompiling existing code, and while retaining static type safety (e.g., no casts).” Using interfaces (like in Java) as the datatype example, the problem simply asks whether it is possible to derive the interface and add new methods to the interface, without having to recompile existing code or to resort to using casts." />
+<link rel="canonical" href="http://ane.iki.fi/2016/01/08/the-expression-problem-as-a-litmus-test.html" />
+<meta property="og:url" content="http://ane.iki.fi/2016/01/08/the-expression-problem-as-a-litmus-test.html" />
+<meta property="og:site_name" content="Antoine Kalmbach’s website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-01-08T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="The expression problem as a litmus test" />
+<meta name="twitter:site" content="@anewtf" />
+<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<script type="application/ld+json">
+{"headline":"The expression problem as a litmus test","dateModified":"2017-04-13T10:11:04+00:00","datePublished":"2016-01-08T00:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://ane.iki.fi/2016/01/08/the-expression-problem-as-a-litmus-test.html"},"url":"http://ane.iki.fi/2016/01/08/the-expression-problem-as-a-litmus-test.html","author":{"@type":"Person","name":"Antoine Kalmbach"},"description":"The expression problem is a famous problem in programming languages. “The Expression Problem is a new name for an old problem. The goal is to define a datatype by cases, where one can add new cases to the datatype and new functions over the datatype, without recompiling existing code, and while retaining static type safety (e.g., no casts).” Using interfaces (like in Java) as the datatype example, the problem simply asks whether it is possible to derive the interface and add new methods to the interface, without having to recompile existing code or to resort to using casts.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/override.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/pygments.css" type="text/css" media="screen" />
+  </head>
+  <body itemscope itemtype="https://schema.org/WebPage" class="home-template">
+    <div class="hyphenate">
+      <h1 style="text-align: center;">
+  Antoine Kalmbach
+</h1>
+<nav class="navbar">
+  <ul>
+    <li class="nav-item ">
+      <a class="nav-link pl-0" href="/" itemprop="url"><span itemprop="name">Home</span></a>
+    </li>
+    <li class="nav-item  active">
+      <a class="nav-link" href="/archive.html" itemprop="url"><span itemprop="name">Blog</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/about/" itemprop="url"><span itemprop="name">About</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/tags.html" itemprop="url"><span itemprop="name">Index</span></a>
+    </li>
+
+    <li class="nav-item mr-n2">
+      <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="h-card d-none" style="display: none">
+  <img class="u-photo" src="/images/me.png" />
+  <a class="u-url" href="http://ane.iki.fi/2016/01/08/the-expression-problem-as-a-litmus-test.html"></a>
+  <a class="p-name u-url" href="http://ane.iki.fi">Antoine Kalmbach</a>
+  <a class="u-email" href="mailto:">ane@iki.fi</a>
+</div>
+
+
+      <div class="content">
+        <article class="h-entry">
+  <header>
+    
+
+
+
+
+
+  <h2 class="p-name" style="margin: 0.25rem 0;">
+    The expression problem as a litmus test
+  </h2>
+
+  <p class="post-meta text-muted">
+    <time class="dt-published" itemprop="datePublished" datetime="2016-01-08 00:00:00 +0000">
+      Posted on January 8, 2016
+
+  </p>
+
+
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="/2016/01/08/the-expression-problem-as-a-litmus-test.html" />
+  </header>
+  <div class="e-content">
+    <p>The <a href="https://en.wikipedia.org/wiki/Expression_problem">expression problem</a> is a famous problem in
+programming languages.</p>
+
+<blockquote>
+  <p>“The Expression Problem is a new name for an old problem. The goal is to define a datatype by
+cases, where one can add new cases to the datatype and new functions over the datatype, without		
+recompiling existing code, and while retaining static type safety (e.g., no casts).”</p>
+</blockquote>
+
+<p>Using <em>interfaces</em> (like in Java) as the datatype example, the problem simply asks whether it is
+possible to derive the interface and add new methods to the interface, without having to recompile
+existing code or to resort to using casts.<!--break--></p>
+
+<p>Obviously, in a OOP language it’s easy to derive interfaces, but the problem uncovers the rigidity
+of the type system: you can’t modify (i.e. extend) the interface, because you have to modify all the
+classes classes that implement the interface.</p>
+
+<p>Conversely, in functional programming languages, adding new methods operating on the interface is
+easy. Consider the canonical OCaml example:</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">shape</span> <span class="o">=</span> <span class="nc">Circle</span> <span class="k">of</span> <span class="kt">float</span> <span class="o">|</span> <span class="nc">Rectangle</span> <span class="k">of</span> <span class="kt">float</span> <span class="o">*</span> <span class="kt">float</span>
+
+<span class="k">let</span> <span class="n">area</span> <span class="n">shp</span> <span class="o">=</span> <span class="k">match</span> <span class="n">shp</span> <span class="k">with</span>
+    <span class="nc">Circle</span> <span class="n">radius</span> <span class="o">-&gt;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">14159</span> <span class="o">*.</span> <span class="n">radius</span> <span class="o">*.</span> <span class="n">radius</span>
+  <span class="o">|</span> <span class="nc">Rectangle</span> <span class="p">(</span><span class="n">width</span><span class="o">,</span> <span class="n">height</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">width</span> <span class="o">*.</span> <span class="n">height</span>
+  
+<span class="k">let</span> <span class="n">vertices</span> <span class="n">shp</span> <span class="o">=</span> <span class="k">match</span> <span class="n">shp</span> <span class="k">with</span> 
+    <span class="nc">Circle</span> <span class="n">_</span> <span class="o">-&gt;</span> <span class="n">infinity</span>
+  <span class="o">|</span> <span class="nc">Rectangle</span> <span class="p">(</span><span class="n">_</span><span class="o">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="mi">4</span>
+</code></pre></div></div>
+
+<p>So in FP, you could create a function called <code class="language-plaintext highlighter-rouge">volume</code> that computes the volume for the existing
+types, and you needn’t touch the above code. However, as soon as you do that, you realize you’ve
+made a silly mistake: our shapes are <em>flat</em> so their volume is zero. Quickly, you realize you need a
+three-dimensional <code class="language-plaintext highlighter-rouge">Cube</code> shape.</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">volume</span> <span class="n">shp</span> <span class="o">=</span> <span class="k">match</span> <span class="n">shp</span> <span class="k">with</span>
+    <span class="nc">Circle</span> <span class="n">_</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">.</span>
+  <span class="o">|</span> <span class="nc">Rectangle</span> <span class="n">_</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">.</span>
+  <span class="o">|</span> <span class="nc">Cube</span> <span class="n">s</span>   <span class="o">-&gt;</span> <span class="n">a</span> <span class="o">*.</span> <span class="n">a</span> <span class="o">*.</span> <span class="n">a</span>        <span class="c">(* Cube isn't defined *)</span>
+</code></pre></div></div>
+
+<p>Oops!</p>
+
+<p>Here’s the onion: to get the <code class="language-plaintext highlighter-rouge">Cube</code> working, you’ll have to modify the existing code in two places:
+the definition of <code class="language-plaintext highlighter-rouge">shape</code> <em>and</em> both methods <code class="language-plaintext highlighter-rouge">area</code> and <code class="language-plaintext highlighter-rouge">vertices</code>.</p>
+
+<p>In OOP, this isn’t the case, since you can just derive the new <code class="language-plaintext highlighter-rouge">IShape</code> interface and be done with
+it, but the problem arises when you’re adding the <code class="language-plaintext highlighter-rouge">volume</code> function, because you need to modify
+<code class="language-plaintext highlighter-rouge">IShape</code>, and thus every class that derives it.</p>
+
+<p>In FP, adding new functions over the datatypes is easy, but adding new cases to the datatype is
+tricky, because you have to modify existing functions. In OOP, adding new functions over the
+datatype is hard, because you need to modify each implementation; adding new cases to the datatype
+is easy, since all you need to do is derive the interface. FP has invented a multitude of ways to
+deal with this problem, ranging from type classes, traits to protocols; OOP usually solves with
+either patterns or open classes. Ruby’s
+<a href="http://devblog.avdi.org/2015/05/20/so-whats-the-deal-with-ruby-refinements-anyway/">refinements</a>
+can be used for this purpose as well.</p>
+
+<h2 id="polymorphic-variants">Polymorphic variants</h2>
+
+<p>That’s a quick introduction to the problem. I think the expression problem is a perfect
+<a href="https://en.wikipedia.org/wiki/Litmus#Uses">litmus test</a> of sorts for programming languages, that
+is, the measure of the expressive power of the language is the quality of the solutions the language
+presents to the expression problem.</p>
+
+<p>The expression problem is theoretically solvable in any language, but to varying degrees of
+elegance. In Java one must resort to using the
+<a href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor pattern</a>, and in my mind this is the most
+inelegant way of going about it. I would rate the solutions on a spectrum: with the most <em>basic</em>
+solution being the visitor pattern, at the other end we have something like
+<a href="http://www.math.nagoya-u.ac.jp/~garrigue/papers/fose2000.html">polymorphic variants</a> and type
+classes. Multimethods and protocols are somewhere in between.</p>
+
+<p>When you compare polymorphic variants of OCaml with Haskell’s type classes, there’s a marked
+difference in brevity. Polymorphic variants are succincter than type classes but cannot provide the
+same level of type safety.</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span> <span class="nt">`Circle</span> <span class="k">of</span> <span class="kt">float</span> <span class="o">|</span> <span class="nt">`Rectangle</span> <span class="k">of</span> <span class="kt">float</span> <span class="o">*</span> <span class="kt">float</span> <span class="p">]</span>
+
+<span class="k">let</span> <span class="n">area</span> <span class="n">shp</span> <span class="o">=</span> <span class="k">match</span> <span class="n">shp</span> <span class="k">with</span>
+    <span class="nt">`Circle</span> <span class="n">radius</span> <span class="o">-&gt;</span> <span class="n">radius</span> <span class="o">*.</span> <span class="n">radius</span> <span class="o">*.</span> <span class="mi">3</span><span class="o">.</span><span class="mi">14159</span>
+  <span class="o">|</span> <span class="nt">`Rectangle</span> <span class="p">(</span><span class="n">w</span><span class="o">,</span> <span class="n">h</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">w</span> <span class="o">*.</span> <span class="n">h</span>
+
+<span class="k">let</span> <span class="n">vertices</span> <span class="n">shp</span> <span class="o">=</span> <span class="k">match</span> <span class="n">shp</span> <span class="k">with</span>
+    <span class="nt">`Circle</span> <span class="n">radius</span> <span class="o">-&gt;</span> <span class="n">infinity</span>
+  <span class="o">|</span> <span class="nt">`Rectangle</span> <span class="p">(</span><span class="n">w</span><span class="o">,</span> <span class="n">h</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="mi">4</span><span class="o">.</span>
+</code></pre></div></div>
+
+<p>Not too different from the above declaration, the type is surrounded with brackets and the types are
+preceded with backticks. Recreating the volume function is easy.</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">volume</span> <span class="n">shp</span> <span class="o">=</span> <span class="k">match</span> <span class="n">shp</span> <span class="k">with</span>
+    <span class="nt">`Circle</span> <span class="n">_</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">.</span>
+  <span class="o">|</span> <span class="nt">`Rectangle</span> <span class="n">_</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">.</span>
+  <span class="o">|</span> <span class="nt">`Cube</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">a</span> <span class="o">*.</span> <span class="n">a</span> <span class="o">*.</span> <span class="n">a</span>
+</code></pre></div></div>
+
+<p>So now I’ve extended the <code class="language-plaintext highlighter-rouge">shape</code> type with another type <code class="language-plaintext highlighter-rouge">Cube</code>, and I haven’t touched <code class="language-plaintext highlighter-rouge">vertices</code> and
+<code class="language-plaintext highlighter-rouge">area</code> functions. The <code class="language-plaintext highlighter-rouge">volume</code> function can be done even more succinctly:</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">short_volume</span> <span class="n">shp</span> <span class="o">=</span> <span class="k">match</span> <span class="n">shp</span> <span class="k">with</span>
+    <span class="c">(* no volume in two dimensions! *)</span>
+    <span class="o">#</span><span class="n">shape</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">.</span>
+  <span class="o">|</span> <span class="nt">`Cube</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">a</span> <span class="o">*.</span> <span class="n">a</span> <span class="o">*.</span> <span class="n">a</span>
+</code></pre></div></div>
+
+<p>It is also possible to constrain the polymorphic variants:</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">flatten</span> <span class="n">shp</span> <span class="o">=</span> <span class="k">match</span> <span class="n">shp</span> <span class="k">with</span>
+    <span class="o">#</span><span class="n">shape</span> <span class="k">as</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span>
+  <span class="o">|</span> <span class="nt">`Cube</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="nt">`Rectangle</span> <span class="n">a</span>
+</code></pre></div></div>
+
+<p>The type of this function is
+<code class="language-plaintext highlighter-rouge">[ &lt; `Circle of float | `Cube of float | `Rectangle of float * float ] -&gt; [&gt; shape]</code>. The
+<code class="language-plaintext highlighter-rouge">[&lt; A | B]</code> means a closed type: it can be only <code class="language-plaintext highlighter-rouge">A</code> or <code class="language-plaintext highlighter-rouge">B</code>, but nothing else, and <code class="language-plaintext highlighter-rouge">[&gt; Foo]</code> means
+“Foo or something else”. So the <code class="language-plaintext highlighter-rouge">flatten</code> function accepts <code class="language-plaintext highlighter-rouge">Circle</code>, <code class="language-plaintext highlighter-rouge">Rectangle</code> or <code class="language-plaintext highlighter-rouge">Cube</code> and
+returns a <code class="language-plaintext highlighter-rouge">shape</code> (or possibly something else). Trying to run <code class="language-plaintext highlighter-rouge">flatten (`Sphere 4)</code> produces a
+type error:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># flatten (`Sphere 3);;
+Characters 8-19:
+  flatten (`Sphere 3);;
+          ^^^^^^^^^^^
+Error: This expression has type [&gt; `Sphere of int ]
+       but an expression was expected of type
+         [&lt; `Circle of float
+          | `Cube of float * float
+          | `Rectangle of float * float ]
+       The second variant type does not allow tag(s) `Sphere
+</code></pre></div></div>
+
+<p>However, the following code compiles:</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">polytope</span> <span class="o">=</span> <span class="p">[</span> <span class="n">shape</span> <span class="o">|</span> <span class="nt">`Cube</span> <span class="o">|</span> <span class="nt">`Octahedron</span> <span class="p">]</span>
+
+<span class="k">let</span> <span class="n">frobnicate</span> <span class="n">pt</span> <span class="o">=</span>
+  <span class="k">let</span> <span class="n">flattened</span> <span class="o">=</span> <span class="n">flatten</span> <span class="n">pt</span> <span class="k">in</span>
+  <span class="k">match</span> <span class="n">flattened</span> <span class="k">with</span>
+    <span class="o">#</span><span class="n">shape</span> <span class="o">-&gt;</span> <span class="s2">"Already flaaat!"</span>
+  <span class="o">|</span> <span class="nt">`Octagon</span> <span class="o">-&gt;</span> <span class="s2">"Eight coorneeeeerss"</span>
+</code></pre></div></div>
+
+<p>The compiles, although we didn’t tell the compiler that <code class="language-plaintext highlighter-rouge">flatten</code> does not return
+<code class="language-plaintext highlighter-rouge">Octagon</code>. There are two ways to fix this: either explicitly annotate <code class="language-plaintext highlighter-rouge">pt</code> to be of type
+<code class="language-plaintext highlighter-rouge">polytope</code>, which produces this error:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error: This expression has type polytope
+       but an expression was expected of type
+         [&lt; `Circle of float | `Cube of float | `Rectangle of float * float ]
+       The second variant type does not allow tag(s) `Octahedron
+</code></pre></div></div>
+
+<p>It is possible to further constrain the type with type annotations. We can make sure that the
+<code class="language-plaintext highlighter-rouge">flatten</code> function returns <em>only</em> flat shapes:</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">safe_flatten</span> <span class="n">shp</span> <span class="o">:</span> <span class="p">[</span><span class="o">&lt;</span> <span class="n">shape</span><span class="p">]</span> <span class="o">=</span> <span class="k">match</span> <span class="n">shp</span> <span class="k">with</span>
+    <span class="o">#</span><span class="n">shape</span> <span class="k">as</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span>
+  <span class="o">|</span> <span class="nt">`Cube</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="nt">`Rectangle</span> <span class="n">a</span>
+  <span class="o">|</span> <span class="nt">`Sphere</span> <span class="n">r</span> <span class="o">-&gt;</span> <span class="nt">`Circle</span> <span class="n">r</span>
+</code></pre></div></div>
+
+<p>This produces the error:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error: This pattern matches values of type [? `Octagon ]
+       but a pattern was expected which matches values of type shape
+       The second variant type does not allow tag(s) `Octagon
+</code></pre></div></div>
+
+<h2 id="not-a-silver-bullet">Not a silver bullet</h2>
+
+<p>Unfortunately, polymorphic variants are <em>problematic</em>. The problem with polymorphic variants is you
+quickly reach an absurd level of complexity and are forced to use annotations or subtyping to ensure
+maximal type safety. So although polymorphic variants are <em>nice</em>, and they do let us solve the
+expression problem, they’re an unsteady compromise between type safety and brevity. You can
+certainly make elegant abstractions with them but they get unwieldy quickly. They aren’t as
+efficient compared to regular variants either.</p>
+
+<p>So what are the options? In OCaml 4.02, you can use <em>extensible variant types</em>:</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">boring_shape</span> <span class="o">=</span> <span class="o">..</span>
+<span class="k">type</span> <span class="n">boring_shape</span> <span class="o">+=</span> <span class="nc">Circle</span> <span class="k">of</span> <span class="kt">float</span> <span class="o">|</span> <span class="nc">Square</span> <span class="k">of</span> <span class="kt">float</span>
+                                                   
+<span class="k">let</span> <span class="n">boring_area</span> <span class="n">shp</span> <span class="o">=</span> <span class="k">match</span> <span class="n">shp</span> <span class="k">with</span>
+    <span class="nc">Circle</span> <span class="n">r</span> <span class="o">-&gt;</span> <span class="n">r</span> <span class="o">*.</span> <span class="n">r</span> <span class="o">*.</span> <span class="mi">3</span><span class="o">.</span><span class="mi">14159</span>
+  <span class="o">|</span> <span class="nc">Square</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="n">a</span> <span class="o">*.</span> <span class="n">a</span>
+  <span class="o">|</span> <span class="n">_</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">.</span>
+
+<span class="k">type</span> <span class="n">boring_shape</span> <span class="o">+=</span> <span class="nc">Rectangle</span> <span class="k">of</span> <span class="kt">float</span> <span class="o">*</span> <span class="kt">float</span>
+<span class="k">let</span> <span class="n">radical_area</span> <span class="n">shp</span> <span class="o">=</span> <span class="k">match</span> <span class="n">shp</span> <span class="k">with</span>
+    <span class="nc">Circle</span> <span class="n">_</span> <span class="k">as</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="n">boring_area</span> <span class="n">c</span>
+  <span class="o">|</span> <span class="nc">Square</span> <span class="n">_</span> <span class="k">as</span> <span class="n">s</span> <span class="o">-&gt;</span> <span class="n">boring_area</span> <span class="n">s</span>
+  <span class="o">|</span> <span class="nc">Rectangle</span> <span class="p">(</span><span class="n">w</span><span class="o">,</span> <span class="n">h</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">w</span> <span class="o">*.</span> <span class="n">h</span>
+  <span class="o">|</span> <span class="n">_</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">.</span>
+</code></pre></div></div>
+
+<p>An extensible variant is defined using <code class="language-plaintext highlighter-rouge">..</code>, and extension is done with the <code class="language-plaintext highlighter-rouge">+=</code> operator. The
+caveat is that you must handle the default <code class="language-plaintext highlighter-rouge">_</code> case in pattern matching. Extensible variants are
+another neat trick for solving the expression problem.</p>
+
+<h2 id="a-measure-of-expressive-power">A measure of expressive power</h2>
+
+<p>The expression problem is a great litmus test that measures the expressive power of a
+programming language. The actual measurement of the test can be either the brevity of the code or
+its type safety. The solutions range from the clumsy Visitor Pattern in Java to polymorphic and
+extensible variants in OCaml and to type classes in Haskell. Clojure and Elixir have
+<a href="http://clojure.org/protocols">protocols</a> that are both quite nice but not so type-safe since both
+are dynamically typed languages. What is more, since the expression problem is also about type
+safety, then strictly speaking the problem isn’t valid in a dynamic language. Any Lisper knows that
+Lisps <em>are</em> super expressive anyway.</p>
+
+
+  </div>
+  <small style="display: flex; justify-content: space-between;">
+    
+      <em>
+        Previous: <a href="/2016/01/01/before-we-begin.html">Before we begin</a>
+      </em>
+    
+
+    
+      <em>
+        Next: <a href="/2016/01/26/are-my-services-talking-to-each-other.html">Are my services talking to each other?</a>
+      </em>
+    
+  </small>
+</article>
+
+      </div>
+
+      <footer>
+        <hr>
+        <address>
+          
+          
+
+          &copy; <a href="mailto:ane@iki.fi">Antoine Kalmbach</a>, see <a href="/this-site/index.html#copying">copying</a>.
+          Last updated on <a href="/changelog.html">July 28, 2021</a>. Discuss at my <a href="https://lists.sr.ht/~ane/public-inbox">public inbox</a>.
+        </address>
+      </footer>
+    </div>
+    <script src="/assets/hyphenator.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
+         processEscapes: false
+       }
+     });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="/assets/hylo.js" type="text/javascript"></script>
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-58162697-1']);
+     _gaq.push(['_trackPageview']);
+
+     (function () {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+  </body>
+
+</html>

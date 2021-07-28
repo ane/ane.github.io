@@ -1,0 +1,296 @@
+<!-- -*- engine:liquid -*- -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href="https://micro.blog/ane" rel="me" />
+    <link rel="webmention" href="https://micro.blog/webmention" />
+
+    <title>
+      
+        The overhead of test-driven development
+      
+    </title>
+
+    
+      <meta name="description" content="" />
+    
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link type="application/atom+xml" rel="alternate" href="http://ane.iki.fi/feed.xml" title="Antoine Kalmbach's website" />
+    <meta http-equiv="refresh" content="0; url=http://ane.iki.fi/programming/practices/tdd.html" />
+    <link rel="canonical" href="http://ane.iki.fi/programming/practices/tdd.html"/>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>The overhead of test-driven development | Antoine Kalmbach’s website</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="The overhead of test-driven development" />
+<meta name="author" content="Antoine Kalmbach" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="There are significant merits in test-driven development (TDD), but I think its costs outweigh its benefits. The idea in short is that you write all your software requirements as test cases, you write the test cases first so that they fail, you write the program until all test cases pass, and your program is complete. Note that the test cases do not necessarily need to be automated, nor do they need to be unit tests, as long as there’s a test–develop–test–develop cycle. Iterate, iterate, iterate This can lead to a very short and sweet development cycle, because as soon as all the tests pass, your program is ready–supposedly. But the devil is in the details, because as soon as you lay down those four items, you start asking questions like: How is a requirement properly captured as a test case? What is the level of granularity for your tests? How much work is needed to create working tests? To answer the first question, you need to properly understand the requirement. You need to be testing the right thing, at the right level. For instance, if a requirement of a library management system says that “the same user cannot make more than one reservation on a single item”, how do you test this? Do you register a user, create an item in the library catalog, make one reservation, then try making another, expecting a rejection? Initially we’d like our fail the test case by not rejecting the double reservation, once the second reservation is rejected the test is considered a success. The design of the test case itself is quite complex. For the test to be able to work, we now need to have functionality for registering or loading a preset user, loading a library catalog (or adding new items to it), and a mechanism for making reservations, and checking whether they succeed or not. So obviously the first step is not to get the test to fail but to work: our test program needs to get to the point it has to signal failures or passes. This is where we get to the second question: what do we use to build the test scenario? Do we just write a program that calls some functions in the reservation system, or we do user interface tests where another program interacts with the program? Choosing the testing level is not easy! User interface tests require complex machinery to set up, but they are valuable, because you can treat the underlying implementation as a black box. This is valuable, because this way you cannot make tight coupling between the implementation and the interface. Only the results matter. First, you must create the universe… The last question is the most interesting one: we need to be able to create tests that signal whether they have failed or not. For them to be useful, you need the tests to actually interact with the program somehow. This could mean that the tests call the functions you are testing. To get that to work, you need to define function stubs so that the compiler or interpreter you are working with does not reject your code. For instance, consider this Java code: @Test public void testReservation() { Reservation reservation = TestData.getReservation(); // some global reservationSystem defined outside this method bool success = reservationSystem.makeReservation(reservation); bool failure = reservationSystem.makeReservation(reservation); Assert.assertFalse(failure); } Rather obviously for the Java compiler to accept this we need to have the makeReservation method on the reservationSystem! In the ReservationSystem class we define // in ReservationSystem.java public bool makeReservation(Reservation reservation) { return false; } Not to mention that you’d have to define the Reservation class, and so on. I think test-driven development can be quite beneficial when you are refactoring your code or adding or modifying functionality. That is, in the above example, suppose we already have a working reservation system and all the necessary scaffolding in place. Implementing the double-reservation prevention in a TDD fashion is quite simple: just add the test above, and fix your code. But what about when you don’t have a program to modify, or you are writing a suite of test cases for a part that isn’t there? Suppose we don’t yet have a reservation system at all, and this test case is a part of a number of many test cases each and everyone of which needs some kind of functionality in order to compile to get to the failing state? Futhermore, if you’re starting from scratch, it’s obvious that you need to spend considerable effort on writing the stubs first, and this indirectly guides your development process, and the way you design the program. Here’s where get to the big question: does test-driven development guide your program design in a way that’s appropriate? The answer is it depends. To be precise, it depends on the way you approach program design. For those who don’t mind writing the stubs and test scaffolding first it can be a hugely productive manner of working, but to those who like to think in small iterations with functionality first, it feels counterintuitive. When building a bridge it makes a lot of sense to specify up front that it should be robust enough to tolerate the weight of a hundred cows when complete. On the other hand, it would be rather stupid to continuously drive cows on the bridge even before construction has started. The cows would fall into the water and everyone, especially the cows, would find the experience quite displeasing. Although software is not physical, time is still time and just like the bridge testers would have spend time driving cows into water (initially) and have to rescue them from the water, in the beginning of a TDD process one needs to fight the compiler so that you get the tests to work. So to me doing the initial grunt work of setting up stubs for test-driven development feels like throwing cows into the water. I like to start with the requirements, figure out a minimum viable design that’s testable, and then write the tests, and repeat until the program satisfies the requirement and the tests are rigorous enough. But when refactoring programs or adding or modifying functionality I sometimes practice TDD but not religiously. It largely depends on what I’m working on and if the feedback loop between change-test-change-test is fast." />
+<meta property="og:description" content="There are significant merits in test-driven development (TDD), but I think its costs outweigh its benefits. The idea in short is that you write all your software requirements as test cases, you write the test cases first so that they fail, you write the program until all test cases pass, and your program is complete. Note that the test cases do not necessarily need to be automated, nor do they need to be unit tests, as long as there’s a test–develop–test–develop cycle. Iterate, iterate, iterate This can lead to a very short and sweet development cycle, because as soon as all the tests pass, your program is ready–supposedly. But the devil is in the details, because as soon as you lay down those four items, you start asking questions like: How is a requirement properly captured as a test case? What is the level of granularity for your tests? How much work is needed to create working tests? To answer the first question, you need to properly understand the requirement. You need to be testing the right thing, at the right level. For instance, if a requirement of a library management system says that “the same user cannot make more than one reservation on a single item”, how do you test this? Do you register a user, create an item in the library catalog, make one reservation, then try making another, expecting a rejection? Initially we’d like our fail the test case by not rejecting the double reservation, once the second reservation is rejected the test is considered a success. The design of the test case itself is quite complex. For the test to be able to work, we now need to have functionality for registering or loading a preset user, loading a library catalog (or adding new items to it), and a mechanism for making reservations, and checking whether they succeed or not. So obviously the first step is not to get the test to fail but to work: our test program needs to get to the point it has to signal failures or passes. This is where we get to the second question: what do we use to build the test scenario? Do we just write a program that calls some functions in the reservation system, or we do user interface tests where another program interacts with the program? Choosing the testing level is not easy! User interface tests require complex machinery to set up, but they are valuable, because you can treat the underlying implementation as a black box. This is valuable, because this way you cannot make tight coupling between the implementation and the interface. Only the results matter. First, you must create the universe… The last question is the most interesting one: we need to be able to create tests that signal whether they have failed or not. For them to be useful, you need the tests to actually interact with the program somehow. This could mean that the tests call the functions you are testing. To get that to work, you need to define function stubs so that the compiler or interpreter you are working with does not reject your code. For instance, consider this Java code: @Test public void testReservation() { Reservation reservation = TestData.getReservation(); // some global reservationSystem defined outside this method bool success = reservationSystem.makeReservation(reservation); bool failure = reservationSystem.makeReservation(reservation); Assert.assertFalse(failure); } Rather obviously for the Java compiler to accept this we need to have the makeReservation method on the reservationSystem! In the ReservationSystem class we define // in ReservationSystem.java public bool makeReservation(Reservation reservation) { return false; } Not to mention that you’d have to define the Reservation class, and so on. I think test-driven development can be quite beneficial when you are refactoring your code or adding or modifying functionality. That is, in the above example, suppose we already have a working reservation system and all the necessary scaffolding in place. Implementing the double-reservation prevention in a TDD fashion is quite simple: just add the test above, and fix your code. But what about when you don’t have a program to modify, or you are writing a suite of test cases for a part that isn’t there? Suppose we don’t yet have a reservation system at all, and this test case is a part of a number of many test cases each and everyone of which needs some kind of functionality in order to compile to get to the failing state? Futhermore, if you’re starting from scratch, it’s obvious that you need to spend considerable effort on writing the stubs first, and this indirectly guides your development process, and the way you design the program. Here’s where get to the big question: does test-driven development guide your program design in a way that’s appropriate? The answer is it depends. To be precise, it depends on the way you approach program design. For those who don’t mind writing the stubs and test scaffolding first it can be a hugely productive manner of working, but to those who like to think in small iterations with functionality first, it feels counterintuitive. When building a bridge it makes a lot of sense to specify up front that it should be robust enough to tolerate the weight of a hundred cows when complete. On the other hand, it would be rather stupid to continuously drive cows on the bridge even before construction has started. The cows would fall into the water and everyone, especially the cows, would find the experience quite displeasing. Although software is not physical, time is still time and just like the bridge testers would have spend time driving cows into water (initially) and have to rescue them from the water, in the beginning of a TDD process one needs to fight the compiler so that you get the tests to work. So to me doing the initial grunt work of setting up stubs for test-driven development feels like throwing cows into the water. I like to start with the requirements, figure out a minimum viable design that’s testable, and then write the tests, and repeat until the program satisfies the requirement and the tests are rigorous enough. But when refactoring programs or adding or modifying functionality I sometimes practice TDD but not religiously. It largely depends on what I’m working on and if the feedback loop between change-test-change-test is fast." />
+<link rel="canonical" href="http://ane.iki.fi/programming/practices/tdd.html" />
+<meta property="og:url" content="http://ane.iki.fi/programming/practices/tdd.html" />
+<meta property="og:site_name" content="Antoine Kalmbach’s website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-10-09T08:44:50+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="The overhead of test-driven development" />
+<meta name="twitter:site" content="@anewtf" />
+<meta name="twitter:creator" content="@Antoine Kalmbach" />
+<script type="application/ld+json">
+{"headline":"The overhead of test-driven development","dateModified":"2020-10-13T18:14:16+00:00","datePublished":"2020-10-09T08:44:50+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://ane.iki.fi/programming/practices/tdd.html"},"url":"http://ane.iki.fi/programming/practices/tdd.html","author":{"@type":"Person","name":"Antoine Kalmbach"},"description":"There are significant merits in test-driven development (TDD), but I think its costs outweigh its benefits. The idea in short is that you write all your software requirements as test cases, you write the test cases first so that they fail, you write the program until all test cases pass, and your program is complete. Note that the test cases do not necessarily need to be automated, nor do they need to be unit tests, as long as there’s a test–develop–test–develop cycle. Iterate, iterate, iterate This can lead to a very short and sweet development cycle, because as soon as all the tests pass, your program is ready–supposedly. But the devil is in the details, because as soon as you lay down those four items, you start asking questions like: How is a requirement properly captured as a test case? What is the level of granularity for your tests? How much work is needed to create working tests? To answer the first question, you need to properly understand the requirement. You need to be testing the right thing, at the right level. For instance, if a requirement of a library management system says that “the same user cannot make more than one reservation on a single item”, how do you test this? Do you register a user, create an item in the library catalog, make one reservation, then try making another, expecting a rejection? Initially we’d like our fail the test case by not rejecting the double reservation, once the second reservation is rejected the test is considered a success. The design of the test case itself is quite complex. For the test to be able to work, we now need to have functionality for registering or loading a preset user, loading a library catalog (or adding new items to it), and a mechanism for making reservations, and checking whether they succeed or not. So obviously the first step is not to get the test to fail but to work: our test program needs to get to the point it has to signal failures or passes. This is where we get to the second question: what do we use to build the test scenario? Do we just write a program that calls some functions in the reservation system, or we do user interface tests where another program interacts with the program? Choosing the testing level is not easy! User interface tests require complex machinery to set up, but they are valuable, because you can treat the underlying implementation as a black box. This is valuable, because this way you cannot make tight coupling between the implementation and the interface. Only the results matter. First, you must create the universe… The last question is the most interesting one: we need to be able to create tests that signal whether they have failed or not. For them to be useful, you need the tests to actually interact with the program somehow. This could mean that the tests call the functions you are testing. To get that to work, you need to define function stubs so that the compiler or interpreter you are working with does not reject your code. For instance, consider this Java code: @Test public void testReservation() { Reservation reservation = TestData.getReservation(); // some global reservationSystem defined outside this method bool success = reservationSystem.makeReservation(reservation); bool failure = reservationSystem.makeReservation(reservation); Assert.assertFalse(failure); } Rather obviously for the Java compiler to accept this we need to have the makeReservation method on the reservationSystem! In the ReservationSystem class we define // in ReservationSystem.java public bool makeReservation(Reservation reservation) { return false; } Not to mention that you’d have to define the Reservation class, and so on. I think test-driven development can be quite beneficial when you are refactoring your code or adding or modifying functionality. That is, in the above example, suppose we already have a working reservation system and all the necessary scaffolding in place. Implementing the double-reservation prevention in a TDD fashion is quite simple: just add the test above, and fix your code. But what about when you don’t have a program to modify, or you are writing a suite of test cases for a part that isn’t there? Suppose we don’t yet have a reservation system at all, and this test case is a part of a number of many test cases each and everyone of which needs some kind of functionality in order to compile to get to the failing state? Futhermore, if you’re starting from scratch, it’s obvious that you need to spend considerable effort on writing the stubs first, and this indirectly guides your development process, and the way you design the program. Here’s where get to the big question: does test-driven development guide your program design in a way that’s appropriate? The answer is it depends. To be precise, it depends on the way you approach program design. For those who don’t mind writing the stubs and test scaffolding first it can be a hugely productive manner of working, but to those who like to think in small iterations with functionality first, it feels counterintuitive. When building a bridge it makes a lot of sense to specify up front that it should be robust enough to tolerate the weight of a hundred cows when complete. On the other hand, it would be rather stupid to continuously drive cows on the bridge even before construction has started. The cows would fall into the water and everyone, especially the cows, would find the experience quite displeasing. Although software is not physical, time is still time and just like the bridge testers would have spend time driving cows into water (initially) and have to rescue them from the water, in the beginning of a TDD process one needs to fight the compiler so that you get the tests to work. So to me doing the initial grunt work of setting up stubs for test-driven development feels like throwing cows into the water. I like to start with the requirements, figure out a minimum viable design that’s testable, and then write the tests, and repeat until the program satisfies the requirement and the tests are rigorous enough. But when refactoring programs or adding or modifying functionality I sometimes practice TDD but not religiously. It largely depends on what I’m working on and if the feedback loop between change-test-change-test is fast.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/override.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/assets/pygments.css" type="text/css" media="screen" />
+  </head>
+  <body itemscope itemtype="https://schema.org/WebPage" class="home-template">
+    <div class="hyphenate">
+      <h1 style="text-align: center;">
+  Antoine Kalmbach
+</h1>
+<nav class="navbar">
+  <ul>
+    <li class="nav-item ">
+      <a class="nav-link pl-0" href="/" itemprop="url"><span itemprop="name">Home</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/archive.html" itemprop="url"><span itemprop="name">Blog</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/about/" itemprop="url"><span itemprop="name">About</span></a>
+    </li>
+    <li class="nav-item ">
+      <a class="nav-link" href="/tags.html" itemprop="url"><span itemprop="name">Index</span></a>
+    </li>
+
+    <li class="nav-item mr-n2">
+      <a class="nav-link" href="/feed.xml"><i class="fa fa-rss" aria-hidden="true"></i> RSS</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="h-card d-none" style="display: none">
+  <img class="u-photo" src="/images/me.png">
+  <a class="u-url" href="http://ane.iki.fi/programming/practices/tdd.html"></a>
+  <a class="p-name u-url" href="http://ane.iki.fi">Antoine Kalmbach</a>
+  <a class="u-email" href="mailto:">ane@iki.fi</a>
+</div>
+
+
+      <div class="content">
+        <article class="h-entry">
+  <header>
+    <div>
+      
+      
+      
+        
+          
+          <em><a href="/programming">Programming</a> / </em>
+        
+      
+        
+          
+          <em><a href="/programming/practices">Practices</a> / </em>
+        
+      
+        
+      
+    </div>
+    <h2 class="p-name" style="margin: 0.25rem 0;">
+      The overhead of test-driven development
+    </h2>
+    <link itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/BlogPosting" href="">
+  </header>
+  <div class="e-content">
+    <p>There are significant merits in <a href="https://en.wikipedia.org/wiki/Test-driven_development">test-driven development</a> (TDD), but I think its costs
+outweigh its benefits. The idea in short is that</p>
+
+<ul>
+  <li>you write all your software requirements as test cases,</li>
+  <li>you write the test cases <em>first</em> so that they fail,</li>
+  <li>you write the program until <em>all</em> test cases pass,</li>
+  <li>and your program is complete.</li>
+</ul>
+
+<p>Note that the test cases do not necessarily need to be automated, nor do they
+need to be <em>unit tests</em>, as long as there’s a test–develop–test–develop cycle.</p>
+
+<h3 id="iterate-iterate-iterate">Iterate, iterate, iterate</h3>
+
+<p>This can lead to a very short and sweet development cycle, because as soon as
+all the tests pass, your program is ready–supposedly. But the devil is in the
+details, because as soon as you lay down those four items, you start asking
+questions like:</p>
+
+<ul>
+  <li>How is a requirement properly captured as a test case?</li>
+  <li>What is the level of granularity for your tests?</li>
+  <li>How much work is needed to create working tests?</li>
+</ul>
+
+<p>To answer the first question, you need to properly understand the
+requirement. You need to be testing the right thing, at the right level. For
+instance, if a requirement of a library management system says that “the same
+user cannot make more than one reservation on a single item”, how do you test
+this? Do you register a user, create an item in the library catalog, make one
+reservation, then try making another, expecting a rejection? Initially we’d like
+our fail the test case by not rejecting the double reservation, once the second
+reservation is rejected the test is considered a success.</p>
+
+<p>The design of the test case itself is quite complex. For the test to be able to
+work, we now need to have functionality for</p>
+
+<ul>
+  <li>registering or loading a preset user,</li>
+  <li>loading a library catalog (or adding new items to it), and</li>
+  <li>a mechanism for making reservations, and checking whether they succeed or not.</li>
+</ul>
+
+<p>So obviously the first step is not to get the test to fail but to <em>work</em>: our test
+program needs to get to the point it has to signal failures or passes. This is
+where we get to the second question: what do we use to build the test scenario?
+Do we just write a program that calls some functions in the reservation system,
+or we do user interface tests where another program interacts with the program?
+Choosing the testing level is not easy! User interface tests require complex
+machinery to set up, but they are valuable, because you can treat the underlying
+implementation as a black box. This is valuable, because this way you cannot
+make tight coupling between the implementation and the interface. Only the
+results matter.</p>
+
+<h3 id="first-you-must-create-the-universe">First, you must create the universe…</h3>
+
+<p>The last question is the most interesting one: we need to be able to create
+tests that signal whether they have failed or not. For them to be useful, you
+need the tests to actually interact with the program somehow. This could mean
+that the tests call the functions you are testing. To get that to work, you need
+to define function stubs so that the compiler or interpreter you are working
+with does not reject your code.</p>
+
+<p>For instance, consider this Java code:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">testReservation</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">Reservation</span> <span class="n">reservation</span> <span class="o">=</span> <span class="nc">TestData</span><span class="o">.</span><span class="na">getReservation</span><span class="o">();</span>
+    
+    <span class="c1">// some global reservationSystem defined outside this method</span>
+    <span class="n">bool</span> <span class="n">success</span> <span class="o">=</span> <span class="n">reservationSystem</span><span class="o">.</span><span class="na">makeReservation</span><span class="o">(</span><span class="n">reservation</span><span class="o">);</span>
+    <span class="n">bool</span> <span class="n">failure</span> <span class="o">=</span> <span class="n">reservationSystem</span><span class="o">.</span><span class="na">makeReservation</span><span class="o">(</span><span class="n">reservation</span><span class="o">);</span>
+    <span class="nc">Assert</span><span class="o">.</span><span class="na">assertFalse</span><span class="o">(</span><span class="n">failure</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Rather obviously for the Java compiler to accept this we need to have the
+<code class="language-plaintext highlighter-rouge">makeReservation</code> method on the <code class="language-plaintext highlighter-rouge">reservationSystem</code>! In the <code class="language-plaintext highlighter-rouge">ReservationSystem</code>
+class we define</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// in ReservationSystem.java</span>
+<span class="kd">public</span> <span class="n">bool</span> <span class="nf">makeReservation</span><span class="o">(</span><span class="nc">Reservation</span> <span class="n">reservation</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Not to mention that you’d have to define the <code class="language-plaintext highlighter-rouge">Reservation</code> class, and so
+on.</p>
+
+<p>I think test-driven development can be quite beneficial when you are refactoring
+your code or adding or modifying functionality. That is, in the
+above example, suppose we already have a working reservation system and all the
+necessary scaffolding in place. Implementing the double-reservation prevention
+in a TDD fashion is quite simple: just add the test above, and fix your code.</p>
+
+<p>But what about when you don’t have a program to modify, or you are writing a
+suite of test cases for a part that isn’t there? Suppose we don’t yet have a
+reservation system at all, and this test case is a part of a number of many test
+cases each and everyone of which needs some kind of functionality in order to
+compile to get to the failing state?</p>
+
+<p>Futhermore, if you’re starting from scratch, it’s obvious that you need to spend
+considerable effort on writing the stubs first, and this indirectly guides your
+development process, and the way you design the program. Here’s where get to the
+big question: <strong>does test-driven development guide your program design in a way
+that’s appropriate?</strong></p>
+
+<p>The answer is <em>it depends</em>. To be precise, it depends on the way you approach
+program design. For those who don’t mind writing the stubs and test scaffolding
+first it can be a hugely productive manner of working, but to those who like to
+think in small iterations with functionality first, it feels counterintuitive.</p>
+
+<p>When building a bridge it makes a lot of sense to specify up front that it
+should be robust enough to tolerate the weight of a hundred cows when
+complete. On the other hand, it would be rather stupid to continuously drive
+cows on the bridge even before construction has started. The cows would fall
+into the water and everyone, especially the cows, would find the experience
+quite displeasing.</p>
+
+<p>Although software is not physical, time is still time and just like the bridge
+testers would have spend time driving cows into water (initially) and have to
+rescue them from the water, in the beginning of a TDD process one needs to fight
+the compiler so that you get the tests to work.</p>
+
+<p>So to me doing the initial grunt work of setting up stubs for test-driven
+development feels like throwing cows into the water. I like to start with the
+requirements, figure out a minimum viable design that’s testable, and then write
+the tests, and repeat until the program satisfies the requirement and the tests
+are rigorous enough.</p>
+
+<p>But when refactoring programs or adding or modifying functionality I <em>sometimes</em>
+practice TDD but not religiously. It largely depends on what I’m working on and
+if the feedback loop between change-test-change-test is fast.</p>
+
+  </div>
+  <time class="dt-published" itemprop="datePublished" datetime="" style="color: #555;">
+    <em>This page was last updated on <time>October 13, 2020.</time></em>
+    </time>
+</article>
+
+      </div>
+
+      <footer>
+        <hr>
+        <address>
+          
+          
+
+          © <a href="mailto:ane@iki.fi">Antoine Kalmbach</a>, see <a href="/this-site/index.html#copying">copying</a>.
+          Last updated on <a href="/changelog.html">July 28, 2021</a>. Discuss at my <a href="https://lists.sr.ht/~ane/public-inbox">public inbox</a>.
+        </address>
+      </footer>
+    </div>
+    <script src="/assets/hyphenator.js" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+     MathJax.Hub.Config({
+       tex2jax: {
+         inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
+         processEscapes: false
+       }
+     });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script src="/assets/hylo.js" type="text/javascript"></script>
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-58162697-1']);
+     _gaq.push(['_trackPageview']);
+
+     (function () {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    </script>
+  </body>
+
+</html>

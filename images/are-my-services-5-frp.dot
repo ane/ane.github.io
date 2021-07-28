@@ -1,0 +1,12 @@
+digraph {
+    rankdir=LR;
+    
+    Producer -> "+":nw[label="(t=Write, src=Producer, msg=\"foo\")"];
+    Consumer -> "+":sw[label="(t=Read, src=Producer, msg=\"foo\")"];
+
+    "+" [shape=diamond];
+    
+    X [label="Communication!"];
+    
+    "+" -> X;
+}
